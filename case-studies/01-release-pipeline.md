@@ -20,13 +20,13 @@ A single-command pipeline (a [Claude Code](https://claude.com/claude-code) skill
 
 ```mermaid
 flowchart LR
-    A[Release version] --> B[Pull the release's tickets<br/>from JIRA]
-    B --> C[Verify each ticket<br/>against its fix / QA state]
-    C --> D[Draft a per-item note<br/>in a controlled vocabulary]
-    D --> E[Assemble a formatted<br/>stakeholder document]
-    E --> F{Human review gate<br/>draft to seal}
+    A["Release version"] --> B["Pull the release's tickets<br>from JIRA"]
+    B --> C["Verify each ticket<br>against its fix / QA state"]
+    C --> D["Draft a per-item note<br>in a controlled vocabulary"]
+    D --> E["Assemble a formatted<br>stakeholder document"]
+    E --> F{"Human review gate<br>draft to seal"}
     F -->|edits| E
-    F -->|approved| G[Publish + announce<br/>in Microsoft Teams]
+    F -->|approved| G["Publish + announce<br>in Microsoft Teams"]
 ```
 
 Key design choices:
