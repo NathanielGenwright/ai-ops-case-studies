@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REQ-576: Reconcile Payments UX Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== MetroBill Design Tokens ========== */
+    :root {
+      --color-black: #000000;
+      --color-white: #ffffff;
+      --color-muniBlue: #1e67a4;
+      --color-muniDarkGray: #464646;
+      --color-coolGray-50: #f9fafb;
+      --color-coolGray-100: #f3f4f6;
+      --color-coolGray-200: #e5e7eb;
+      --color-coolGray-300: #d1d5db;
+      --color-coolGray-500: #6b7280;
+      --color-coolGray-700: #374151;
+      --color-coolGray-800: #1f2937;
+      --color-rose-600: #e11d48;
+      --color-green-100: #2CB475;
+      --color-amber-100: #F4C542;
+      --font-family-heading: "Montserrat", sans-serif;
+      --font-family-body: "Roboto", sans-serif;
+      --font-size-xs: 12px;
+      --font-size-sm: 14px;
+      --font-size-base: 16px;
+      --font-size-lg: 18px;
+      --font-size-xl: 20px;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --boxShadow-elevated: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      --boxShadow-base: 0px 1px 2px rgba(31, 41, 55, 0.08);
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family-body);
+      font-size: var(--font-size-base);
+      color: var(--color-coolGray-800);
+      background: #f0f2f5;
+      padding: 20px;
+    }
+
+    /* ========== Mockup Control Panel ========== */
+    .control-panel {
+      background: var(--color-coolGray-800);
+      color: var(--color-white);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+      max-width: 900px;
+    }
+
+    .control-panel h1 {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-xl);
+      margin-bottom: 4px;
+    }
+
+    .control-panel .subtitle {
+      font-size: var(--font-size-sm);
+      color: var(--color-coolGray-300);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: var(--spacing-xl);
+      flex-wrap: wrap;
+    }
+
+    .toggle-section {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .toggle-section h3 {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-sm);
+      color: var(--color-coolGray-300);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .toggle-option {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: 6px 0;
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+    }
+
+    .toggle-option input[type="radio"] {
+      accent-color: var(--color-muniBlue);
+      width: 16px;
+      height: 16px;
+    }
+
+    .toggle-option .badge {
+      background: var(--color-muniBlue);
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 4px;
+    }
+
+    /* ========== Screen Mockup ========== */
+    .screen-container {
+      max-width: 900px;
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--boxShadow-elevated);
+      overflow: hidden;
+    }
+
+    .screen-header {
+      background: var(--color-muniBlue);
+      color: var(--color-white);
+      padding: 12px var(--spacing-lg);
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .screen-header .breadcrumb {
+      font-size: var(--font-size-xs);
+      opacity: 0.7;
+    }
+
+    .screen-body {
+      padding: var(--spacing-lg);
+      display: flex;
+      gap: var(--spacing-xl);
+    }
+
+    .main-panel {
+      flex: 1;
+      max-width: 550px;
+    }
+
+    .side-panel {
+      flex: 1;
+      max-width: 300px;
+    }
+
+    /* ========== Tile Component ========== */
+    .tile {
+      border: 1px solid var(--color-coolGray-200);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .tile__header {
+      padding: 10px var(--spacing-md);
+      border-bottom: 1px solid var(--color-coolGray-200);
+      background: var(--color-coolGray-50);
+    }
+
+    .tile__title {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-coolGray-700);
+    }
+
+    .tile__body {
+      padding: var(--spacing-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ========== Form Components ========== */
+    .form-label__input {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label__label {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-coolGray-700);
+    }
+
+    .form-input {
+      padding: 6px 10px;
+      border: 1px solid var(--color-coolGray-300);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-base);
+      font-family: var(--font-family-body);
+      color: var(--color-coolGray-800);
+      background: var(--color-white);
+      width: 100%;
+    }
+
+    .form-input:focus {
+      outline: 2px solid var(--color-muniBlue);
+      outline-offset: -1px;
+    }
+
+    select.form-input {
+      cursor: pointer;
+    }
+
+    select.form-input:disabled {
+      background: var(--color-coolGray-100);
+      color: var(--color-coolGray-500);
+      cursor: not-allowed;
+      border-color: var(--color-coolGray-200);
+    }
+
+    .form-label__radio-row {
+      display: flex;
+      gap: var(--spacing-md);
+      align-items: center;
+    }
+
+    .form-label__radio {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+    }
+
+    .form-label__radio input[type="radio"] {
+      accent-color: var(--color-muniBlue);
+    }
+
+    .form-label__radio-label {
+      font-size: var(--font-size-sm);
+    }
+
+    textarea.form-input {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    /* ========== Buttons ========== */
+    .button {
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--boxShadow-elevated);
+      font-size: var(--font-size-base);
+      font-weight: 500;
+      font-family: var(--font-family-body);
+      transition: all 0.2s ease-in-out;
+      width: fit-content;
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+    }
+
+    .button:hover {
+      transform: scale(1.02);
+    }
+
+    .button__primary {
+      color: var(--color-white);
+      background-color: var(--color-muniBlue);
+      border: 1px solid var(--color-muniBlue);
+    }
+
+    .button__secondary {
+      color: var(--color-coolGray-500);
+      border: 1px solid #F1F1F3;
+      background: #F1F1F3;
+    }
+
+    .button__secondary:hover {
+      color: var(--color-white);
+      background-color: var(--color-muniBlue);
+      border-color: var(--color-muniBlue);
+    }
+
+    .button__green {
+      color: var(--color-white);
+      border: 1px solid var(--color-green-100);
+      background: var(--color-green-100);
+    }
+
+    .button__red {
+      color: var(--color-white);
+      border: 1px solid var(--color-rose-600);
+      background: var(--color-rose-600);
+    }
+
+    .button__red--small {
+      font-size: var(--font-size-sm);
+      padding: var(--spacing-xs) var(--spacing-md);
+    }
+
+    /* ========== Button Containers ========== */
+    .button-container {
+      display: flex;
+      flex: 1;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      align-items: center;
+    }
+
+    .button-row-primary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      align-items: center;
+    }
+
+    .button-row-destructive {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: var(--spacing-sm);
+    }
+
+    /* ========== Before/After Labels ========== */
+    .comparison-label {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--color-coolGray-500);
+      margin-bottom: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .comparison-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-coolGray-200);
+    }
+
+    .comparison-label .tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .comparison-label .tag--before {
+      background: var(--color-rose-600);
+      color: white;
+    }
+
+    .comparison-label .tag--after {
+      background: var(--color-green-100);
+      color: white;
+    }
+
+    /* ========== About Panel ========== */
+    .about-panel {
+      border: 1px solid var(--color-coolGray-200);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      background: var(--color-coolGray-50);
+    }
+
+    .about-panel h4 {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-muniBlue);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .about-panel dt {
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+      color: var(--color-coolGray-700);
+    }
+
+    .about-panel dd {
+      font-size: var(--font-size-sm);
+      color: var(--color-coolGray-500);
+      margin: 4px 0 10px 10px;
+    }
+
+    /* ========== Modal Overlay ========== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      width: 500px;
+      max-width: 90vw;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .modal__header {
+      padding: 12px var(--spacing-md);
+      font-family: var(--font-family-heading);
+      font-weight: 600;
+      color: var(--color-white);
+    }
+
+    .modal__header--danger {
+      background: var(--color-rose-600);
+    }
+
+    .modal__header--warning {
+      background: var(--color-amber-100);
+      color: var(--color-coolGray-800);
+    }
+
+    .modal__body {
+      padding: var(--spacing-lg);
+      font-size: var(--font-size-sm);
+      line-height: 1.6;
+    }
+
+    .modal__body p {
+      margin-bottom: 10px;
+    }
+
+    .modal__body hr {
+      border: none;
+      border-top: 1px solid var(--color-coolGray-200);
+      margin: 12px 0;
+    }
+
+    .modal__body .confirm-input {
+      width: 100%;
+      padding: 8px 10px;
+      margin-top: 6px;
+      border: 2px solid var(--color-coolGray-300);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-base);
+      font-family: var(--font-family-body);
+      transition: border-color 0.2s;
+    }
+
+    .modal__body .confirm-input:focus {
+      outline: none;
+      border-color: var(--color-rose-600);
+    }
+
+    .modal__body .confirm-input.valid {
+      border-color: var(--color-green-100);
+    }
+
+    .modal__body .reminder {
+      background: #FFF7ED;
+      border-left: 3px solid var(--color-amber-100);
+      padding: 10px 12px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-top: 8px;
+    }
+
+    .modal__footer {
+      padding: 12px var(--spacing-md);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--spacing-sm);
+      border-top: 1px solid var(--color-coolGray-200);
+    }
+
+    .modal__footer .btn {
+      padding: 6px 16px;
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--color-coolGray-300);
+      background: var(--color-white);
+      font-family: var(--font-family-body);
+    }
+
+    .modal__footer .btn--danger {
+      background: var(--color-rose-600);
+      color: white;
+      border-color: var(--color-rose-600);
+    }
+
+    .modal__footer .btn--danger:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .modal__footer .btn--success {
+      background: var(--color-green-100);
+      color: white;
+      border-color: var(--color-green-100);
+    }
+
+    /* ========== Progress Simulation ========== */
+    .progress-area {
+      display: none;
+      margin-top: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: var(--color-coolGray-50);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-coolGray-200);
+    }
+
+    .progress-area.active {
+      display: block;
+    }
+
+    .progress-area h4 {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .progress-bar-container {
+      height: 8px;
+      background: var(--color-coolGray-200);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--color-muniBlue);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .progress-bar.complete {
+      background: var(--color-green-100);
+    }
+
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--color-muniBlue);
+      font-size: var(--font-size-sm);
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    .download-link:hover {
+      color: #14508a;
+    }
+
+    /* ========== Prompt Dialog ========== */
+    .prompt-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      background: var(--color-white);
+      border: 1px solid var(--color-coolGray-200);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      padding: var(--spacing-md);
+      z-index: 100;
+      width: 280px;
+    }
+
+    .prompt-popover.active {
+      display: block;
+    }
+
+    .prompt-popover h4 {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .prompt-popover label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 0;
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+    }
+
+    .prompt-popover .btn-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: var(--spacing-sm);
+    }
+
+    .prompt-popover .btn-row button {
+      padding: 4px 12px;
+      font-size: var(--font-size-xs);
+      background: var(--color-muniBlue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+
+    /* ========== Utility ========== */
+    .section-gap { margin-bottom: var(--spacing-xl); }
+    .relative { position: relative; }
+    .hidden { display: none !important; }
+
+    .annotation {
+      font-size: 11px;
+      color: var(--color-coolGray-500);
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    .change-highlight {
+      position: relative;
+    }
+
+    .change-highlight::before {
+      content: 'CHANGED';
+      position: absolute;
+      top: -8px;
+      right: -4px;
+      background: var(--color-green-100);
+      color: white;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .new-highlight {
+      position: relative;
+    }
+
+    .new-highlight::before {
+      content: 'NEW';
+      position: absolute;
+      top: -8px;
+      right: -4px;
+      background: var(--color-muniBlue);
+      color: white;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== CONTROL PANEL ========== -->
+  <div class="control-panel">
+    <h1>REQ-576: Reconcile Payments UX Mockup</h1>
+    <p class="subtitle">Toggle options below to compare different UX approaches. Share this page with stakeholders for feedback.</p>
+
+    <div class="toggle-group">
+      <div class="toggle-section">
+        <h3>Report Type Selection</h3>
+        <label class="toggle-option">
+          <input type="radio" name="report_ui" value="dropdown" checked onchange="toggleReportUI()">
+          <span>Option A: Dropdown <span class="badge">Recommended</span></span>
+        </label>
+        <label class="toggle-option">
+          <input type="radio" name="report_ui" value="prompt" onchange="toggleReportUI()">
+          <span>Option B: Auto-prompt on user select</span>
+        </label>
+      </div>
+      <div class="toggle-section">
+        <h3>Report Output Format</h3>
+        <label class="toggle-option">
+          <input type="radio" name="report_output" value="separate" checked onchange="toggleReportOutput()">
+          <span>Option A: Two separate PDFs</span>
+        </label>
+        <label class="toggle-option">
+          <input type="radio" name="report_output" value="combined" onchange="toggleReportOutput()">
+          <span>Option B: One combined PDF</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== BEFORE STATE ========== -->
+  <div class="section-gap">
+    <div class="comparison-label">
+      <span class="tag tag--before">Current</span>
+      Before &mdash; buttons same row, delete prominent, radio buttons
+    </div>
+    <div class="screen-container">
+      <div class="screen-header">
+        <span class="breadcrumb">Dashboard &gt;</span> Reconcile Payments
+      </div>
+      <div class="screen-body">
+        <div class="main-panel">
+          <div class="tile">
+            <div class="tile__header">
+              <p class="tile__title">Reconcile Payment Information</p>
+            </div>
+            <div class="tile__body">
+              <div class="form-label__input">
+                <span class="form-label__label">Received By:</span>
+                <select class="form-input" disabled>
+                  <option>Jane Smith - jane@example.com</option>
+                </select>
+              </div>
+              <div class="form-label__input">
+                <span class="form-label__label">As Of Date:</span>
+                <input type="text" class="form-input" value="02/18/2026" readonly style="width: 160px;">
+              </div>
+              <div style="display: flex; justify-content: space-between; width: 100%; max-width: 348px; align-items: center;">
+                <p class="form-label__label">Report Type:</p>
+                <div style="display: flex; gap: 16px;">
+                  <label class="form-label__radio">
+                    <input type="radio" name="before_report" checked disabled>
+                    <span class="form-label__radio-label">Summary</span>
+                  </label>
+                  <label class="form-label__radio">
+                    <input type="radio" name="before_report" disabled>
+                    <span class="form-label__radio-label">Detail</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- BEFORE: All three buttons in one row -->
+          <div class="button-container">
+            <button class="button button__primary" disabled>Get Report</button>
+            <button class="button button__secondary" disabled>Post Receipts</button>
+            <button class="button button__red" disabled>Delete Unposted Payments</button>
+          </div>
+          <p class="annotation">All three buttons same row, same size. Delete (red) is most visually prominent.</p>
+        </div>
+        <div class="side-panel">
+          <div class="about-panel">
+            <h4>About Reconcile Payments</h4>
+            <dl>
+              <dt>Get Report</dt>
+              <dd>Shows unposted payments as of a given date.</dd>
+              <dt>Post Receipts</dt>
+              <dd>Posts all payments — cannot be undone.</dd>
+              <dt>Delete Unposted Payments</dt>
+              <dd>Permanently removes unposted payments.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== AFTER STATE ========== -->
+  <div class="section-gap">
+    <div class="comparison-label">
+      <span class="tag tag--after">Proposed</span>
+      After &mdash; workflow-guided layout, enhanced confirmations
+    </div>
+    <div class="screen-container">
+      <div class="screen-header">
+        <span class="breadcrumb">Dashboard &gt;</span> Reconcile Payments
+      </div>
+      <div class="screen-body">
+        <div class="main-panel">
+          <div class="tile">
+            <div class="tile__header">
+              <p class="tile__title">Reconcile Payment Information</p>
+            </div>
+            <div class="tile__body">
+              <div class="form-label__input relative">
+                <span class="form-label__label">Received By:</span>
+                <select class="form-input" id="received-by-select" onchange="handleReceivedByChange()">
+                  <option value="">All (excludes Online)</option>
+                  <option value="jane" data-current-user="true">Jane Smith - jane@example.com (you)</option>
+                  <option value="mike">Mike Johnson - mike@example.com</option>
+                  <option value="online">Online Payments</option>
+                  <option value="lockbox">Lockbox</option>
+                </select>
+                <!-- Prompt popover for Option B -->
+                <div class="prompt-popover" id="report-prompt">
+                  <h4>Report Preference</h4>
+                  <label>
+                    <input type="radio" name="prompt_report" value="summary" checked>
+                    Summary Only
+                  </label>
+                  <label>
+                    <input type="radio" name="prompt_report" value="both">
+                    Summary &amp; Detail
+                  </label>
+                  <div class="btn-row">
+                    <button onclick="closePrompt()">OK</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-label__input">
+                <span class="form-label__label">As Of Date:</span>
+                <input type="text" class="form-input" value="02/18/2026" readonly style="width: 160px;">
+              </div>
+
+              <!-- Report Type: Option A (Dropdown) -->
+              <div class="form-label__input change-highlight" id="report-type-dropdown">
+                <span class="form-label__label">Report Type:</span>
+                <select class="form-input" id="report-type-select" style="width: 200px;">
+                  <option value="summary">Summary Only</option>
+                  <option value="detail">Detail Only</option>
+                  <option value="both">Summary &amp; Detail</option>
+                </select>
+                <p class="annotation" id="report-type-forced-note" style="display: none; color: var(--color-muniBlue); font-style: normal; font-weight: 500;">
+                  &#x2139; Summary &amp; Detail is required when reconciling another user's payments.
+                </p>
+              </div>
+
+              <!-- Report Type: Option B (radios, hidden by default) -->
+              <div class="hidden" id="report-type-radios">
+                <div style="display: flex; justify-content: space-between; width: 100%; max-width: 348px; align-items: center;">
+                  <p class="form-label__label">Report Type:</p>
+                  <div style="display: flex; gap: 16px;">
+                    <label class="form-label__radio">
+                      <input type="radio" name="after_report" value="summary" checked>
+                      <span class="form-label__radio-label">Summary</span>
+                    </label>
+                    <label class="form-label__radio">
+                      <input type="radio" name="after_report" value="detail">
+                      <span class="form-label__radio-label">Detail</span>
+                    </label>
+                  </div>
+                </div>
+                <p class="annotation" id="prompt-choice-display" style="color: var(--color-green-100); font-style: normal; font-weight: 500;">
+                  Report preference set via prompt: Summary &amp; Detail
+                </p>
+              </div>
+
+              <div class="form-label__input">
+                <span class="form-label__label">Batch:</span>
+                <select class="form-input">
+                  <option value="">Unposted Payments</option>
+                  <option value="698909">2026-02-11 #1 | 698909 | Night Drop 2-11-26</option>
+                  <option value="698903">2026-02-11 #2 | 698903</option>
+                  <option value="698910">2026-02-11 #1 | 698910 | online</option>
+                  <option value="696492">2026-02-23 #1 | 696492 | CR225660 01-23-26</option>
+                  <option value="698482">2026-02-10 #1 | 698482</option>
+                  <option value="558723">2026-02-08 #2 | R#540209811 | 558723 | UB CC remote Paym...</option>
+                  <option value="557835">2026-02-06 #1 | R#538321394 | 557835 | CC_UB.2.5.26 Pymts</option>
+                  <option value="698902">2026-02-05 #1 | 698902</option>
+                </select>
+              </div>
+              <div class="form-label__input">
+                <span class="form-label__label">Add Note to Batch:</span>
+                <textarea class="form-input" rows="2" placeholder="Optional note..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- AFTER: Two-row button layout -->
+          <div>
+            <div class="button-row-primary">
+              <button class="button button__primary" onclick="simulateGetReport()">Get Report</button>
+              <span class="change-highlight">
+                <button class="button button__green" onclick="simulatePostReceipts()">Post Receipts</button>
+              </span>
+            </div>
+            <div class="button-row-destructive">
+              <span class="change-highlight">
+                <button class="button button__red button__red--small" onclick="simulateDelete()">Delete Unposted Payments</button>
+              </span>
+            </div>
+          </div>
+          <p class="annotation">Workflow flows left to right: Get Report &rarr; Post Receipts. Delete isolated below-right, smaller.</p>
+
+          <!-- Progress area for report generation -->
+          <div class="progress-area" id="progress-area">
+            <h4 id="progress-title">Generating reports...</h4>
+            <div id="progress-summary" style="margin-bottom: 8px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 2px;">
+                <span>Summary Report</span>
+                <span id="progress-summary-pct">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar-summary"></div>
+              </div>
+            </div>
+            <div id="progress-detail" style="margin-bottom: 8px; display: none;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 2px;">
+                <span>Detail Report</span>
+                <span id="progress-detail-pct">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar-detail"></div>
+              </div>
+            </div>
+            <div id="download-links" style="display: none;">
+              <span class="download-link" id="download-summary">&#128196; Download Summary Report (PDF)</span>
+              <br>
+              <span class="download-link" id="download-detail" style="display: none;">&#128196; Download Detail Report (PDF)</span>
+              <span class="download-link" id="download-combined" style="display: none;">&#128196; Download Combined Report (PDF)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-panel">
+          <div class="about-panel">
+            <h4>About Reconcile Payments</h4>
+            <dl>
+              <dt>Get Report</dt>
+              <dd>Shows unposted payments as of a given date. Use "Summary &amp; Detail" to generate both in one step.</dd>
+              <dt>Post Receipts</dt>
+              <dd>Posts all payments &mdash; cannot be undone. Generate your report first!</dd>
+              <dt>Delete Unposted Payments</dt>
+              <dd>Permanently removes unposted payments. Requires typing DELETE to confirm.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== DELETE CONFIRMATION MODAL ========== -->
+  <div class="modal-overlay" id="modal-delete">
+    <div class="modal">
+      <div class="modal__header modal__header--danger">
+        Confirm Delete Unposted Payments
+      </div>
+      <div class="modal__body">
+        <p><strong>Warning:</strong> This action cannot be undone.</p>
+        <p>This will permanently delete <strong>47 payment(s)</strong> across <strong>23 account(s)</strong>.</p>
+        <p>All unposted payments entered by the selected user will be removed REGARDLESS of date.</p>
+        <hr>
+        <p>To confirm, type <strong>DELETE</strong> in the box below:</p>
+        <input type="text" class="confirm-input" id="delete-confirm-input" placeholder="Type DELETE to confirm" autocomplete="off" oninput="checkDeleteInput()">
+      </div>
+      <div class="modal__footer">
+        <button class="btn" onclick="closeModal('modal-delete')">Cancel</button>
+        <button class="btn btn--danger" id="delete-confirm-btn" disabled>Delete All Unposted Payments</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== POST RECEIPTS CONFIRMATION MODAL ========== -->
+  <div class="modal-overlay" id="modal-post">
+    <div class="modal">
+      <div class="modal__header modal__header--warning">
+        Confirm Post Receipts
+      </div>
+      <div class="modal__body">
+        <p><strong>47 payment(s)</strong> across <strong>23 account(s)</strong> will be posted and can no longer be changed or deleted.</p>
+        <div class="reminder">
+          <strong>Reminder:</strong> Please ensure you have generated and reviewed your PDF reconciliation report before posting. Once posted, payments cannot be modified.
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn" onclick="closeModal('modal-post')">Cancel</button>
+        <button class="btn btn--success" onclick="closeModal('modal-post')">Post Receipts</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FEATURE COMPARISON REFERENCE ========== -->
+  <div class="section-gap" style="max-width: 900px;">
+    <div class="comparison-label">
+      <span class="tag" style="background: var(--color-muniBlue); color: white;">Reference</span>
+      Feature Comparison &mdash; Current vs. Proposed
+    </div>
+
+    <div class="screen-container" style="padding: var(--spacing-lg);">
+      <h2 style="font-family: var(--font-family-heading); font-size: var(--font-size-xl); margin-bottom: var(--spacing-lg); color: var(--color-coolGray-800);">
+        Feature Comparison Reference
+      </h2>
+
+      <table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-sm);">
+        <thead>
+          <tr style="background: var(--color-coolGray-50); border-bottom: 2px solid var(--color-coolGray-200);">
+            <th style="text-align: left; padding: 10px 12px; font-weight: 600; color: var(--color-coolGray-700); width: 35%;">Feature</th>
+            <th style="text-align: center; padding: 10px 12px; font-weight: 600; color: var(--color-rose-600); width: 30%;">Current State</th>
+            <th style="text-align: center; padding: 10px 12px; font-weight: 600; color: var(--color-green-100); width: 35%;">Proposed (This Mockup)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Button Layout -->
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100);">
+            <td style="padding: 10px 12px; font-weight: 600;">Delete Button Placement</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; Same row as workflow buttons, left-aligned</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Separate row, right-aligned, below primary actions</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100); background: var(--color-coolGray-50);">
+            <td style="padding: 10px 12px; font-weight: 600;">Delete Button Size</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; Same size as all buttons (16px, full padding)</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Reduced size (14px, compact padding)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100);">
+            <td style="padding: 10px 12px; font-weight: 600;">Delete Button Color</td>
+            <td style="padding: 10px 12px; text-align: center;">&#x2713; Red (rose-600)</td>
+            <td style="padding: 10px 12px; text-align: center;">&#x2713; Red (rose-600) &mdash; unchanged per requirement</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100); background: var(--color-coolGray-50);">
+            <td style="padding: 10px 12px; font-weight: 600;">Delete Confirmation</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; Simple OK/Cancel dialog</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Payment count + type "DELETE" to confirm</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100);">
+            <td style="padding: 10px 12px; font-weight: 600;">Delete Visibility Info</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; No count &mdash; user doesn't know scope of deletion</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Shows "X payments across Y accounts"</td>
+          </tr>
+
+          <!-- Post Receipts -->
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100); background: var(--color-coolGray-50);">
+            <td style="padding: 10px 12px; font-weight: 600;">Post Receipts Styling</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; Gray/secondary &mdash; least prominent button</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; <strong>Green/primary</strong> &mdash; clearly the main action</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100);">
+            <td style="padding: 10px 12px; font-weight: 600;">Post Receipts Confirmation</td>
+            <td style="padding: 10px 12px; text-align: center;">&#x2713; Basic warning dialog</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; ENHANCED &mdash; payment count + PDF reminder</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100); background: var(--color-coolGray-50);">
+            <td style="padding: 10px 12px; font-weight: 600;">PDF Report Reminder</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; No reminder before posting</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; "Ensure you have generated your PDF report"</td>
+          </tr>
+
+          <!-- Report Type -->
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100);">
+            <td style="padding: 10px 12px; font-weight: 600;">Report Type Selection</td>
+            <td style="padding: 10px 12px; text-align: center;">&#x2713; Radio buttons (Summary / Detail)</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; ENHANCED &mdash; Dropdown with "Summary &amp; Detail" option</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100); background: var(--color-coolGray-50);">
+            <td style="padding: 10px 12px; font-weight: 600;">Both Reports at Once</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; Requires 2 separate runs (6 clicks)</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Single "Get Report" generates both (3 clicks)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100);">
+            <td style="padding: 10px 12px; font-weight: 600;">Non-Self Report Requirement</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; No enforcement &mdash; user can skip Detail</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Auto-forces "Summary &amp; Detail" for other users</td>
+          </tr>
+
+          <!-- Workflow & Safety -->
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100); background: var(--color-coolGray-50);">
+            <td style="padding: 10px 12px; font-weight: 600;">Visual Hierarchy</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; Inverted &mdash; destructive action most prominent</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Correct &mdash; workflow actions prominent, delete demoted</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100);">
+            <td style="padding: 10px 12px; font-weight: 600;">Workflow Guidance</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; No visual flow &mdash; buttons unordered</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Left-to-right: Get Report &rarr; Post Receipts</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-coolGray-100); background: var(--color-coolGray-50);">
+            <td style="padding: 10px 12px; font-weight: 600;">Permission Gating</td>
+            <td style="padding: 10px 12px; text-align: center;">&#x2713; Delete requires permission</td>
+            <td style="padding: 10px 12px; text-align: center;">&#x2713; Unchanged &mdash; same CanCan authorization</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 12px; font-weight: 600;">Lien Payments Screen</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-rose-600);">&#x2717; Old Bootstrap styling, no UI refresh</td>
+            <td style="padding: 10px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Migrated to new design system, same changes applied</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ========== IMPLEMENTATION NOTES ========== -->
+      <div style="margin-top: var(--spacing-xl); padding: var(--spacing-lg); background: var(--color-coolGray-50); border-radius: var(--radius-md); border: 1px solid var(--color-coolGray-200);">
+        <h3 style="font-family: var(--font-family-heading); font-size: var(--font-size-lg); margin-bottom: var(--spacing-md); color: var(--color-coolGray-800);">
+          Implementation Notes
+        </h3>
+        <ul style="list-style: disc; padding-left: 20px; font-size: var(--font-size-sm); line-height: 1.8; color: var(--color-coolGray-700);">
+          <li>
+            <strong>Button relocation uses existing CSS utilities</strong> &mdash; the new two-row layout uses <code>flex__row</code>, <code>flex__justify-end</code>, and <code>button__red--small</code> classes already defined in the PLAT-781 design system. No new CSS required.
+          </li>
+          <li>
+            <strong>Post Receipts promotion to green</strong> uses the pre-existing <code>button__green</code> class (<code style="color: var(--color-green-100);">#2CB475</code>). This class was already built for the design system but not used on this screen.
+          </li>
+          <li>
+            <strong>"Type DELETE" confirmation</strong> is built using the existing <code>BootstrapDialog</code> library's custom message and <code>getButton().disable()/enable()</code> API. No new dependencies needed.
+          </li>
+          <li>
+            <strong>Payment count display</strong> requires two new read-only AJAX endpoints (<code>GET /reconcile_payments/unposted_counts</code> and <code>unposted_post_counts</code>) that mirror the exact query logic from the existing <code>DeleteUnpostedPaymentsJob</code>. Counts are fetched fresh on each button click.
+          </li>
+          <li>
+            <strong>Report type dropdown</strong> replaces the current radio buttons. The controller's <code>print_reports</code> action already dispatches based on a <code>report_type</code> param. For "both", the JS submits two sequential AJAX requests &mdash; one for summary, one for detail &mdash; reusing the existing <code>PrintReconcilePaymentsSummaryJob</code> and <code>PrintReconcilePaymentsDetailJob</code> without modification. Each report gets its own <code>BillingJob</code> record and appears separately in reprints.
+          </li>
+          <li>
+            <strong>All changes apply to both screens</strong>: the main Reconcile Payments and the Reconcile Lien Payments screen. The lien screen additionally migrates from legacy Bootstrap classes (<code>btn-primary</code>, <code>btn-danger</code>) to the new design system.
+          </li>
+        </ul>
+      </div>
+
+      <!-- ========== BUSINESS RULES & DESIGN RATIONALE ========== -->
+      <div style="margin-top: var(--spacing-lg); padding: var(--spacing-lg); background: #F2F7FF; border-radius: var(--radius-md); border: 1px solid #D6E4FF;">
+        <h3 style="font-family: var(--font-family-heading); font-size: var(--font-size-lg); margin-bottom: var(--spacing-md); color: var(--color-muniBlue);">
+          Business Rules &amp; Design Rationale
+        </h3>
+        <dl style="font-size: var(--font-size-sm); line-height: 1.8; color: var(--color-coolGray-700);">
+          <dt style="font-weight: 600; margin-top: 12px; color: var(--color-coolGray-800);">Why force "Summary &amp; Detail" for non-self reconciliation?</dt>
+          <dd style="margin: 4px 0 12px 16px;">
+            When reconciling your own payments, you already have context &mdash; you know what you entered. A summary may be enough. But when reconciling someone else's payments (another cashier, a system source, or "All"), you're acting as a <strong>reviewer/auditor</strong>. The Detail report is required to verify individual transactions, not just trust the totals. This follows the same principle behind <strong>separation of duties</strong> in accounting &mdash; the person reviewing should have more information than the person who entered.
+          </dd>
+
+          <dt style="font-weight: 600; margin-top: 12px; color: var(--color-coolGray-800);">Why move the Delete button to a separate lower row?</dt>
+          <dd style="margin: 4px 0 12px 16px;">
+            This creates <strong>three levels of cognitive separation</strong> between daily workflow buttons and the destructive action: (1) different visual group/row, (2) right-aligned vs. left-aligned, (3) smaller size. <strong>Fitts's Law</strong> tells us that targets further from the cursor's resting position are harder to hit accidentally. The lower-right corner is the maximum distance from "Get Report" on the upper-left. One confirmed accidental deletion has already occurred with the current layout.
+          </dd>
+
+          <dt style="font-weight: 600; margin-top: 12px; color: var(--color-coolGray-800);">Why "type DELETE" instead of just OK/Cancel?</dt>
+          <dd style="margin: 4px 0 12px 16px;">
+            This is a <strong>"friction pattern"</strong> &mdash; intentionally adding a small barrier before irreversible actions. GitHub uses it for repository deletion, AWS for resource termination. The key is that it doesn't block power users who know what they're doing, but it <strong>completely eliminates accidental clicks</strong>. Combined with showing the actual count of affected payments and accounts, users make an informed decision rather than blindly confirming. The current dialog says "ALL unposted payments" but never tells you <em>how many</em>.
+          </dd>
+
+          <dt style="font-weight: 600; margin-top: 12px; color: var(--color-coolGray-800);">Why promote Post Receipts to green?</dt>
+          <dd style="margin: 4px 0 12px 16px;">
+            Post Receipts is the <strong>primary daily action</strong> &mdash; the culmination of the reconciliation workflow. Yet it was styled as gray/secondary, making it the least visible button on the screen while the rarely-used Delete was the most visible (red). Green signals "go" / "positive action" and correctly positions Post Receipts as the <strong>intended next step</strong> after reviewing the report. The visual flow now reads: Get Report (blue, "do this first") &rarr; Post Receipts (green, "then do this").
+          </dd>
+
+          <dt style="font-weight: 600; margin-top: 12px; color: var(--color-coolGray-800);">Why remind about PDF generation before posting?</dt>
+          <dd style="margin: 4px 0 12px 16px;">
+            Once payments are posted, they can no longer be changed or deleted. The reconciliation report serves as the <strong>pre-posting audit trail</strong>. If a user posts without generating the report first, they lose the ability to verify the batch contents against their physical records. The reminder in the confirmation dialog catches this before it's too late.
+          </dd>
+
+          <dt style="font-weight: 600; margin-top: 12px; color: var(--color-coolGray-800);">Why "Summary &amp; Detail" in one click?</dt>
+          <dd style="margin: 4px 0 12px 16px;">
+            The current workflow requires <strong>6 interactions</strong> to get both reports (select Summary &rarr; Get Report &rarr; wait &rarr; select Detail &rarr; Get Report &rarr; wait). The new dropdown reduces this to <strong>3 interactions</strong> (select "Summary &amp; Detail" &rarr; Get Report &rarr; wait once). Both PDFs are stored as separate entries in the reprints list for individual access later. No existing job code needs modification &mdash; we simply trigger both from the client side.
+          </dd>
+        </dl>
+      </div>
+
+      <!-- ========== SCOPE & TICKET INFO ========== -->
+      <div style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--color-white); border-radius: var(--radius-md); border: 1px solid var(--color-coolGray-200); display: flex; gap: var(--spacing-xl); font-size: var(--font-size-sm);">
+        <div>
+          <strong style="color: var(--color-coolGray-500); font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 1px;">Ticket</strong><br>
+          <span style="color: var(--color-muniBlue); font-weight: 600;">REQ-576</span>
+        </div>
+        <div>
+          <strong style="color: var(--color-coolGray-500); font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 1px;">Branch</strong><br>
+          <code style="font-size: var(--font-size-xs); background: var(--color-coolGray-100); padding: 2px 6px; border-radius: 3px;">delete_unposted_payments</code>
+        </div>
+        <div>
+          <strong style="color: var(--color-coolGray-500); font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 1px;">Screens Affected</strong><br>
+          <span>Reconcile Payments, Reconcile Lien Payments</span>
+        </div>
+        <div>
+          <strong style="color: var(--color-coolGray-500); font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 1px;">Files Modified</strong><br>
+          <span>5 files, 0 new</span>
+        </div>
+      </div>
+
+      <!-- ========== EXISTING SAFETY MECHANISMS ========== -->
+      <div style="margin-top: var(--spacing-lg); padding: var(--spacing-lg); background: var(--color-coolGray-50); border-radius: var(--radius-md); border: 1px solid var(--color-coolGray-200);">
+        <h3 style="font-family: var(--font-family-heading); font-size: var(--font-size-lg); margin-bottom: var(--spacing-md); color: var(--color-coolGray-800);">
+          Existing Safety Mechanisms (Retained)
+        </h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-sm);">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--color-coolGray-200);">
+              <th style="text-align: left; padding: 8px 12px; color: var(--color-coolGray-700);">Mechanism</th>
+              <th style="text-align: left; padding: 8px 12px; color: var(--color-coolGray-700);">How It Works</th>
+              <th style="text-align: center; padding: 8px 12px; color: var(--color-coolGray-700);">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--color-coolGray-100);">
+              <td style="padding: 8px 12px; font-weight: 500;">Permission Gate</td>
+              <td style="padding: 8px 12px;">CanCan <code>:delete_unposted_payments</code> &mdash; button only renders for authorized users</td>
+              <td style="padding: 8px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Retained</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--color-coolGray-100); background: var(--color-coolGray-50);">
+              <td style="padding: 8px 12px; font-weight: 500;">Server-Side Auth</td>
+              <td style="padding: 8px 12px;">Controller raises <code>authorization_error!</code> if permission check fails</td>
+              <td style="padding: 8px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Retained</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--color-coolGray-100);">
+              <td style="padding: 8px 12px; font-weight: 500;">Background Job</td>
+              <td style="padding: 8px 12px;">Deletion runs via <code>DeleteUnpostedPaymentsJob</code> &mdash; async, auditable via BillingJob records</td>
+              <td style="padding: 8px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Retained</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 12px; font-weight: 500;">User Scoping</td>
+              <td style="padding: 8px 12px;">Deletion is filtered by selected "Received By" user &mdash; not all users' payments at once (unless "All" selected)</td>
+              <td style="padding: 8px 12px; text-align: center; color: var(--color-green-100);">&#x2713; Retained</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ========== Toggle Functions ==========
+    function toggleReportUI() {
+      var mode = document.querySelector('input[name="report_ui"]:checked').value;
+      if (mode === 'dropdown') {
+        document.getElementById('report-type-dropdown').classList.remove('hidden');
+        document.getElementById('report-type-radios').classList.add('hidden');
+      } else {
+        document.getElementById('report-type-dropdown').classList.add('hidden');
+        document.getElementById('report-type-radios').classList.remove('hidden');
+      }
+      // Re-apply non-user forcing when switching modes
+      handleReceivedByChange();
+    }
+
+    function toggleReportOutput() {
+      // This affects what shows in the download links area
+    }
+
+    // ========== Report type forcing logic ==========
+    // Rule: If Received By != current user, require both Summary & Detail.
+    // Only when reconciling your own payments can you choose Summary Only.
+    function isCurrentUser(selectEl) {
+      var selected = selectEl.options[selectEl.selectedIndex];
+      return selected && selected.getAttribute('data-current-user') === 'true';
+    }
+
+    function requiresBothReports(selectEl) {
+      // Empty = "All (excludes Online)" — not current user, requires both
+      // Any option without data-current-user="true" — requires both
+      return !isCurrentUser(selectEl);
+    }
+
+    // ========== Received By Change ==========
+    function handleReceivedByChange() {
+      var mode = document.querySelector('input[name="report_ui"]:checked').value;
+      var select = document.getElementById('received-by-select');
+      var dropdown = document.getElementById('report-type-select');
+      var forcedNote = document.getElementById('report-type-forced-note');
+      var promptDisplay = document.getElementById('prompt-choice-display');
+
+      if (requiresBothReports(select)) {
+        // Force "Summary & Detail" for any non-current-user selection
+        dropdown.value = 'both';
+        dropdown.disabled = true;
+        forcedNote.style.display = 'block';
+
+        // Also set the prompt radio for Option B
+        var promptBoth = document.querySelector('input[name="prompt_report"][value="both"]');
+        if (promptBoth) promptBoth.checked = true;
+        if (promptDisplay) {
+          var label = select.value === '' ? 'All users' : select.options[select.selectedIndex].text;
+          promptDisplay.textContent = 'Summary & Detail required when reconciling: ' + label;
+          promptDisplay.style.color = 'var(--color-muniBlue)';
+        }
+        // Don't show the prompt popup — auto-set
+      } else {
+        // Current user — restore dropdown choice and optionally show prompt
+        dropdown.disabled = false;
+        forcedNote.style.display = 'none';
+
+        if (mode === 'prompt') {
+          document.getElementById('report-prompt').classList.add('active');
+        }
+      }
+    }
+
+    function closePrompt() {
+      document.getElementById('report-prompt').classList.remove('active');
+      var choice = document.querySelector('input[name="prompt_report"]:checked').value;
+      var display = document.getElementById('prompt-choice-display');
+      display.textContent = 'Report preference set via prompt: ' +
+        (choice === 'both' ? 'Summary & Detail' : 'Summary Only');
+      display.style.color = 'var(--color-green-100)';
+    }
+
+    // ========== Simulate Get Report ==========
+    function simulateGetReport() {
+      var mode = document.querySelector('input[name="report_ui"]:checked').value;
+      var selectEl = document.getElementById('received-by-select');
+      var reportType;
+      if (requiresBothReports(selectEl)) {
+        reportType = 'both';
+      } else if (mode === 'dropdown') {
+        reportType = document.getElementById('report-type-select').value;
+      } else {
+        reportType = document.querySelector('input[name="prompt_report"]:checked').value;
+      }
+
+      var outputMode = document.querySelector('input[name="report_output"]:checked').value;
+      var isBoth = (reportType === 'both');
+
+      var area = document.getElementById('progress-area');
+      area.classList.add('active');
+
+      // Reset
+      document.getElementById('download-links').style.display = 'none';
+      document.getElementById('progress-bar-summary').style.width = '0%';
+      document.getElementById('progress-bar-summary').classList.remove('complete');
+      document.getElementById('progress-summary-pct').textContent = '0%';
+      document.getElementById('progress-bar-detail').style.width = '0%';
+      document.getElementById('progress-bar-detail').classList.remove('complete');
+      document.getElementById('progress-detail-pct').textContent = '0%';
+
+      if (isBoth && outputMode === 'separate') {
+        document.getElementById('progress-title').textContent = 'Generating Summary & Detail reports...';
+        document.getElementById('progress-detail').style.display = 'block';
+      } else if (isBoth && outputMode === 'combined') {
+        document.getElementById('progress-title').textContent = 'Generating combined report...';
+        document.getElementById('progress-detail').style.display = 'none';
+        document.getElementById('progress-summary').querySelector('span').textContent = 'Combined Report';
+      } else {
+        var label = reportType === 'detail' ? 'Detail' : 'Summary';
+        document.getElementById('progress-title').textContent = 'Generating ' + label + ' report...';
+        document.getElementById('progress-detail').style.display = 'none';
+        document.getElementById('progress-summary').querySelector('span').textContent = label + ' Report';
+      }
+
+      // Animate summary bar
+      animateProgress('progress-bar-summary', 'progress-summary-pct', 1500, function () {
+        if (isBoth && outputMode === 'separate') {
+          // Animate detail bar
+          animateProgress('progress-bar-detail', 'progress-detail-pct', 1200, function () {
+            showDownloadLinks(reportType, outputMode);
+          });
+        } else {
+          showDownloadLinks(reportType, outputMode);
+        }
+      });
+    }
+
+    function animateProgress(barId, pctId, duration, callback) {
+      var bar = document.getElementById(barId);
+      var pct = document.getElementById(pctId);
+      var start = Date.now();
+
+      function update() {
+        var elapsed = Date.now() - start;
+        var progress = Math.min(elapsed / duration, 1);
+        bar.style.width = Math.round(progress * 100) + '%';
+        pct.textContent = Math.round(progress * 100) + '%';
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          bar.classList.add('complete');
+          if (callback) callback();
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    function showDownloadLinks(reportType, outputMode) {
+      var links = document.getElementById('download-links');
+      links.style.display = 'block';
+
+      var summaryLink = document.getElementById('download-summary');
+      var detailLink = document.getElementById('download-detail');
+      var combinedLink = document.getElementById('download-combined');
+
+      if (reportType === 'both' && outputMode === 'separate') {
+        summaryLink.style.display = 'inline-flex';
+        summaryLink.textContent = '\uD83D\uDCC4 Download Summary Report (PDF)';
+        detailLink.style.display = 'inline-flex';
+        combinedLink.style.display = 'none';
+      } else if (reportType === 'both' && outputMode === 'combined') {
+        summaryLink.style.display = 'none';
+        detailLink.style.display = 'none';
+        combinedLink.style.display = 'inline-flex';
+      } else {
+        var label = reportType === 'detail' ? 'Detail' : 'Summary';
+        summaryLink.style.display = 'inline-flex';
+        summaryLink.textContent = '\uD83D\uDCC4 Download ' + label + ' Report (PDF)';
+        detailLink.style.display = 'none';
+        combinedLink.style.display = 'none';
+      }
+    }
+
+    // ========== Simulate Delete ==========
+    function simulateDelete() {
+      document.getElementById('modal-delete').classList.add('active');
+      document.getElementById('delete-confirm-input').value = '';
+      document.getElementById('delete-confirm-btn').disabled = true;
+      document.getElementById('delete-confirm-input').classList.remove('valid');
+      setTimeout(function () {
+        document.getElementById('delete-confirm-input').focus();
+      }, 100);
+    }
+
+    function checkDeleteInput() {
+      var input = document.getElementById('delete-confirm-input');
+      var btn = document.getElementById('delete-confirm-btn');
+      var isMatch = input.value.trim().toUpperCase() === 'DELETE';
+      btn.disabled = !isMatch;
+      if (isMatch) {
+        input.classList.add('valid');
+      } else {
+        input.classList.remove('valid');
+      }
+    }
+
+    // ========== Simulate Post Receipts ==========
+    function simulatePostReceipts() {
+      document.getElementById('modal-post').classList.add('active');
+    }
+
+    // ========== Close Modal ==========
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // Close modals on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(function (overlay) {
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+        }
+      });
+    });
+
+    // Close modals on Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(function (m) {
+          m.classList.remove('active');
+        });
+        document.getElementById('report-prompt').classList.remove('active');
+      }
+    });
+
+    // ========== Initialize on page load ==========
+    // Default "Received By" is "All (excludes Online)" which is not the current user,
+    // so report type should start forced to "both"
+    handleReceivedByChange();
+  </script>
+
+</body>
+</html>

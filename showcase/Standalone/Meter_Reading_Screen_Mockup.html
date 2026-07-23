@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meter Workflow: Reimagined UX Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== MetroBill Design Tokens ========== */
+    :root {
+      --color-black: #000000;
+      --color-white: #ffffff;
+      --color-muniBlue: #1e67a4;
+      --color-muniDarkGray: #464646;
+      --color-coolGray-50: #f9fafb;
+      --color-coolGray-100: #f3f4f6;
+      --color-coolGray-200: #e5e7eb;
+      --color-coolGray-300: #d1d5db;
+      --color-coolGray-500: #6b7280;
+      --color-coolGray-700: #374151;
+      --color-coolGray-800: #1f2937;
+      --color-rose-600: #e11d48;
+      --color-green-100: #2CB475;
+      --color-amber-100: #F4C542;
+      --color-teal-unbilled: #9FC5CE;
+      --font-family-heading: "Montserrat", sans-serif;
+      --font-family-body: "Roboto", sans-serif;
+      --font-size-xs: 12px;
+      --font-size-sm: 14px;
+      --font-size-base: 16px;
+      --font-size-lg: 18px;
+      --font-size-xl: 20px;
+      --font-size-2xl: 24px;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --boxShadow-elevated: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      --boxShadow-base: 0px 1px 2px rgba(31, 41, 55, 0.08);
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family-body);
+      font-size: var(--font-size-base);
+      color: var(--color-coolGray-800);
+      background: #f0f2f5;
+      padding: 20px;
+      padding-top: 70px;
+    }
+
+    /* ========== Sticky Workflow Nav ========== */
+    .workflow-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--color-coolGray-800);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .workflow-nav-title {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-sm);
+      color: var(--color-coolGray-300);
+      margin-right: var(--spacing-md);
+      white-space: nowrap;
+    }
+
+    .workflow-steps {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .workflow-step {
+      font-size: var(--font-size-xs);
+      padding: 4px 12px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.15s;
+      white-space: nowrap;
+      color: var(--color-coolGray-300);
+      background: transparent;
+      border: 1px solid var(--color-coolGray-700);
+    }
+
+    .workflow-step:hover {
+      background: var(--color-muniBlue);
+      color: white;
+      border-color: var(--color-muniBlue);
+    }
+
+    .workflow-arrow {
+      color: var(--color-coolGray-500);
+      font-size: 11px;
+    }
+
+    /* ========== Page Header ========== */
+    .page-header {
+      max-width: 1200px;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .page-header h1 {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-2xl);
+      color: var(--color-coolGray-800);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .page-header .subtitle {
+      font-size: var(--font-size-sm);
+      color: var(--color-coolGray-500);
+      line-height: 1.6;
+    }
+
+    /* ========== Section Labels ========== */
+    .comparison-label {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--color-coolGray-500);
+      margin-bottom: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .comparison-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-coolGray-200);
+    }
+
+    .comparison-label .tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .tag--screen { background: var(--color-muniBlue); }
+    .tag--ref { background: var(--color-coolGray-700); }
+
+    /* ========== Screen Container ========== */
+    .screen-container {
+      max-width: 1200px;
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--boxShadow-elevated);
+      overflow: hidden;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .screen-header {
+      background: var(--color-muniBlue);
+      color: var(--color-white);
+      padding: 12px var(--spacing-lg);
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .screen-header .breadcrumb {
+      font-size: var(--font-size-xs);
+      opacity: 0.7;
+    }
+
+    .screen-body {
+      padding: var(--spacing-lg);
+    }
+
+    .section-gap { margin-bottom: 48px; scroll-margin-top: 70px; }
+
+    .annotation {
+      font-size: 11px;
+      color: var(--color-coolGray-500);
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    /* ========== Customer Context Bar (top of every screen) ========== */
+    .customer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px var(--spacing-md);
+      background: var(--color-coolGray-50);
+      border: 1px solid var(--color-coolGray-200);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      font-size: var(--font-size-sm);
+    }
+
+    .customer-bar-group {
+      display: flex;
+      gap: var(--spacing-xl);
+    }
+
+    .customer-bar-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .customer-bar-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-coolGray-500);
+    }
+
+    .customer-bar-value {
+      font-weight: 500;
+      color: var(--color-coolGray-800);
+    }
+
+    .customer-bar-value--accent {
+      color: var(--color-muniBlue);
+      font-weight: 700;
+    }
+
+    /* ========== Tile Component ========== */
+    .tile {
+      border: 1px solid var(--color-coolGray-200);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .tile__header {
+      padding: 10px var(--spacing-md);
+      border-bottom: 1px solid var(--color-coolGray-200);
+      background: var(--color-coolGray-50);
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-coolGray-700);
+    }
+
+    .tile__body {
+      padding: var(--spacing-md);
+    }
+
+    /* ========== Meter Context Bar ========== */
+    .meter-context {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xl);
+      padding: 12px var(--spacing-md);
+      background: var(--color-coolGray-50);
+      border: 1px solid var(--color-coolGray-200);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .meter-context-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meter-context-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-coolGray-500);
+    }
+
+    .meter-context-value {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-coolGray-800);
+    }
+
+    /* ========== Meters Admin: Card Layout ========== */
+    .meters-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .meter-card {
+      border: 1px solid var(--color-coolGray-200);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .meter-card__header {
+      padding: 10px var(--spacing-md);
+      background: var(--color-coolGray-50);
+      border-bottom: 1px solid var(--color-coolGray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .meter-card__title {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-coolGray-700);
+    }
+
+    .meter-card__badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: #D1FAE5;
+      color: #065F46;
+    }
+
+    .meter-card__body {
+      padding: var(--spacing-md);
+    }
+
+    .meter-card__row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: var(--font-size-sm);
+      border-bottom: 1px solid var(--color-coolGray-100);
+    }
+
+    .meter-card__row:last-child { border-bottom: none; }
+
+    .meter-card__label {
+      color: var(--color-coolGray-500);
+      font-weight: 500;
+    }
+
+    .meter-card__val {
+      color: var(--color-coolGray-800);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .meter-card__actions {
+      padding: 10px var(--spacing-md);
+      border-top: 1px solid var(--color-coolGray-200);
+      display: flex;
+      gap: var(--spacing-sm);
+      background: var(--color-coolGray-50);
+    }
+
+    .unbilled-card {
+      border: 2px solid var(--color-teal-unbilled);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      background: linear-gradient(135deg, #f0fafb, #ffffff);
+    }
+
+    .unbilled-card__header {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: #155E75;
+      margin-bottom: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .unbilled-card__metric {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--color-muniBlue);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .unbilled-card__detail {
+      font-size: var(--font-size-sm);
+      color: var(--color-coolGray-500);
+      margin-top: 2px;
+    }
+
+    /* ========== Buttons ========== */
+    .btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      font-family: var(--font-family-body);
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+      transition: all 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn--primary { background: var(--color-muniBlue); color: white; }
+    .btn--primary:hover { background: #14508a; }
+    .btn--green { background: var(--color-green-100); color: white; }
+    .btn--green:hover { background: #239961; }
+    .btn--secondary { background: var(--color-coolGray-100); color: var(--color-coolGray-700); border: 1px solid var(--color-coolGray-200); }
+    .btn--secondary:hover { background: var(--color-coolGray-200); }
+    .btn--danger { background: var(--color-rose-600); color: white; }
+    .btn--danger:hover { background: #be123c; }
+    .btn--ghost { background: transparent; color: var(--color-muniBlue); padding: 6px 8px; }
+    .btn--ghost:hover { background: var(--color-coolGray-100); }
+    .btn--sm { font-size: var(--font-size-xs); padding: 4px 10px; }
+
+    /* ========== Form Components ========== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md) var(--spacing-xl);
+    }
+
+    .form-grid--single { grid-template-columns: 1fr; }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-field--full { grid-column: 1 / -1; }
+
+    .form-label {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-coolGray-700);
+    }
+
+    .form-input {
+      padding: 8px 12px;
+      border: 1px solid var(--color-coolGray-300);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-base);
+      font-family: var(--font-family-body);
+      color: var(--color-coolGray-800);
+      background: var(--color-white);
+      width: 100%;
+    }
+
+    .form-input:focus {
+      outline: 2px solid var(--color-muniBlue);
+      outline-offset: -1px;
+    }
+
+    .form-input--readonly {
+      background: var(--color-coolGray-50);
+      border-color: var(--color-coolGray-200);
+      color: var(--color-coolGray-500);
+    }
+
+    textarea.form-input {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .form-hint {
+      font-size: 11px;
+      color: var(--color-coolGray-500);
+    }
+
+    .form-checkbox-row {
+      display: flex;
+      gap: var(--spacing-lg);
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .form-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+    }
+
+    .form-checkbox input {
+      accent-color: var(--color-muniBlue);
+      width: 16px;
+      height: 16px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-lg);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid var(--color-coolGray-200);
+    }
+
+    /* ========== Reading Reference (shown in form screens) ========== */
+    .reading-ref {
+      display: flex;
+      gap: var(--spacing-xl);
+      padding: 12px var(--spacing-md);
+      background: #F0F7FF;
+      border: 1px solid #D6E4FF;
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .reading-ref-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .reading-ref-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-muniBlue);
+    }
+
+    .reading-ref-value {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      color: var(--color-coolGray-800);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ========== Live Calc Display ========== */
+    .live-calc {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: 12px var(--spacing-md);
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      border-radius: var(--radius-md);
+      margin-top: var(--spacing-md);
+    }
+
+    .live-calc-label {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: #065F46;
+    }
+
+    .live-calc-value {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--color-muniBlue);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ========== Warning Banner ========== */
+    .warning-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      padding: 12px var(--spacing-md);
+      background: #FEF3C7;
+      border: 1px solid #FDE68A;
+      border-left: 4px solid var(--color-amber-100);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      margin-bottom: var(--spacing-lg);
+      font-size: var(--font-size-sm);
+      color: #92400E;
+      line-height: 1.5;
+    }
+
+    .danger-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      padding: 12px var(--spacing-md);
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      border-left: 4px solid var(--color-rose-600);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      margin-bottom: var(--spacing-lg);
+      font-size: var(--font-size-sm);
+      color: #991B1B;
+      line-height: 1.5;
+    }
+
+    /* ========== Modal ========== */
+    .modal-demo {
+      border: 2px dashed var(--color-coolGray-300);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      background: rgba(0,0,0,0.03);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .modal-box {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .modal-box__header {
+      padding: 12px var(--spacing-md);
+      font-family: var(--font-family-heading);
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+    }
+
+    .modal-box__header--danger {
+      background: var(--color-rose-600);
+      color: white;
+    }
+
+    .modal-box__body {
+      padding: var(--spacing-lg);
+      font-size: var(--font-size-sm);
+      line-height: 1.6;
+    }
+
+    .modal-box__footer {
+      padding: 12px var(--spacing-md);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--spacing-sm);
+      border-top: 1px solid var(--color-coolGray-200);
+    }
+
+    .modal-reading-detail {
+      background: var(--color-coolGray-50);
+      border: 1px solid var(--color-coolGray-200);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin: 10px 0;
+      font-size: 13px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px var(--spacing-lg);
+    }
+
+    .modal-reading-detail dt { color: var(--color-coolGray-500); font-weight: 500; }
+    .modal-reading-detail dd { color: var(--color-coolGray-800); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    /* ========== Reading Row (from previous version) ========== */
+    .readings-list { display: flex; flex-direction: column; gap: 2px; }
+
+    .reading-row {
+      display: grid;
+      grid-template-columns: 1fr 200px 80px;
+      gap: 0;
+      border: 1px solid var(--color-coolGray-200);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: box-shadow 0.15s ease;
+    }
+
+    .reading-row:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .reading-row.unbilled { border-left: 4px solid var(--color-teal-unbilled); }
+
+    .reading-primary {
+      display: grid;
+      grid-template-columns: 140px 140px 40px 120px 1fr;
+      align-items: center;
+      padding: 10px var(--spacing-md);
+      gap: var(--spacing-md);
+    }
+
+    .reading-pair { display: flex; flex-direction: column; }
+    .reading-val { font-size: var(--font-size-base); font-weight: 600; color: var(--color-coolGray-800); font-variant-numeric: tabular-nums; }
+    .reading-date { font-size: 11px; color: var(--color-coolGray-500); }
+    .reading-arrow { display: flex; align-items: center; justify-content: center; color: var(--color-coolGray-300); font-size: var(--font-size-lg); }
+    .usage-block { display: flex; flex-direction: column; align-items: flex-end; }
+    .usage-val { font-size: var(--font-size-lg); font-weight: 700; color: var(--color-muniBlue); font-variant-numeric: tabular-nums; }
+    .usage-days { font-size: 11px; color: var(--color-coolGray-500); }
+    .reading-meta { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; min-width: 0; }
+
+    .badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.3px; }
+    .badge--estimated { background: #FEF3C7; color: #92400E; }
+    .badge--highflow { background: #FEE2E2; color: #991B1B; }
+    .badge--billing { background: #D1FAE5; color: #065F46; }
+    .badge--unbilled { background: #CFFAFE; color: #155E75; }
+    .badge--code { background: var(--color-coolGray-100); color: var(--color-coolGray-700); }
+
+    .reading-secondary {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 10px var(--spacing-md);
+      background: var(--color-coolGray-50);
+      border-left: 1px solid var(--color-coolGray-200);
+      min-width: 0;
+    }
+
+    .secondary-entered { font-size: 12px; color: var(--color-coolGray-500); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .secondary-note {
+      font-size: 12px; color: var(--color-coolGray-700); margin-top: 2px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: default;
+    }
+
+    .secondary-note:hover {
+      white-space: normal; overflow: visible;
+      background: #FFFBEB; padding: 2px 4px; margin: 0 -4px;
+      border-radius: var(--radius-sm); position: relative; z-index: 10;
+    }
+
+    .reading-actions {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 4px; padding: 6px;
+      border-left: 1px solid var(--color-coolGray-200);
+    }
+
+    .action-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 28px; border-radius: var(--radius-sm);
+      border: none; cursor: pointer; font-size: 13px; transition: all 0.15s;
+    }
+
+    .action-btn--edit { background: var(--color-muniBlue); color: white; }
+    .action-btn--edit:hover { background: #14508a; }
+    .action-btn--history { background: var(--color-coolGray-100); color: var(--color-coolGray-700); }
+    .action-btn--history:hover { background: var(--color-coolGray-200); }
+    .action-btn--delete { background: transparent; color: var(--color-coolGray-300); font-size: 12px; }
+    .action-btn--delete:hover { background: #FEE2E2; color: var(--color-rose-600); }
+
+    .readings-header { display: grid; grid-template-columns: 1fr 200px 80px; padding: 0 0 6px 0; margin-bottom: 4px; }
+    .readings-header-primary { display: grid; grid-template-columns: 140px 140px 40px 120px 1fr; gap: var(--spacing-md); padding: 0 var(--spacing-md); }
+    .readings-header-secondary { padding: 0 var(--spacing-md); }
+
+    .col-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-coolGray-500); }
+    .col-label--right { text-align: right; }
+
+    .legend { display: flex; gap: var(--spacing-lg); padding: var(--spacing-sm) var(--spacing-md); margin-top: var(--spacing-md); font-size: 12px; color: var(--color-coolGray-500); flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--color-coolGray-200); }
+
+    .pagination-bar { display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) 0; margin-top: var(--spacing-md); font-size: var(--font-size-sm); color: var(--color-coolGray-500); }
+    .pagination-links { display: flex; gap: 4px; }
+    .pagination-links a, .pagination-links span { padding: 4px 10px; border: 1px solid var(--color-coolGray-200); border-radius: var(--radius-sm); font-size: 13px; text-decoration: none; color: var(--color-coolGray-700); }
+    .pagination-links span.current { background: var(--color-muniBlue); color: white; border-color: var(--color-muniBlue); }
+
+    /* ========== Reference Sections ========== */
+    .ref-container { max-width: 1200px; background: var(--color-white); border-radius: var(--radius-lg); box-shadow: var(--boxShadow-elevated); padding: var(--spacing-lg); margin-bottom: var(--spacing-xl); }
+    .ref-container h2 { font-family: var(--font-family-heading); font-size: var(--font-size-xl); margin-bottom: var(--spacing-lg); color: var(--color-coolGray-800); }
+
+    .ref-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+    .ref-table thead tr { background: var(--color-coolGray-50); border-bottom: 2px solid var(--color-coolGray-200); }
+    .ref-table th { text-align: left; padding: 10px 12px; font-weight: 600; color: var(--color-coolGray-700); }
+    .ref-table td { padding: 10px 12px; border-bottom: 1px solid var(--color-coolGray-100); }
+    .ref-table tr:nth-child(even) { background: var(--color-coolGray-50); }
+    .check { color: var(--color-green-100); }
+    .cross { color: var(--color-rose-600); }
+
+    .impl-notes { margin-top: var(--spacing-xl); padding: var(--spacing-lg); background: var(--color-coolGray-50); border-radius: var(--radius-md); border: 1px solid var(--color-coolGray-200); }
+    .impl-notes h3 { font-family: var(--font-family-heading); font-size: var(--font-size-lg); margin-bottom: var(--spacing-md); color: var(--color-coolGray-800); }
+    .impl-notes ul { list-style: disc; padding-left: 20px; font-size: var(--font-size-sm); line-height: 1.8; color: var(--color-coolGray-700); }
+    .impl-notes li { margin-bottom: 4px; }
+
+    .rationale { margin-top: var(--spacing-lg); padding: var(--spacing-lg); background: #F2F7FF; border-radius: var(--radius-md); border: 1px solid #D6E4FF; }
+    .rationale h3 { font-family: var(--font-family-heading); font-size: var(--font-size-lg); margin-bottom: var(--spacing-md); color: var(--color-muniBlue); }
+    .rationale dt { font-weight: 600; margin-top: 12px; color: var(--color-coolGray-800); font-size: var(--font-size-sm); }
+    .rationale dd { margin: 4px 0 12px 16px; font-size: var(--font-size-sm); color: var(--color-coolGray-700); line-height: 1.6; }
+
+    .scope-bar { margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--color-white); border-radius: var(--radius-md); border: 1px solid var(--color-coolGray-200); display: flex; gap: var(--spacing-xl); font-size: var(--font-size-sm); flex-wrap: wrap; }
+    .scope-item strong { display: block; color: var(--color-coolGray-500); font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 2px; }
+    .scope-item span { color: var(--color-coolGray-800); }
+    .scope-item code { font-size: var(--font-size-xs); background: var(--color-coolGray-100); padding: 2px 6px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- ========== STICKY WORKFLOW NAV ========== -->
+  <nav class="workflow-nav">
+    <span class="workflow-nav-title">Meter Workflow</span>
+    <div class="workflow-steps">
+      <a href="#screen-meters" class="workflow-step">1. Meters Admin</a>
+      <span class="workflow-arrow">&rarr;</span>
+      <a href="#screen-readings" class="workflow-step">2. View Readings</a>
+      <span class="workflow-arrow">&rarr;</span>
+      <a href="#screen-enter" class="workflow-step">3. Enter Reading</a>
+      <span class="workflow-arrow">&rarr;</span>
+      <a href="#screen-edit" class="workflow-step">4. Edit Reading</a>
+      <span class="workflow-arrow">&rarr;</span>
+      <a href="#screen-final" class="workflow-step">5. Final / Replace</a>
+      <span class="workflow-arrow">&rarr;</span>
+      <a href="#screen-delete" class="workflow-step">6. Delete</a>
+      <span class="workflow-arrow">|</span>
+      <a href="#reference" class="workflow-step" style="border-color: var(--color-coolGray-500);">Reference</a>
+    </div>
+  </nav>
+
+  <!-- ========== PAGE HEADER ========== -->
+  <div class="page-header">
+    <h1>Meter Workflow: Reimagined UX</h1>
+    <p class="subtitle">Complete workflow mockup covering all meter reading screens. Use the navigation bar above to jump between screens.<br>Linked to PLAT-3121 (immediate fix). Epic TBD pending stakeholder approval.</p>
+  </div>
+
+
+  <!-- ================================================================ -->
+  <!-- SCREEN 1: METERS ADMIN                                           -->
+  <!-- ================================================================ -->
+  <div class="section-gap" id="screen-meters">
+    <div class="comparison-label">
+      <span class="tag tag--screen">Screen 1</span>
+      Meters Administration &mdash; the hub for meter management
+    </div>
+    <div class="screen-container">
+      <div class="screen-header">
+        <span class="breadcrumb">Customer &gt;</span> Meters
+      </div>
+      <div class="screen-body">
+
+        <!-- Customer context -->
+        <div class="customer-bar">
+          <div class="customer-bar-group">
+            <div class="customer-bar-item">
+              <span class="customer-bar-label">Service Address</span>
+              <span class="customer-bar-value">1025 Tower, Cedar Hill TX 75104</span>
+            </div>
+            <div class="customer-bar-item">
+              <span class="customer-bar-label">Customer</span>
+              <span class="customer-bar-value">PUTNEY, M KAY</span>
+            </div>
+            <div class="customer-bar-item">
+              <span class="customer-bar-label">Account</span>
+              <span class="customer-bar-value">0000001023-000002880</span>
+            </div>
+          </div>
+          <div class="customer-bar-item">
+            <span class="customer-bar-label">Balance</span>
+            <span class="customer-bar-value customer-bar-value--accent">$142.48</span>
+          </div>
+        </div>
+
+        <!-- Meters grid -->
+        <div style="display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg);">
+          <button class="btn btn--green">Save All Meters</button>
+          <button class="btn btn--secondary">Show Inactive Meters</button>
+          <button class="btn btn--primary">+ Add Meter</button>
+        </div>
+
+        <div class="meters-grid">
+          <!-- Left: Meter Information -->
+          <div class="meter-card">
+            <div class="meter-card__header">
+              <span class="meter-card__title">Meter #8392788</span>
+              <span class="meter-card__badge">Active</span>
+            </div>
+            <div class="meter-card__body">
+              <div class="meter-card__row"><span class="meter-card__label">Type</span><span class="meter-card__val">WAT (Water)</span></div>
+              <div class="meter-card__row"><span class="meter-card__label">Size</span><span class="meter-card__val">1 Inch - 7 Dials</span></div>
+              <div class="meter-card__row"><span class="meter-card__label">Manufacturer</span><span class="meter-card__val">SENSUS</span></div>
+              <div class="meter-card__row"><span class="meter-card__label">Location</span><span class="meter-card__val">GEN</span></div>
+              <div class="meter-card__row"><span class="meter-card__label">Read Type</span><span class="meter-card__val">RF (Radio Read)</span></div>
+              <div class="meter-card__row"><span class="meter-card__label">Transmitter</span><span class="meter-card__val">85528988</span></div>
+              <div class="meter-card__row"><span class="meter-card__label">Install Date</span><span class="meter-card__val">11/19/2014</span></div>
+              <div class="meter-card__row"><span class="meter-card__label">Last Reading</span><span class="meter-card__val">1,046,796 &mdash; 12/11/2025</span></div>
+            </div>
+            <div class="meter-card__actions">
+              <a href="#screen-readings" class="btn btn--primary btn--sm">View Readings</a>
+              <a href="#screen-enter" class="btn btn--green btn--sm">Enter Reading</a>
+              <a href="#screen-final" class="btn btn--secondary btn--sm">Replace Meter</a>
+            </div>
+          </div>
+
+          <!-- Right: Unbilled Summary -->
+          <div>
+            <div class="unbilled-card">
+              <div class="unbilled-card__header">
+                <div class="legend-swatch" style="background: var(--color-teal-unbilled); width: 10px; height: 10px;"></div>
+                Unbilled Meter Reading
+              </div>
+              <div class="unbilled-card__metric">6,143.0</div>
+              <div class="unbilled-card__detail">
+                Meter #8392788 &mdash; End Reading: 1,052,939.0<br>
+                End Date: Feb 19, 2026 &mdash; 70 days
+              </div>
+              <a href="#screen-readings" class="btn btn--ghost btn--sm" style="margin-top: 10px;">View All Readings &rarr;</a>
+            </div>
+
+            <div class="tile" style="margin-top: var(--spacing-md);">
+              <div class="tile__header">Reading Notes</div>
+              <div class="tile__body" style="font-size: var(--font-size-sm); color: var(--color-coolGray-500);">
+                <div style="margin-bottom: 6px;"><strong style="color: var(--color-coolGray-700);">Note 1:</strong> <span style="color: var(--color-coolGray-400);">(empty)</span></div>
+                <div style="margin-bottom: 6px;"><strong style="color: var(--color-coolGray-700);">Note 2:</strong> <span style="color: var(--color-coolGray-400);">(empty)</span></div>
+                <div style="margin-bottom: 6px;"><strong style="color: var(--color-coolGray-700);">Meter Code:</strong> <span style="color: var(--color-coolGray-400);">-</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="annotation">Meter info and unbilled summary are side by side. Action buttons (View Readings, Enter Reading, Replace Meter) live on the meter card, directly connected to the meter they act on. Unbilled reading is a prominent summary card, not buried in a side list.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================================ -->
+  <!-- SCREEN 2: VIEW READINGS                                          -->
+  <!-- ================================================================ -->
+  <div class="section-gap" id="screen-readings">
+    <div class="comparison-label">
+      <span class="tag tag--screen">Screen 2</span>
+      View Readings &mdash; the three-zone reading list
+    </div>
+    <div class="screen-container">
+      <div class="screen-header">
+        <span class="breadcrumb">Customer &gt; Meters &gt;</span> Meter Readings
+      </div>
+      <div class="screen-body">
+
+        <div class="meter-context">
+          <div class="meter-context-item">
+            <span class="meter-context-label">Meter</span>
+            <span class="meter-context-value">#8392788</span>
+          </div>
+          <div class="meter-context-item">
+            <span class="meter-context-label">Account</span>
+            <span class="meter-context-value">PUTNEY, M KAY &mdash; Cedar Hill</span>
+          </div>
+          <div class="meter-context-item">
+            <span class="meter-context-label">Size</span>
+            <span class="meter-context-value">1" - 7 Dials</span>
+          </div>
+          <div class="meter-context-item">
+            <span class="meter-context-label">Type</span>
+            <span class="meter-context-value">Water</span>
+          </div>
+          <div class="meter-context-item">
+            <span class="meter-context-label">Readings</span>
+            <span class="meter-context-value">47 total</span>
+          </div>
+          <a href="#screen-enter" class="btn btn--green btn--sm" style="margin-left: auto;">+ Enter Reading</a>
+        </div>
+
+        <div class="readings-header">
+          <div class="readings-header-primary">
+            <span class="col-label">Prior Reading</span>
+            <span class="col-label">Current Reading</span>
+            <span></span>
+            <span class="col-label col-label--right">Usage</span>
+            <span class="col-label">Status / Codes</span>
+          </div>
+          <span class="col-label readings-header-secondary">Details</span>
+        </div>
+
+        <div class="readings-list">
+          <!-- Row 1: Unbilled, large usage -->
+          <div class="reading-row unbilled">
+            <div class="reading-primary">
+              <div class="reading-pair">
+                <span class="reading-val">1,046,796</span>
+                <span class="reading-date">Dec 11, 2025</span>
+              </div>
+              <div class="reading-pair">
+                <span class="reading-val">1,052,939</span>
+                <span class="reading-date">Feb 19, 2026</span>
+              </div>
+              <div class="reading-arrow">&rarr;</div>
+              <div class="usage-block">
+                <span class="usage-val">6,143</span>
+                <span class="usage-days">70 days</span>
+              </div>
+              <div class="reading-meta">
+                <span class="badge badge--unbilled">Unbilled</span>
+                <span class="badge badge--billing">&#x2713; Billing</span>
+              </div>
+            </div>
+            <div class="reading-secondary">
+              <span class="secondary-entered">System Import</span>
+            </div>
+            <div class="reading-actions">
+              <a href="#screen-edit"><button class="action-btn action-btn--edit" title="Edit">&#x270E;</button></a>
+              <button class="action-btn action-btn--history" title="History">&#x29D6;</button>
+              <a href="#screen-delete"><button class="action-btn action-btn--delete" title="Delete">&#x2715;</button></a>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="reading-row">
+            <div class="reading-primary">
+              <div class="reading-pair">
+                <span class="reading-val">1,042,011</span>
+                <span class="reading-date">Nov 11, 2025</span>
+              </div>
+              <div class="reading-pair">
+                <span class="reading-val">1,046,796</span>
+                <span class="reading-date">Dec 11, 2025</span>
+              </div>
+              <div class="reading-arrow">&rarr;</div>
+              <div class="usage-block">
+                <span class="usage-val">4,785</span>
+                <span class="usage-days">30 days</span>
+              </div>
+              <div class="reading-meta">
+                <span class="badge badge--billing">&#x2713; Billing</span>
+              </div>
+            </div>
+            <div class="reading-secondary">
+              <span class="secondary-entered">System Import</span>
+            </div>
+            <div class="reading-actions">
+              <button class="action-btn action-btn--edit" title="Edit">&#x270E;</button>
+              <button class="action-btn action-btn--history" title="History">&#x29D6;</button>
+              <button class="action-btn action-btn--delete" title="Delete">&#x2715;</button>
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="reading-row">
+            <div class="reading-primary">
+              <div class="reading-pair">
+                <span class="reading-val">1,034,510</span>
+                <span class="reading-date">Oct 10, 2025</span>
+              </div>
+              <div class="reading-pair">
+                <span class="reading-val">1,042,011</span>
+                <span class="reading-date">Nov 11, 2025</span>
+              </div>
+              <div class="reading-arrow">&rarr;</div>
+              <div class="usage-block">
+                <span class="usage-val">7,501</span>
+                <span class="usage-days">32 days</span>
+              </div>
+              <div class="reading-meta">
+                <span class="badge badge--billing">&#x2713; Billing</span>
+              </div>
+            </div>
+            <div class="reading-secondary">
+              <span class="secondary-entered">System Import</span>
+            </div>
+            <div class="reading-actions">
+              <button class="action-btn action-btn--edit" title="Edit">&#x270E;</button>
+              <button class="action-btn action-btn--history" title="History">&#x29D6;</button>
+              <button class="action-btn action-btn--delete" title="Delete">&#x2715;</button>
+            </div>
+          </div>
+
+          <!-- Row 4: with manual entry + note -->
+          <div class="reading-row">
+            <div class="reading-primary">
+              <div class="reading-pair">
+                <span class="reading-val">1,020,244</span>
+                <span class="reading-date">Aug 11, 2025</span>
+              </div>
+              <div class="reading-pair">
+                <span class="reading-val">1,028,397</span>
+                <span class="reading-date">Sep 11, 2025</span>
+              </div>
+              <div class="reading-arrow">&rarr;</div>
+              <div class="usage-block">
+                <span class="usage-val">8,153</span>
+                <span class="usage-days">31 days</span>
+              </div>
+              <div class="reading-meta">
+                <span class="badge badge--billing">&#x2713; Billing</span>
+              </div>
+            </div>
+            <div class="reading-secondary">
+              <span class="secondary-entered">Stephonya Williams</span>
+              <span class="secondary-note" title="CH Manual Read - confirmed on-site by field technician, meter face photo on file">CH Manual Read</span>
+            </div>
+            <div class="reading-actions">
+              <button class="action-btn action-btn--edit" title="Edit">&#x270E;</button>
+              <button class="action-btn action-btn--history" title="History">&#x29D6;</button>
+              <button class="action-btn action-btn--delete" title="Delete">&#x2715;</button>
+            </div>
+          </div>
+
+          <!-- Row 5 -->
+          <div class="reading-row">
+            <div class="reading-primary">
+              <div class="reading-pair">
+                <span class="reading-val">1,012,162</span>
+                <span class="reading-date">Jul 11, 2025</span>
+              </div>
+              <div class="reading-pair">
+                <span class="reading-val">1,020,244</span>
+                <span class="reading-date">Aug 11, 2025</span>
+              </div>
+              <div class="reading-arrow">&rarr;</div>
+              <div class="usage-block">
+                <span class="usage-val">8,082</span>
+                <span class="usage-days">31 days</span>
+              </div>
+              <div class="reading-meta">
+                <span class="badge badge--billing">&#x2713; Billing</span>
+              </div>
+            </div>
+            <div class="reading-secondary">
+              <span class="secondary-entered">Stephonya Williams</span>
+              <span class="secondary-note" title="CH Manual Read">CH Manual Read</span>
+            </div>
+            <div class="reading-actions">
+              <button class="action-btn action-btn--edit" title="Edit">&#x270E;</button>
+              <button class="action-btn action-btn--history" title="History">&#x29D6;</button>
+              <button class="action-btn action-btn--delete" title="Delete">&#x2715;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item"><div class="legend-swatch" style="background: var(--color-teal-unbilled);"></div><span>Unbilled</span></div>
+          <div class="legend-item"><span class="badge badge--estimated" style="font-size: 10px;">Estimated</span><span>Estimated</span></div>
+          <div class="legend-item"><span class="badge badge--highflow" style="font-size: 10px;">High Flow</span><span>High flow</span></div>
+          <div class="legend-item"><span class="badge badge--billing" style="font-size: 10px;">&#x2713; Billing</span><span>Used for billing</span></div>
+          <div class="legend-item"><span style="font-size: 12px; font-style: italic;">Hover notes to expand</span></div>
+        </div>
+
+        <div class="pagination-bar">
+          <span>Showing 1&ndash;5 of 47 readings</span>
+          <div class="pagination-links">
+            <span class="current">1</span><a href="#">2</a><a href="#">3</a><a href="#">...</a><a href="#">10</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================================ -->
+  <!-- SCREEN 3: ENTER READING                                          -->
+  <!-- ================================================================ -->
+  <div class="section-gap" id="screen-enter">
+    <div class="comparison-label">
+      <span class="tag tag--screen">Screen 3</span>
+      Enter Meter Reading &mdash; add a new reading
+    </div>
+    <div class="screen-container">
+      <div class="screen-header">
+        <span class="breadcrumb">Customer &gt; Meters &gt;</span> Enter Reading
+      </div>
+      <div class="screen-body">
+
+        <a href="#screen-meters" class="btn btn--ghost btn--sm" style="margin-bottom: var(--spacing-md);">&larr; Back to Meters</a>
+
+        <!-- Prior reading reference -->
+        <div class="reading-ref">
+          <div class="reading-ref-item">
+            <span class="reading-ref-label">Meter Serial Number</span>
+            <span class="reading-ref-value">8392788</span>
+          </div>
+          <div class="reading-ref-item">
+            <span class="reading-ref-label">Last Reading</span>
+            <span class="reading-ref-value">1,046,796.0</span>
+          </div>
+          <div class="reading-ref-item">
+            <span class="reading-ref-label">Last Reading Date</span>
+            <span class="reading-ref-value">Dec 11, 2025</span>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="tile__header">New Reading</div>
+          <div class="tile__body">
+            <div class="form-grid">
+              <div class="form-field">
+                <label class="form-label">End Reading</label>
+                <input type="text" class="form-input" value="1052939.0" placeholder="Enter meter reading...">
+                <span class="form-hint">The current value shown on the meter face</span>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Reading Date</label>
+                <input type="text" class="form-input" value="02/19/2026">
+              </div>
+              <div class="form-field">
+                <label class="form-label">Reading Type</label>
+                <select class="form-input">
+                  <option value="01">01 - Normal</option>
+                  <option value="02">02 - Estimated</option>
+                  <option value="03">03 - Final</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <button class="btn btn--secondary" style="margin-top: 22px;">Estimate Reading</button>
+              </div>
+              <div class="form-field form-field--full">
+                <label class="form-label">Note</label>
+                <textarea class="form-input" placeholder="Optional note about this reading..."></textarea>
+              </div>
+            </div>
+
+            <!-- Live calculation -->
+            <div class="live-calc">
+              <span class="live-calc-label">Calculated Consumption:</span>
+              <span class="live-calc-value">6,143.0</span>
+              <span style="font-size: var(--font-size-sm); color: var(--color-coolGray-500);">(70 days since last reading)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn--green">Save Reading</button>
+          <a href="#screen-meters" class="btn btn--secondary">Cancel</a>
+        </div>
+
+        <p class="annotation" style="margin-top: var(--spacing-md);">Prior reading shown as a reference bar (blue background, read-only). Live consumption calculation updates as the user types. "Estimate Reading" button is secondary, not competing with the primary input.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================================ -->
+  <!-- SCREEN 4: EDIT READING                                           -->
+  <!-- ================================================================ -->
+  <div class="section-gap" id="screen-edit">
+    <div class="comparison-label">
+      <span class="tag tag--screen">Screen 4</span>
+      Edit Meter Reading &mdash; modify an existing reading
+    </div>
+    <div class="screen-container">
+      <div class="screen-header">
+        <span class="breadcrumb">Customer &gt; Meters &gt; Readings &gt;</span> Edit Reading
+      </div>
+      <div class="screen-body">
+
+        <a href="#screen-readings" class="btn btn--ghost btn--sm" style="margin-bottom: var(--spacing-md);">&larr; Back to Meter Readings</a>
+
+        <!-- Meter context -->
+        <div class="reading-ref">
+          <div class="reading-ref-item">
+            <span class="reading-ref-label">Meter</span>
+            <span class="reading-ref-value">#8392788</span>
+          </div>
+          <div class="reading-ref-item">
+            <span class="reading-ref-label">Customer</span>
+            <span class="reading-ref-value">PUTNEY, M KAY</span>
+          </div>
+          <div class="reading-ref-item">
+            <span class="reading-ref-label">Status</span>
+            <span class="reading-ref-value" style="color: var(--color-amber-100); font-weight: 700;">Unposted</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+          <!-- Left: Reading Data -->
+          <div class="tile">
+            <div class="tile__header">Reading Data</div>
+            <div class="tile__body">
+              <div class="form-grid form-grid--single">
+                <div class="form-field">
+                  <label class="form-label">Start Reading</label>
+                  <input type="text" class="form-input" value="1046796.0">
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Start Reading Date</label>
+                  <input type="text" class="form-input" value="12/11/2025">
+                </div>
+                <div class="form-field">
+                  <label class="form-label">End Reading</label>
+                  <input type="text" class="form-input" value="1052939.0">
+                </div>
+                <div class="form-field">
+                  <label class="form-label">End Reading Date</label>
+                  <input type="text" class="form-input" value="02/19/2026">
+                </div>
+              </div>
+              <div class="live-calc" style="margin-top: var(--spacing-md);">
+                <span class="live-calc-label">Consumption:</span>
+                <span class="live-calc-value">6,143.0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Billing & Notes -->
+          <div>
+            <div class="tile">
+              <div class="tile__header">Billing Options</div>
+              <div class="tile__body">
+                <div class="form-field" style="margin-bottom: 12px;">
+                  <label class="form-label">Status</label>
+                  <select class="form-input">
+                    <option>Unposted</option>
+                    <option>Posted</option>
+                  </select>
+                </div>
+                <div class="form-field" style="margin-bottom: 12px;">
+                  <label class="form-label">Customer to Bill</label>
+                  <select class="form-input">
+                    <option>PUTNEY, M KAY created : 2020-01-17 1</option>
+                  </select>
+                </div>
+                <div class="form-checkbox-row">
+                  <label class="form-checkbox">
+                    <input type="checkbox" checked>
+                    <span>Estimated</span>
+                  </label>
+                  <label class="form-checkbox">
+                    <input type="checkbox" checked>
+                    <span>Use For Billing</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile__header">Adjustments &amp; Notes</div>
+              <div class="tile__body">
+                <div class="form-field" style="margin-bottom: 12px;">
+                  <label class="form-label">Consumption Adjustment</label>
+                  <input type="text" class="form-input" value="0.0">
+                </div>
+                <div class="form-field" style="margin-bottom: 12px;">
+                  <label class="form-label">Adjustment Note</label>
+                  <textarea class="form-input" style="min-height: 50px;" placeholder="Reason for adjustment..."></textarea>
+                </div>
+                <div class="form-field">
+                  <label class="form-label">Note</label>
+                  <textarea class="form-input" placeholder="General note about this reading..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn--primary">Update Reading</button>
+          <a href="#screen-readings" class="btn btn--secondary">Cancel</a>
+        </div>
+
+        <p class="annotation" style="margin-top: var(--spacing-md);">Edit form uses a two-column tile layout: Reading Data (left) and Billing/Notes (right). This groups related fields instead of one long vertical form. Live consumption calculation updates as readings are edited.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================================ -->
+  <!-- SCREEN 5: FINAL READING / REPLACE METER                         -->
+  <!-- ================================================================ -->
+  <div class="section-gap" id="screen-final">
+    <div class="comparison-label">
+      <span class="tag tag--screen">Screen 5</span>
+      Enter Final Reading / Replace Meter &mdash; closing a meter
+    </div>
+    <div class="screen-container">
+      <div class="screen-header">
+        <span class="breadcrumb">Customer &gt; Meters &gt;</span> Final Reading
+      </div>
+      <div class="screen-body">
+
+        <a href="#screen-meters" class="btn btn--ghost btn--sm" style="margin-bottom: var(--spacing-md);">&larr; Back to Meters</a>
+
+        <!-- Warning -->
+        <div class="warning-banner">
+          <strong style="white-space: nowrap;">&#9888; Final Reading</strong>
+          <span>This will record the final reading and <strong>close this meter</strong>. The meter status will change to Inactive. This action is typically used when replacing a meter or disconnecting service. Ensure the reading is accurate before proceeding.</span>
+        </div>
+
+        <!-- Prior reading reference -->
+        <div class="reading-ref">
+          <div class="reading-ref-item">
+            <span class="reading-ref-label">Meter Serial Number</span>
+            <span class="reading-ref-value">8392788</span>
+          </div>
+          <div class="reading-ref-item">
+            <span class="reading-ref-label">Last Reading</span>
+            <span class="reading-ref-value">1,046,796.0</span>
+          </div>
+          <div class="reading-ref-item">
+            <span class="reading-ref-label">Last Reading Date</span>
+            <span class="reading-ref-value">Dec 11, 2025</span>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="tile__header">Final Reading Information</div>
+          <div class="tile__body">
+            <div class="form-grid">
+              <div class="form-field">
+                <label class="form-label">End Reading</label>
+                <input type="text" class="form-input" placeholder="Enter final meter reading...">
+                <span class="form-hint">The last value shown on the meter face before removal</span>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Final Reading Date</label>
+                <input type="text" class="form-input" value="02/20/2026">
+              </div>
+              <div class="form-field">
+                <label class="form-label">Reading Type</label>
+                <select class="form-input">
+                  <option value="01">01 - Normal</option>
+                  <option value="02">02 - Estimated</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <button class="btn btn--secondary" style="margin-top: 22px;">Estimate Reading</button>
+              </div>
+              <div class="form-field form-field--full">
+                <label class="form-label">Note</label>
+                <textarea class="form-input" placeholder="Reason for meter replacement or closure..."></textarea>
+              </div>
+            </div>
+
+            <div class="live-calc" style="background: #FEF3C7; border-color: #FDE68A;">
+              <span class="live-calc-label" style="color: #92400E;">Final Consumption:</span>
+              <span class="live-calc-value">&mdash;</span>
+              <span style="font-size: var(--font-size-sm); color: #92400E;">(enter reading to calculate)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn--danger">Close Old Meter</button>
+          <a href="#screen-meters" class="btn btn--secondary">Cancel</a>
+        </div>
+
+        <p class="annotation" style="margin-top: var(--spacing-md);">Warning banner at top explains exactly what will happen. "Close Old Meter" is styled as a destructive action (red) since it changes meter status. Same form layout as Enter Reading for consistency.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================================ -->
+  <!-- SCREEN 6: DELETE CONFIRMATION MODAL                              -->
+  <!-- ================================================================ -->
+  <div class="section-gap" id="screen-delete">
+    <div class="comparison-label">
+      <span class="tag tag--screen">Screen 6</span>
+      Delete Confirmation &mdash; replaces browser "Are you sure?"
+    </div>
+    <div class="screen-container">
+      <div class="screen-header">
+        <span class="breadcrumb">Modal overlay &gt;</span> Delete Confirmation
+      </div>
+      <div class="screen-body">
+
+        <p class="annotation" style="margin-bottom: var(--spacing-lg);">This modal replaces the browser's generic "Are you sure?" dialog. It shows the user exactly what they're deleting.</p>
+
+        <div class="modal-demo">
+          <div class="modal-box">
+            <div class="modal-box__header modal-box__header--danger">
+              Delete Meter Reading
+            </div>
+            <div class="modal-box__body">
+              <p>You are about to <strong>permanently delete</strong> this meter reading:</p>
+
+              <dl class="modal-reading-detail">
+                <dt>Current Reading</dt>
+                <dd>1,052,939.0</dd>
+                <dt>Date</dt>
+                <dd>Feb 19, 2026</dd>
+                <dt>Prior Reading</dt>
+                <dd>1,046,796.0</dd>
+                <dt>Usage</dt>
+                <dd>6,143.0</dd>
+                <dt>Status</dt>
+                <dd style="color: var(--color-amber-100);">Unposted</dd>
+                <dt>Entered By</dt>
+                <dd>System Import</dd>
+              </dl>
+
+              <div class="danger-banner" style="margin: 12px 0 0 0;">
+                <span>This action <strong>cannot be undone</strong>. The reading and its associated billing data will be permanently removed.</span>
+              </div>
+            </div>
+            <div class="modal-box__footer">
+              <a href="#screen-readings" class="btn btn--secondary">Cancel</a>
+              <button class="btn btn--danger">Delete Reading</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="annotation" style="margin-top: var(--spacing-md);">Modal shows the full reading detail (current, prior, usage, status, entered by) so the user can verify they're deleting the right record. Much safer than a generic "Are you sure?" that doesn't tell you what "this" refers to.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================================ -->
+  <!-- REFERENCE SECTIONS                                               -->
+  <!-- ================================================================ -->
+  <div class="section-gap" id="reference">
+    <div class="comparison-label">
+      <span class="tag tag--ref">Reference</span>
+      Feature Comparison, Implementation Notes, Design Rationale
+    </div>
+    <div class="ref-container">
+      <h2>Feature Comparison: Current vs. Proposed</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 15%;">Screen</th>
+            <th style="width: 25%;">Feature</th>
+            <th style="width: 25%; text-align: center; color: var(--color-rose-600);">Current</th>
+            <th style="width: 35%; text-align: center; color: var(--color-green-100);">Proposed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight: 600;" rowspan="3">Meters Admin</td><td>Meter info layout</td><td class="cross" style="text-align: center;">Dense two-panel form</td><td class="check" style="text-align: center;">&#x2713; Card layout with key-value rows</td></tr>
+          <tr><td>Unbilled summary</td><td class="cross" style="text-align: center;">Small text list on left side</td><td class="check" style="text-align: center;">&#x2713; Prominent summary card with hero metric</td></tr>
+          <tr><td>Action buttons</td><td class="cross" style="text-align: center;">Text links scattered across page</td><td class="check" style="text-align: center;">&#x2713; Grouped on meter card (View, Enter, Replace)</td></tr>
+
+          <tr><td style="font-weight: 600;" rowspan="6">View Readings</td><td>Layout model</td><td class="cross" style="text-align: center;">Flat 14-column table</td><td class="check" style="text-align: center;">&#x2713; Three-zone row (data / metadata / actions)</td></tr>
+          <tr><td>Usage display</td><td class="cross" style="text-align: center;">75px column, truncates</td><td class="check" style="text-align: center;">&#x2713; Hero metric, bold blue, always visible</td></tr>
+          <tr><td>Reading pairs</td><td style="text-align: center;">4 separate columns</td><td class="check" style="text-align: center;">&#x2713; Stacked value + date (2 visual units)</td></tr>
+          <tr><td>Status codes</td><td class="cross" style="text-align: center;">Plain text bulleted list</td><td class="check" style="text-align: center;">&#x2713; Color-coded badges</td></tr>
+          <tr><td>Actions</td><td class="cross" style="text-align: center;">3 columns (195px)</td><td class="check" style="text-align: center;">&#x2713; Icon column (80px), delete hidden until hover</td></tr>
+          <tr><td>Meter context</td><td class="cross" style="text-align: center;">Not shown</td><td class="check" style="text-align: center;">&#x2713; Context bar with meter #, account, type</td></tr>
+
+          <tr><td style="font-weight: 600;" rowspan="3">Enter Reading</td><td>Prior reading display</td><td style="text-align: center;">Inline text, same style as inputs</td><td class="check" style="text-align: center;">&#x2713; Blue reference bar, clearly read-only</td></tr>
+          <tr><td>Consumption feedback</td><td class="cross" style="text-align: center;">Static dash until save</td><td class="check" style="text-align: center;">&#x2713; Live calculation as user types</td></tr>
+          <tr><td>Form layout</td><td style="text-align: center;">Single-column vertical form</td><td class="check" style="text-align: center;">&#x2713; Two-column grid with logical grouping</td></tr>
+
+          <tr><td style="font-weight: 600;" rowspan="2">Edit Reading</td><td>Field grouping</td><td class="cross" style="text-align: center;">One long vertical list of all fields</td><td class="check" style="text-align: center;">&#x2713; Tiled layout: Reading Data / Billing / Notes</td></tr>
+          <tr><td>Consumption calc</td><td class="cross" style="text-align: center;">Static field</td><td class="check" style="text-align: center;">&#x2713; Live recalculation on edit</td></tr>
+
+          <tr><td style="font-weight: 600;" rowspan="2">Final Reading</td><td>Consequence warning</td><td class="cross" style="text-align: center;">No warning about meter closure</td><td class="check" style="text-align: center;">&#x2713; Warning banner explains what "Close Old Meter" does</td></tr>
+          <tr><td>Button styling</td><td style="text-align: center;">Blue primary button</td><td class="check" style="text-align: center;">&#x2713; Red destructive button (matches severity)</td></tr>
+
+          <tr><td style="font-weight: 600;" rowspan="2">Delete</td><td>Confirmation method</td><td class="cross" style="text-align: center;">Browser "Are you sure?" dialog</td><td class="check" style="text-align: center;">&#x2713; Custom modal with full reading details</td></tr>
+          <tr><td>Context shown</td><td class="cross" style="text-align: center;">None &mdash; user doesn't see what's being deleted</td><td class="check" style="text-align: center;">&#x2713; Reading values, date, usage, status, entered by</td></tr>
+        </tbody>
+      </table>
+
+      <!-- ========== IMPLEMENTATION NOTES ========== -->
+      <div class="impl-notes">
+        <h3>Implementation Notes</h3>
+        <ul>
+          <li><strong>Customer context bar</strong> reuses the existing customer header partial (<code>_customer_header</code>). The data is already loaded on every customer-scoped page.</li>
+          <li><strong>Meter context bar</strong> pulls from the <code>@meter</code> model already loaded by the controller. Zero additional queries.</li>
+          <li><strong>CSS Grid replaces <code>&lt;table&gt;</code></strong> for the readings list. The three-zone layout uses <code>grid-template-columns: 1fr 200px 80px</code>. Each zone is independently styled.</li>
+          <li><strong>Stacked reading pairs</strong> use <code>flex-direction: column</code> within a grid cell, halving the column count (4 &rarr; 2 visual units).</li>
+          <li><strong>Color-coded badges</strong> use the existing MetroBill design system badge classes. New badge variants (estimated, highflow, unbilled) follow the same <code>.badge--{variant}</code> pattern.</li>
+          <li><strong>Action icons</strong> consolidate 3 columns into 1. Delete uses "reveal on intent" (gray &rarr; red on hover), same Fitts's Law principle from the Reconcile Payments redesign.</li>
+          <li><strong>Hover-to-expand notes</strong> are CSS-only: <code>.secondary-note:hover { white-space: normal; }</code>. No JavaScript required.</li>
+          <li><strong>Live consumption calculation</strong> on Enter/Edit screens can use a small JS snippet: <code>endReading - startReading</code> on input change. No AJAX needed.</li>
+          <li><strong>Delete modal</strong> replaces the browser <code>data-confirm</code> with a <code>BootstrapDialog</code> that fetches reading details via an AJAX call to the existing show action.</li>
+          <li><strong>Form tile layout</strong> on Edit screen uses CSS Grid <code>grid-template-columns: 1fr 1fr</code>. No new controller actions needed &mdash; same form fields, different visual grouping.</li>
+          <li><strong>Warning banner</strong> on Final Reading is a static HTML element, no logic required. It's always shown when on the final reading screen.</li>
+          <li><strong>All screens share the same CSS</strong> &mdash; design tokens, button classes, tile components, form styles. This mockup is a single file specifically to prove that consistency.</li>
+        </ul>
+      </div>
+
+      <!-- ========== BUSINESS RULES & DESIGN RATIONALE ========== -->
+      <div class="rationale">
+        <h3>Business Rules &amp; Design Rationale</h3>
+        <dl>
+          <dt>Why a workflow-connected mockup instead of isolated screens?</dt>
+          <dd>Staff don't use screens in isolation &mdash; they flow through a sequence: find the meter, check readings, enter or edit one, occasionally delete. Designing each screen independently leads to inconsistent patterns (different button placements, different context displays, different form layouts). A connected workflow mockup ensures every screen uses the same components, the same context bars, the same button hierarchy.</dd>
+
+          <dt>Why three zones on the readings list?</dt>
+          <dd>Staff scanning meter readings have a clear priority: <strong>"What's the usage?"</strong> first, then <strong>"anything unusual?"</strong>, then <strong>"who and notes?"</strong> only when investigating. The flat table treats all 14 columns equally, forcing the eye to hunt. The three-zone layout matches actual scanning behavior: glance left (operational), check right when needed (metadata), act far-right (edit/delete).</dd>
+
+          <dt>Why make Usage the hero metric?</dt>
+          <dd>Usage determines the bill amount. It's the single most-referenced value. Yet it got the smallest column (75px) and the same visual weight as "Days" or "Entered By." Bold blue styling lets staff scan usage values vertically &mdash; like accountants scanning a ledger column.</dd>
+
+          <dt>Why a delete modal instead of "Are you sure?"</dt>
+          <dd>The browser's confirm dialog says "Are you sure?" but doesn't tell you <em>what</em> you're deleting. When staff have a list of readings on screen, accidentally clicking Delete on the wrong row means losing data with no way to verify. The custom modal shows the full reading detail (values, date, usage, who entered it) so the user can confirm they're deleting the right record.</dd>
+
+          <dt>Why a warning banner on the Final Reading screen?</dt>
+          <dd>Closing a meter changes its status to Inactive and has downstream billing implications. The current screen looks identical to Enter Reading but with a different button label. Staff may not realize "Close Old Meter" does something fundamentally different from "Save Reading." The warning banner makes the consequence explicit before they reach the button.</dd>
+
+          <dt>Why tile the Edit form instead of one long list?</dt>
+          <dd>The current Edit screen is a single-column list of 12+ fields. Staff editing a reading value have to scroll past billing options and notes to find the fields they need. Tiling groups related fields: Reading Data (the values they're here to fix), Billing Options (status and flags), and Adjustments/Notes (supplementary). Each tile is independently scannable.</dd>
+
+          <dt>Why a live consumption calculation?</dt>
+          <dd>Currently, consumption shows as a dash until the reading is saved. Staff have to save, check the result, and edit again if something looks wrong. Live calculation provides immediate feedback &mdash; if a user types "10529390" instead of "1052939" (extra zero), the consumption will show an obviously wrong value before they save. This catches typos at the source.</dd>
+
+          <dt>Why group actions on the meter card instead of scattered links?</dt>
+          <dd>The current Meters screen has "View Readings" and "Replace Meter" as text links in different locations. Staff have to hunt for the right link. Grouping all meter actions (View, Enter, Replace) as buttons on the meter card creates a clear "what can I do with this meter?" answer in one place.</dd>
+        </dl>
+      </div>
+
+      <!-- ========== SCOPE & TICKET INFO ========== -->
+      <div class="scope-bar">
+        <div class="scope-item">
+          <strong>Linked Ticket</strong>
+          <span style="color: var(--color-muniBlue); font-weight: 600;">PLAT-3121</span>
+        </div>
+        <div class="scope-item">
+          <strong>Origin</strong>
+          <span>TRIG-2750 (Cedar Hill / CID 9005)</span>
+        </div>
+        <div class="scope-item">
+          <strong>Scope</strong>
+          <span>Global &mdash; all companies</span>
+        </div>
+        <div class="scope-item">
+          <strong>Epic</strong>
+          <span>TBD &mdash; pending stakeholder approval</span>
+        </div>
+        <div class="scope-item">
+          <strong>Screens</strong>
+          <span>6 (Meters, Readings, Enter, Edit, Final, Delete)</span>
+        </div>
+        <div class="scope-item">
+          <strong>Primary Views</strong>
+          <code>meter_readings/_readings.html.erb</code> + 4 related
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Smooth scroll for nav links -->
+  <script>
+    document.querySelectorAll('.workflow-step, .btn--ghost, a.btn').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        var href = this.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          var target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

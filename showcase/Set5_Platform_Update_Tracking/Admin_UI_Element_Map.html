@@ -1,0 +1,3799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MetroBill Admin UI - Element Map</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a2e; background: #f8f9fa; padding: 2rem; max-width: 1100px; margin: 0 auto; line-height: 1.5; }
+  h1 { font-size: 1.8rem; color: #1B4F72; border-bottom: 3px solid #1B4F72; padding-bottom: 0.5rem; margin-bottom: 0.5rem; margin-top: 2rem; }
+  h2 { font-size: 1.35rem; color: #1B4F72; margin-top: 2rem; margin-bottom: 0.75rem; padding: 0.4rem 0.8rem; background: #EBF5FB; border-left: 4px solid #1B4F72; border-radius: 0 4px 4px 0; }
+  h3 { font-size: 1.05rem; color: #2C3E50; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+  h4 { font-size: 0.95rem; color: #34495E; margin-top: 1rem; margin-bottom: 0.4rem; }
+  .meta { color: #555; font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .meta code { background: #e8e8e8; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.85rem; }
+  p { margin: 0.5rem 0; font-size: 0.9rem; color: #333; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 1.25rem; font-size: 0.9rem; border: 1px solid #bbb; table-layout: auto; }
+  th { background: #1B4F72; color: #fff; font-weight: 600; text-align: left; padding: 0.55rem 0.75rem; border: 1px solid #15426b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  td { padding: 0.45rem 0.75rem; border: 1px solid #ccc; vertical-align: top; }
+  tr:nth-child(even) td { background: #EBF5FB; }
+  tr:nth-child(odd) td { background: #fff; }
+  tr:hover td { background: #D4E6F1; }
+  td:first-child { font-weight: 500; color: #1a3a5c; white-space: nowrap; }
+  td:nth-child(2) { color: #666; font-size: 0.85rem; white-space: nowrap; }
+  td strong, th strong { font-weight: 700; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 1.5rem 0; }
+  .footer { text-align: center; color: #888; font-size: 0.8rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; }
+  @media print { body { padding: 0.5rem; background: #fff; } table { page-break-inside: avoid; font-size: 0.8rem; } th { background: #1B4F72 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } tr:nth-child(even) td { background: #EBF5FB !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+
+<h1>MetroBill Admin UI - Links, Buttons & Interactive Elements Map</h1>
+<div class="meta">
+  <strong>Version</strong>: 1.1<br>
+  <strong>Generated</strong>: 2026-02-17<br>
+  <strong>Source</strong>: Live snapshots from CID 9006 (QA Property Management), CID 9007 (Town of Palm Harbor) + CID South Pasadena screenshots<br>
+<div class="meta">
+  <strong>Environment</strong>: <code>billing.munidev.local</code> (dev) / <code>secure.metrobill.example.com</code> (prod)<br>
+</div>
+<hr>
+<h2>How to Maintain This Document</h2>
+<h3>For Claude Users (recommended)</h3>
+<h3>Capturing New Pages (with Claude Code + Chrome DevTools MCP)</h3>
+<h3>Rebuilding HTML and DOCX Exports</h3>
+<div class="meta">
+  <strong>Prerequisites</strong>: <code>pandoc</code> and <code>python-docx</code><br>
+</div>
+<h1>Install once</h1>
+<h1>Rebuild HTML (one command)</h1>
+<h1>Rebuild DOCX (two steps: pandoc converts, then style_docx.py adds borders/colors)</h1>
+<h3>Document Conventions</h3>
+<hr>
+<h1>Part 1: Global Elements (Present on Every Page)</h1>
+<h2>1.1 Top Navigation Bar</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>MetroBill Logo</td>
+  <td>Link</td>
+  <td>Returns to <code>/dashboard/search_customer</code></td>
+</tr>
+<tr>
+  <td>Hamburger Menu</td>
+  <td>Button</td>
+  <td>Expandable mobile/responsive navigation</td>
+</tr>
+<tr>
+  <td>SEARCH</td>
+  <td>Nav Link</td>
+  <td>Opens customer search (default landing page)</td>
+</tr>
+<tr>
+  <td>BILLING</td>
+  <td>Nav Dropdown</td>
+  <td>Billing operations (enter bill, payments, adjustments)</td>
+</tr>
+<tr>
+  <td>SYSTEM INFO</td>
+  <td>Nav Link</td>
+  <td>System configuration and settings (<code>/dashboard/systeminfo</code>)</td>
+</tr>
+<tr>
+  <td>REPORTS</td>
+  <td>Nav Link</td>
+  <td>Report generation and management (<code>/dashboard/reports</code>)</td>
+</tr>
+<tr>
+  <td>HELP</td>
+  <td>Nav Dropdown</td>
+  <td>Help documentation and support resources</td>
+</tr>
+<tr>
+  <td>SUPPORT</td>
+  <td>Nav Link</td>
+  <td>Support ticket / contact page (<code>/support_informations</code>)</td>
+</tr>
+<tr>
+  <td>Company Name</td>
+  <td>Label</td>
+  <td>Current company/municipality (e.g., "QA Property Management")</td>
+</tr>
+<tr>
+  <td>MetroBill {User}</td>
+  <td>Button</td>
+  <td>User menu dropdown (expandable)</td>
+</tr>
+</tbody></table>
+<h2>1.2 Sidebar Quick Links (Present on All Search/Parcel/Customer Pages)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Route</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Add Customer</td>
+  <td>Link</td>
+  <td><code>/customers/new</code></td>
+  <td>Create a new customer record</td>
+</tr>
+<tr>
+  <td>Add Multi-Parcel Owner</td>
+  <td>Link</td>
+  <td><code>/parcel_owners/new</code></td>
+  <td>Create a new MPO record</td>
+</tr>
+<tr>
+  <td>Add Parcel</td>
+  <td>Link</td>
+  <td><code>/parcels/new</code></td>
+  <td>Create a new parcel/property</td>
+</tr>
+<tr>
+  <td>Billing Calculation</td>
+  <td>Link</td>
+  <td><code>/billing_calculation</code></td>
+  <td>Run billing calculation</td>
+</tr>
+<tr>
+  <td>Fast Payment Entry</td>
+  <td>Link</td>
+  <td><code>/payments/fast_payment_entry</code></td>
+  <td>Batch payment entry screen</td>
+</tr>
+<tr>
+  <td>Payment History</td>
+  <td>Link</td>
+  <td><code>/remote_charges/history</code></td>
+  <td>Online payment history (remote charges)</td>
+</tr>
+<tr>
+  <td>Reconcile Payments</td>
+  <td>Link</td>
+  <td><code>/reconcile_payments</code></td>
+  <td>Payment reconciliation tool</td>
+</tr>
+<tr>
+  <td>Search Payments</td>
+  <td>Link</td>
+  <td><code>/dashboard/search_payment</code></td>
+  <td>Payment search page</td>
+</tr>
+<tr>
+  <td>Search Multi-Parcel Owners</td>
+  <td>Link</td>
+  <td><code>/parcel_owners</code></td>
+  <td>MPO search page</td>
+</tr>
+<tr>
+  <td>Search Parcels</td>
+  <td>Link</td>
+  <td><code>/dashboard/search_parcel</code></td>
+  <td>Parcel search page</td>
+</tr>
+</tbody></table>
+<h2>1.3 Sidebar Status Widgets</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Overdue Payments (count)</td>
+  <td>Link</td>
+  <td>Navigate to overdue payments list (<code>/overdue_payments</code>)</td>
+</tr>
+<tr>
+  <td>Reminders Due (count)</td>
+  <td>Link</td>
+  <td>Navigate to company reminders (<code>/events/company</code>)</td>
+</tr>
+<tr>
+  <td>Open Service (count)</td>
+  <td>Link</td>
+  <td>Navigate to company service calls (<code>/service_calls/company</code>)</td>
+</tr>
+<tr>
+  <td>Print</td>
+  <td>Link</td>
+  <td>Print open service calls report</td>
+</tr>
+<tr>
+  <td>Online Payments</td>
+  <td>Link</td>
+  <td>Online payment responses (<code>/revo_payment_responses</code>)</td>
+</tr>
+<tr>
+  <td>Assigned Contacts (count)</td>
+  <td>Link</td>
+  <td>Navigate to assigned events (<code>/events</code>)</td>
+</tr>
+</tbody></table>
+<h2>1.4 Footer</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>MetroBill TM</td>
+  <td>Label</td>
+  <td>Application branding</td>
+</tr>
+<tr>
+  <td>Admin Level {N}</td>
+  <td>Label</td>
+  <td>Current user's admin level (e.g., "Admin Level 3")</td>
+</tr>
+<tr>
+  <td>Security & Refund Policy</td>
+  <td>Link</td>
+  <td>Legal/policy page</td>
+</tr>
+<tr>
+  <td>Privacy Policy</td>
+  <td>Link</td>
+  <td>Privacy policy page</td>
+</tr>
+<tr>
+  <td>JSD Widget</td>
+  <td>Widget</td>
+  <td>Jira Service Management embedded support widget</td>
+</tr>
+<tr>
+  <td>Page Load Time</td>
+  <td>Label</td>
+  <td>Rails response time in ms (dev environment only)</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>Part 2: Search Pages</h1>
+<h2>2.1 Search Sub-Navigation Tabs (Shared Across All Search Pages)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Route</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>CUSTOMER</td>
+  <td>Tab</td>
+  <td><code>/dashboard/search_customer</code></td>
+  <td>Search by customer name, account #, address</td>
+</tr>
+<tr>
+  <td>PARCEL</td>
+  <td>Tab</td>
+  <td><code>/dashboard/search_parcel</code></td>
+  <td>Search by parcel address, number, meter</td>
+</tr>
+<tr>
+  <td>PAYMENT</td>
+  <td>Tab</td>
+  <td><code>/dashboard/search_payment</code></td>
+  <td>Search by payment reference, amount, date</td>
+</tr>
+<tr>
+  <td>MULTI-PARCEL OWNERS</td>
+  <td>Tab</td>
+  <td><code>/parcel_owners</code></td>
+  <td>Search for multi-parcel owner accounts</td>
+</tr>
+<tr>
+  <td>CONTRACTOR</td>
+  <td>Tab</td>
+  <td><code>/dashboard/search_contractor</code></td>
+  <td>Search by contractor name, license</td>
+</tr>
+<tr>
+  <td>BUSINESS</td>
+  <td>Tab</td>
+  <td><code>/dashboard/search_business</code></td>
+  <td>Search by business name, owner, license</td>
+</tr>
+</tbody></table>
+<h2>2.2 Customer Search (`/dashboard/search_customer`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Status: Active</td>
+  <td>Radio (Default)</td>
+  <td>Filter to active customers</td>
+</tr>
+<tr>
+  <td>Status: In-Active</td>
+  <td>Radio</td>
+  <td>Filter to inactive/closed customers</td>
+</tr>
+<tr>
+  <td>Status: All</td>
+  <td>Radio</td>
+  <td>Show all customers regardless of status</td>
+</tr>
+<tr>
+  <td>Name</td>
+  <td>Text Input</td>
+  <td>Search by customer name (partial match)</td>
+</tr>
+<tr>
+  <td>Address</td>
+  <td>Text Input</td>
+  <td>Search by service address</td>
+</tr>
+<tr>
+  <td>Account #</td>
+  <td>Text Input</td>
+  <td>Search by account number</td>
+</tr>
+<tr>
+  <td>Gender</td>
+  <td>Text Input</td>
+  <td>Custom field -- company-configurable</td>
+</tr>
+<tr>
+  <td>House Color</td>
+  <td>Text Input</td>
+  <td>Custom field -- company-configurable</td>
+</tr>
+<tr>
+  <td>Household Size</td>
+  <td>Text Input</td>
+  <td>Custom field -- company-configurable</td>
+</tr>
+<tr>
+  <td>Secondary Contact</td>
+  <td>Text Input</td>
+  <td>Search by secondary contact name</td>
+</tr>
+<tr>
+  <td>Number of Dogs Owned</td>
+  <td>Text Input</td>
+  <td>Custom field -- company-configurable</td>
+</tr>
+<tr>
+  <td>Tax Exempt?</td>
+  <td>Text Input</td>
+  <td>Custom field -- company-configurable</td>
+</tr>
+<tr>
+  <td>Create Bill?</td>
+  <td>Text Input</td>
+  <td>Custom field -- company-configurable</td>
+</tr>
+<tr>
+  <td>Enter Scan Mode</td>
+  <td>Button</td>
+  <td>Toggle barcode/scan input mode</td>
+</tr>
+<tr>
+  <td>(scan input)</td>
+  <td>Text Input</td>
+  <td>Barcode scanner input field</td>
+</tr>
+</tbody></table>
+<div class="meta">
+  <strong>Note</strong>: Fields marked "company-configurable" vary per CID. The standard fields (Name, Address, Account #) are always present; custom fields are defined in System Info.<br>
+</div>
+<h2>2.3 Parcel Search (`/dashboard/search_parcel`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Address</td>
+  <td>Text Input</td>
+  <td>Search by service address (partial match)</td>
+</tr>
+<tr>
+  <td>Parcel #</td>
+  <td>Text Input</td>
+  <td>Search by parcel number</td>
+</tr>
+<tr>
+  <td>Meter/Transmitter #</td>
+  <td>Text Input</td>
+  <td>Search by meter serial or transmitter ID</td>
+</tr>
+</tbody></table>
+<h2>2.4 Payment Search (`/dashboard/search_payment`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Reference #</td>
+  <td>Text Input</td>
+  <td>Search by payment reference number</td>
+</tr>
+<tr>
+  <td>Customer Acct #</td>
+  <td>Text Input</td>
+  <td>Search by customer account number</td>
+</tr>
+<tr>
+  <td>Payor</td>
+  <td>Text Input</td>
+  <td>Search by payor name</td>
+</tr>
+<tr>
+  <td>Payment Type</td>
+  <td>Dropdown</td>
+  <td>Filter by payment type (14 options -- see below)</td>
+</tr>
+<tr>
+  <td>Amount (min)</td>
+  <td>Text Input</td>
+  <td>Minimum payment amount</td>
+</tr>
+<tr>
+  <td>Amount (max)</td>
+  <td>Text Input</td>
+  <td>Maximum payment amount</td>
+</tr>
+<tr>
+  <td>Date (start)</td>
+  <td>Date Picker</td>
+  <td>Start of date range (read-only, calendar popup)</td>
+</tr>
+<tr>
+  <td>Date (start) ...</td>
+  <td>Button</td>
+  <td>Open calendar picker for start date</td>
+</tr>
+<tr>
+  <td>Date (start) Clear</td>
+  <td>Button</td>
+  <td>Clear start date filter</td>
+</tr>
+<tr>
+  <td>Date (end)</td>
+  <td>Date Picker</td>
+  <td>End of date range (read-only, calendar popup)</td>
+</tr>
+<tr>
+  <td>Date (end) ...</td>
+  <td>Button</td>
+  <td>Open calendar picker for end date</td>
+</tr>
+<tr>
+  <td>Date (end) Clear</td>
+  <td>Button</td>
+  <td>Clear end date filter</td>
+</tr>
+<tr>
+  <td>Search Payments</td>
+  <td>Button</td>
+  <td>Execute the payment search</td>
+</tr>
+</tbody></table>
+<h3>Payment Type Options</h3>
+<table><thead><tr>
+  <th>Option</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>All Types</td>
+  <td>No filter (default)</td>
+</tr>
+<tr>
+  <td>Automatic</td>
+  <td>Autopay/recurring payments</td>
+</tr>
+<tr>
+  <td>Cash</td>
+  <td>Cash payments</td>
+</tr>
+<tr>
+  <td>Check</td>
+  <td>Check payments</td>
+</tr>
+<tr>
+  <td>Credit</td>
+  <td>Account credits</td>
+</tr>
+<tr>
+  <td>Credit Card</td>
+  <td>In-person credit card</td>
+</tr>
+<tr>
+  <td>Credit Card - Remote</td>
+  <td>Online credit card</td>
+</tr>
+<tr>
+  <td>Deposit Interest</td>
+  <td>Deposit interest accruals</td>
+</tr>
+<tr>
+  <td>E-Check</td>
+  <td>Electronic check (online)</td>
+</tr>
+<tr>
+  <td>Euros</td>
+  <td>Foreign currency payments</td>
+</tr>
+<tr>
+  <td>Lockbox</td>
+  <td>Bank lockbox imports</td>
+</tr>
+<tr>
+  <td>Other</td>
+  <td>Miscellaneous payment type</td>
+</tr>
+<tr>
+  <td>Paid To Management</td>
+  <td>Management company payments</td>
+</tr>
+<tr>
+  <td>Voided Bill</td>
+  <td>Voided bill adjustments</td>
+</tr>
+</tbody></table>
+<h2>2.5 Multi-Parcel Owners Search (`/parcel_owners`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>New Multi-Parcel Owner</td>
+  <td>Link</td>
+  <td>Create a new MPO record (<code>/parcel_owners/new</code>)</td>
+</tr>
+<tr>
+  <td>Name</td>
+  <td>Text Input</td>
+  <td>Search by MPO name</td>
+</tr>
+<tr>
+  <td>Address</td>
+  <td>Text Input</td>
+  <td>Search by MPO address</td>
+</tr>
+<tr>
+  <td>MPO Account #</td>
+  <td>Text Input</td>
+  <td>Search by MPO account number</td>
+</tr>
+<tr>
+  <td>Enter Scan Mode</td>
+  <td>Button</td>
+  <td>Toggle barcode/scan input mode</td>
+</tr>
+<tr>
+  <td>(scan input)</td>
+  <td>Text Input</td>
+  <td>Barcode scanner input field</td>
+</tr>
+</tbody></table>
+<h2>2.6 Contractor Search (`/dashboard/search_contractor`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>First Name</td>
+  <td>Text Input</td>
+  <td>Search by contractor first name</td>
+</tr>
+<tr>
+  <td>Last Name</td>
+  <td>Text Input</td>
+  <td>Search by contractor last name</td>
+</tr>
+<tr>
+  <td>City License Number</td>
+  <td>Text Input</td>
+  <td>Search by municipal license number</td>
+</tr>
+<tr>
+  <td>State License Number</td>
+  <td>Text Input</td>
+  <td>Search by state license number</td>
+</tr>
+</tbody></table>
+<h2>2.7 Business Search (`/dashboard/search_business`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Business Name</td>
+  <td>Text Input</td>
+  <td>Search by business name</td>
+</tr>
+<tr>
+  <td>Owner Name</td>
+  <td>Text Input</td>
+  <td>Search by business owner name</td>
+</tr>
+<tr>
+  <td>Address</td>
+  <td>Text Input</td>
+  <td>Search by business address</td>
+</tr>
+<tr>
+  <td>License</td>
+  <td>Dropdown</td>
+  <td>Filter by license type (company-configured options)</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>Part 3: Customer Context Pages</h1>
+<h2>3.1 Customer Sub-Navigation Tabs</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Route</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>GENERAL</td>
+  <td>Tab</td>
+  <td><code>/customers/{id}/edit</code></td>
+  <td>Customer detail / edit page</td>
+</tr>
+<tr>
+  <td>METER</td>
+  <td>Tab</td>
+  <td><code>/parcels/{parcel_id}/meters</code></td>
+  <td>Meters on linked parcel</td>
+</tr>
+<tr>
+  <td>HISTORY</td>
+  <td>Tab</td>
+  <td><code>/customers/{id}/history</code></td>
+  <td>Customer billing history</td>
+</tr>
+<tr>
+  <td>SERVICE</td>
+  <td>Tab</td>
+  <td><code>/customers/{id}/service_calls</code></td>
+  <td>Service calls for this customer</td>
+</tr>
+<tr>
+  <td>CONTACTS</td>
+  <td>Tab</td>
+  <td><code>/customers/{id}/events</code></td>
+  <td>Contact log / events</td>
+</tr>
+<tr>
+  <td>PAY PLANS</td>
+  <td>Tab</td>
+  <td><code>/customers/{id}/payment_plans</code></td>
+  <td>Payment plan management</td>
+</tr>
+<tr>
+  <td>OTHER</td>
+  <td>Tab</td>
+  <td><code>/customers/{id}/other</code></td>
+  <td>Additional customer info</td>
+</tr>
+<tr>
+  <td>PARCELS</td>
+  <td>Tab</td>
+  <td><code>/customers/{id}/parcels</code></td>
+  <td>Parcels linked to this customer</td>
+</tr>
+<tr>
+  <td>DOCUMENTS</td>
+  <td>Tab</td>
+  <td><code>/customers/{id}/documents</code></td>
+  <td>Customer documents</td>
+</tr>
+</tbody></table>
+<h2>3.2 Customer Header Bar (Present on All Customer Tabs)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Customer Name</td>
+  <td>Label</td>
+  <td>Full name (e.g., "Betty Whipe")</td>
+</tr>
+<tr>
+  <td>Parcel: {address}</td>
+  <td>Link</td>
+  <td>Navigate to linked parcel edit page</td>
+</tr>
+<tr>
+  <td>Parcel Account #</td>
+  <td>Label</td>
+  <td>Parcel account number</td>
+</tr>
+<tr>
+  <td>Acct</td>
+  <td>Label</td>
+  <td>Customer account number</td>
+</tr>
+<tr>
+  <td>Balance</td>
+  <td>Label</td>
+  <td>Current balance amount</td>
+</tr>
+<tr>
+  <td>Aged Days</td>
+  <td>Label</td>
+  <td>Number of days oldest balance is aged</td>
+</tr>
+<tr>
+  <td>Type</td>
+  <td>Label</td>
+  <td>Parcel type code (e.g., MAN, STD)</td>
+</tr>
+<tr>
+  <td>Category</td>
+  <td>Label</td>
+  <td>Customer category (e.g., Executive, Business)</td>
+</tr>
+<tr>
+  <td>Route Code</td>
+  <td>Label</td>
+  <td>Assigned billing route</td>
+</tr>
+<tr>
+  <td>Created</td>
+  <td>Label</td>
+  <td>Account creation date</td>
+</tr>
+<tr>
+  <td>Closed</td>
+  <td>Label</td>
+  <td>Account closure date (blank if active)</td>
+</tr>
+<tr>
+  <td>Print Statement</td>
+  <td>Button</td>
+  <td>Generate and print customer statement PDF</td>
+</tr>
+<tr>
+  <td>Select a Report</td>
+  <td>Dropdown</td>
+  <td>Choose from available reports</td>
+</tr>
+</tbody></table>
+<h3>Report Options</h3>
+<table><thead><tr>
+  <th>Option</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Customer Account History</td>
+  <td>Full account transaction history</td>
+</tr>
+<tr>
+  <td>Customer Account History With Readings</td>
+  <td>Account history including meter readings</td>
+</tr>
+<tr>
+  <td>Customer Usage History</td>
+  <td>Water/utility usage over time</td>
+</tr>
+</tbody></table>
+<h2>3.3 Customer Detail Page (`/customers/{id}/edit`)</h2>
+<p><em>(See original document sections 3 -- Customer Contact Information, Bill Info & History SnapShot, Applied Rates, Open Service Calls, Meter Readings, Customer Portal remain unchanged)</em></p>
+<h3>Action Buttons Row</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Save Customer Data</td>
+  <td>Button (Blue)</td>
+  <td>Save all edits on the page</td>
+</tr>
+<tr>
+  <td>Impersonate</td>
+  <td>Button (Grey)</td>
+  <td>View customer portal as this customer</td>
+</tr>
+<tr>
+  <td>Expand All</td>
+  <td>Button (Grey)</td>
+  <td>Expand all collapsible sections</td>
+</tr>
+<tr>
+  <td>Collapse All</td>
+  <td>Button (Grey)</td>
+  <td>Collapse all collapsible sections</td>
+</tr>
+<tr>
+  <td>Account Management (gear)</td>
+  <td>Button (Grey)</td>
+  <td>Account admin (close, transfer, merge)</td>
+</tr>
+</tbody></table>
+<h3>Customer Contact Information Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Account #</td>
+  <td>Text Input</td>
+  <td>Customer account number</td>
+</tr>
+<tr>
+  <td>Service (phone)</td>
+  <td>Text Input</td>
+  <td>Service phone number</td>
+</tr>
+<tr>
+  <td>Different Billing Address?</td>
+  <td>Checkbox</td>
+  <td>Toggle separate billing address fields</td>
+</tr>
+<tr>
+  <td>Email</td>
+  <td>Text Input</td>
+  <td>Customer email address</td>
+</tr>
+<tr>
+  <td>Billing (phone)</td>
+  <td>Text Input</td>
+  <td>Billing contact phone</td>
+</tr>
+<tr>
+  <td>Work (phone)</td>
+  <td>Text Input</td>
+  <td>Work phone number</td>
+</tr>
+<tr>
+  <td>Cell (phone)</td>
+  <td>Text Input</td>
+  <td>Cell phone number</td>
+</tr>
+<tr>
+  <td>Mail</td>
+  <td>Checkbox</td>
+  <td>Enable mail bill delivery</td>
+</tr>
+<tr>
+  <td>Email</td>
+  <td>Checkbox</td>
+  <td>Enable email bill delivery</td>
+</tr>
+<tr>
+  <td>Exclude 3rd Party Printing?</td>
+  <td>Checkbox</td>
+  <td>Opt out of third-party print vendor</td>
+</tr>
+<tr>
+  <td>Statement Duplicate?</td>
+  <td>Checkbox</td>
+  <td>Flag for duplicate statement mailing</td>
+</tr>
+<tr>
+  <td>Do Not Share Information?</td>
+  <td>Checkbox</td>
+  <td>Privacy flag -- restrict data sharing</td>
+</tr>
+<tr>
+  <td>Undeliverable Address?</td>
+  <td>Checkbox</td>
+  <td>Flag address as undeliverable</td>
+</tr>
+<tr>
+  <td>Section Collapse Toggle</td>
+  <td>Button (^)</td>
+  <td>Collapse/expand this section</td>
+</tr>
+</tbody></table>
+<h3>Bill Info & History SnapShot Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Current Balance</td>
+  <td>Expandable</td>
+  <td>Click to view balance breakdown</td>
+</tr>
+<tr>
+  <td>Deposits</td>
+  <td>Expandable</td>
+  <td>Click to view deposit details</td>
+</tr>
+<tr>
+  <td>+ Deposit Charge</td>
+  <td>Button (Green)</td>
+  <td>Add a new deposit charge</td>
+</tr>
+<tr>
+  <td>Overpayment</td>
+  <td>Expandable</td>
+  <td>View overpayment/credit details</td>
+</tr>
+<tr>
+  <td>AR Aging</td>
+  <td>Expandable</td>
+  <td>View aging buckets (1-30, 31-60, 61-90, 90+)</td>
+</tr>
+<tr>
+  <td>Outstanding Balances By Date</td>
+  <td>Expandable</td>
+  <td>View balances organized by date</td>
+</tr>
+<tr>
+  <td>Past Due Balances</td>
+  <td>Expandable</td>
+  <td>View overdue amounts</td>
+</tr>
+<tr>
+  <td>Enter Bill</td>
+  <td>Button (Green)</td>
+  <td>Create a new bill for this customer</td>
+</tr>
+<tr>
+  <td>Enter Payment</td>
+  <td>Button (Blue)</td>
+  <td>Record a payment</td>
+</tr>
+<tr>
+  <td>Adjustment</td>
+  <td>Button (Orange)</td>
+  <td>Create a billing adjustment</td>
+</tr>
+<tr>
+  <td>Transfer Balance</td>
+  <td>Button (Teal)</td>
+  <td>Transfer balance to another account</td>
+</tr>
+<tr>
+  <td>Section Collapse Toggle</td>
+  <td>Button (^)</td>
+  <td>Collapse/expand this section</td>
+</tr>
+</tbody></table>
+<h3>Applied Rates Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Rate Code list</td>
+  <td>Display</td>
+  <td>Shows applied rate codes with multipliers</td>
+</tr>
+<tr>
+  <td>Snowbird?</td>
+  <td>Checkbox</td>
+  <td>Flag seasonal/snowbird customer (affects billing)</td>
+</tr>
+<tr>
+  <td>See more details</td>
+  <td>Link</td>
+  <td>View full rate configuration and history</td>
+</tr>
+<tr>
+  <td>Section Collapse Toggle</td>
+  <td>Button (^)</td>
+  <td>Collapse/expand this section</td>
+</tr>
+</tbody></table>
+<h3>Open Service Calls Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>+ New Service Call</td>
+  <td>Button (Green)</td>
+  <td>Create a new service call</td>
+</tr>
+<tr>
+  <td>See more details</td>
+  <td>Link</td>
+  <td>Navigate to full service calls list</td>
+</tr>
+<tr>
+  <td>Section Collapse Toggle</td>
+  <td>Button (^)</td>
+  <td>Collapse/expand this section</td>
+</tr>
+</tbody></table>
+<h3>Meter Readings - Last 180 Days Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Serial Number / Type display</td>
+  <td>Link</td>
+  <td>Navigate to meter detail page</td>
+</tr>
+<tr>
+  <td>Section Collapse Toggle</td>
+  <td>Button (^)</td>
+  <td>Collapse/expand this section</td>
+</tr>
+</tbody></table>
+<h3>Customer Portal Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Section Collapse Toggle</td>
+  <td>Button (^)</td>
+  <td>Collapse/expand portal settings</td>
+</tr>
+</tbody></table>
+<h2>3.4 Customer Contacts / Events (`/customers/{id}/events`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>New Contact</td>
+  <td>Link</td>
+  <td>Create a new contact/event record</td>
+</tr>
+</tbody></table>
+<h3>Contacts Grid Columns</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>ID</td>
+  <td>Contact/event record ID</td>
+</tr>
+<tr>
+  <td>Created by / Assigned to</td>
+  <td>Staff who created and who is assigned</td>
+</tr>
+<tr>
+  <td>Timestamps</td>
+  <td>Created and updated dates</td>
+</tr>
+<tr>
+  <td>Type</td>
+  <td>Contact type / category</td>
+</tr>
+<tr>
+  <td>Status</td>
+  <td>Current status of the event</td>
+</tr>
+<tr>
+  <td>Notes</td>
+  <td>Free-text notes / details</td>
+</tr>
+</tbody></table>
+<h2>3.5 Customer Other Tab -- Notes (`/customers/{id}/other`)</h2>
+<h3>Sub-Tab Navigation</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Notes</td>
+  <td>Tab</td>
+  <td>View general notes and alert flags (default sub-tab)</td>
+</tr>
+<tr>
+  <td>Other Activities</td>
+  <td>Tab</td>
+  <td>View billing actions, account metadata, payment notes</td>
+</tr>
+<tr>
+  <td>X</td>
+  <td>Button</td>
+  <td>Close the Other tab overlay and return to customer detail</td>
+</tr>
+</tbody></table>
+<h3>General Notes Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>General Notes</td>
+  <td>Textarea</td>
+  <td>Free-text area for internal notes about this customer</td>
+</tr>
+<tr>
+  <td>Save</td>
+  <td>Button (Blue)</td>
+  <td>Save notes and alert changes</td>
+</tr>
+</tbody></table>
+<h3>Alerts Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Black Test</td>
+  <td>Checkbox</td>
+  <td>Toggle Black alert flag for this customer</td>
+</tr>
+<tr>
+  <td>Blue Test</td>
+  <td>Checkbox</td>
+  <td>Toggle Blue alert flag for this customer</td>
+</tr>
+<tr>
+  <td>Green Test</td>
+  <td>Checkbox</td>
+  <td>Toggle Green alert flag for this customer</td>
+</tr>
+<tr>
+  <td>Orange Test</td>
+  <td>Checkbox</td>
+  <td>Toggle Orange alert flag for this customer</td>
+</tr>
+<tr>
+  <td>Red Test</td>
+  <td>Checkbox</td>
+  <td>Toggle Red alert flag for this customer</td>
+</tr>
+</tbody></table>
+<p><em>(Alert flag names are company-configurable -- CID 9006 uses color-based test labels)</em></p>
+<h2>3.6 Customer Other Tab -- Other Activities (`/customers/{id}/other`)</h2>
+<h3>Action Buttons</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Create a Bill for this Customer</td>
+  <td>Button</td>
+  <td>Generate a new bill for this customer account</td>
+</tr>
+<tr>
+  <td>Move Statement Balance Forward</td>
+  <td>Button</td>
+  <td>Roll statement balance to the next billing period</td>
+</tr>
+<tr>
+  <td>Print Customer History</td>
+  <td>Button</td>
+  <td>Print full customer account history</td>
+</tr>
+<tr>
+  <td>Select a Report</td>
+  <td>Dropdown</td>
+  <td>Choose a report to generate for this customer</td>
+</tr>
+<tr>
+  <td>Save</td>
+  <td>Button (Blue)</td>
+  <td>Save changes to Other Information and Payment Notes</td>
+</tr>
+</tbody></table>
+<h3>Other Information Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Type</td>
+  <td>Display</td>
+  <td>Account type code (e.g., MAN) -- read-only</td>
+</tr>
+<tr>
+  <td>Category</td>
+  <td>Display</td>
+  <td>Customer category (e.g., Executive) -- read-only</td>
+</tr>
+<tr>
+  <td>Date Created</td>
+  <td>Date Input</td>
+  <td>Account creation date with date picker</td>
+</tr>
+<tr>
+  <td>Close Date</td>
+  <td>Date Input</td>
+  <td>Account close date with date picker</td>
+</tr>
+<tr>
+  <td>Clear (Close Date)</td>
+  <td>Button (Red)</td>
+  <td>Clear the close date field</td>
+</tr>
+<tr>
+  <td>Last Statement Balance</td>
+  <td>Text Input</td>
+  <td>Most recent statement balance amount</td>
+</tr>
+<tr>
+  <td>Last Statement Date</td>
+  <td>Date Input</td>
+  <td>Date of the most recent statement with date picker</td>
+</tr>
+</tbody></table>
+<h3>Payment Notes Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Payment Notes</td>
+  <td>Textarea</td>
+  <td>Free-text area for payment-specific notes</td>
+</tr>
+</tbody></table>
+<h2>3.7 Customer Other Tab -- Reports & Processes (`/customers/{id}/other`)</h2>
+<p><em>(Full-page view from CID 9007 -- Town of Palm Harbor. CID 9006 renders this as a modal overlay with Notes/Other Activities sub-tabs shown in 3.5-3.6 above.)</em></p>
+<h3>Other Reports Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Pay By Date</td>
+  <td>Date Input</td>
+  <td>Date picker for pay-by deadline on printed letters</td>
+</tr>
+<tr>
+  <td>Shut Off Date</td>
+  <td>Date Input</td>
+  <td>Date picker for shut-off deadline on printed letters</td>
+</tr>
+<tr>
+  <td>Letter Date</td>
+  <td>Date Input</td>
+  <td>Date picker for letter issue date (defaults to today)</td>
+</tr>
+<tr>
+  <td>Print $10 Late Fee Letter</td>
+  <td>Link</td>
+  <td>Generate late fee notification letter</td>
+</tr>
+<tr>
+  <td>Print Abnormal Usage</td>
+  <td>Link</td>
+  <td>Generate abnormal usage alert letter</td>
+</tr>
+<tr>
+  <td>Print Reminder Letter</td>
+  <td>Link</td>
+  <td>Generate payment reminder letter</td>
+</tr>
+<tr>
+  <td>Print Returned Payment</td>
+  <td>Link</td>
+  <td>Generate returned payment notification</td>
+</tr>
+</tbody></table>
+<h3>Other Processes Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Bank Accounts</td>
+  <td>Button</td>
+  <td>Navigate to customer bank accounts management</td>
+</tr>
+<tr>
+  <td>Future Bill Estimate Report</td>
+  <td>Button</td>
+  <td>Navigate to future bill estimator</td>
+</tr>
+<tr>
+  <td>Miscellaneous Letter</td>
+  <td>Button</td>
+  <td>Navigate to misc letter composer</td>
+</tr>
+<tr>
+  <td>Miscellaneous Notice</td>
+  <td>Button</td>
+  <td>Navigate to misc notice composer</td>
+</tr>
+</tbody></table>
+<h2>3.8 Customer Pay Plans (`/customers/{id}/payment_plans`)</h2>
+<h3>Payment Plans Actions</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Save</td>
+  <td>Button</td>
+  <td>Save payment plan changes and mark received payments</td>
+</tr>
+<tr>
+  <td>Print</td>
+  <td>Button</td>
+  <td>Print the payment plan schedule</td>
+</tr>
+<tr>
+  <td>+ Add Payment Plan</td>
+  <td>Button</td>
+  <td>Create a new scheduled payment plan entry</td>
+</tr>
+</tbody></table>
+<h3>Payment Plan Grid Columns</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Date</td>
+  <td>Scheduled payment date</td>
+</tr>
+<tr>
+  <td>Payment Amount</td>
+  <td>Amount due for this installment</td>
+</tr>
+<tr>
+  <td>Received</td>
+  <td>Checkbox -- mark payment as received</td>
+</tr>
+</tbody></table>
+<h3>Payment Details Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Payment Total</td>
+  <td>Display</td>
+  <td>Sum of all received payments</td>
+</tr>
+<tr>
+  <td>Balance Remaining</td>
+  <td>Display</td>
+  <td>Outstanding balance after payments</td>
+</tr>
+<tr>
+  <td>Remove Payment Schedule</td>
+  <td>Button</td>
+  <td>Delete the entire payment plan</td>
+</tr>
+<tr>
+  <td>Preview Payment Plan</td>
+  <td>Button</td>
+  <td>Preview the payment plan before saving</td>
+</tr>
+</tbody></table>
+<h2>3.9 Customer Bank Accounts (`/customers/{id}/bank_accounts`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>+ Add New</td>
+  <td>Button</td>
+  <td>Add a new bank account record</td>
+</tr>
+</tbody></table>
+<h3>Bank Accounts Grid Columns</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Bank Account Description</td>
+  <td>Label / description for the account</td>
+</tr>
+<tr>
+  <td>Type</td>
+  <td>Account type (Checking, Savings)</td>
+</tr>
+<tr>
+  <td>Name On Bank Account</td>
+  <td>Account holder name</td>
+</tr>
+<tr>
+  <td>Routing Number</td>
+  <td>Bank routing number</td>
+</tr>
+<tr>
+  <td>Account Number</td>
+  <td>Bank account number</td>
+</tr>
+<tr>
+  <td>Actions</td>
+  <td>Edit / Delete controls per row</td>
+</tr>
+</tbody></table>
+<h2>3.10 Customer Future Bill Estimator (`/customers/{id}/future_bill_estimator`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>As of date</td>
+  <td>Date Input</td>
+  <td>Target date for the estimate (defaults to today)</td>
+</tr>
+<tr>
+  <td>Generate Report</td>
+  <td>Button</td>
+  <td>Calculate and display the estimated future bill</td>
+</tr>
+</tbody></table>
+<h2>3.11 Customer Misc Letter (`/customers/{id}/edit_misc_letter`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Message</td>
+  <td>Textarea</td>
+  <td>Free-text body of the miscellaneous letter</td>
+</tr>
+<tr>
+  <td>Print</td>
+  <td>Button</td>
+  <td>Generate and print the letter</td>
+</tr>
+</tbody></table>
+<h2>3.12 Customer Misc Notice (`/customers/{id}/edit_misc_notice`)</h2>
+<h3>Reason Checkboxes</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Written Amount Missing</td>
+  <td>Checkbox</td>
+  <td>Payment written amount is missing</td>
+</tr>
+<tr>
+  <td>Payee Incorrect</td>
+  <td>Checkbox</td>
+  <td>Payment made to wrong payee</td>
+</tr>
+<tr>
+  <td>Signature Missing</td>
+  <td>Checkbox</td>
+  <td>Check is missing signature</td>
+</tr>
+<tr>
+  <td>Sent to us in Error</td>
+  <td>Checkbox</td>
+  <td>Payment was sent to wrong entity</td>
+</tr>
+<tr>
+  <td>Check not Enclosed</td>
+  <td>Checkbox</td>
+  <td>Payment envelope missing check</td>
+</tr>
+<tr>
+  <td>Written and Figure Amounts do not match</td>
+  <td>Checkbox</td>
+  <td>Check amounts are inconsistent</td>
+</tr>
+<tr>
+  <td>Please furnish the customer account...</td>
+  <td>Checkbox</td>
+  <td>Request for account identification</td>
+</tr>
+<tr>
+  <td>Other</td>
+  <td>Checkbox</td>
+  <td>Free-form reason (use Message field)</td>
+</tr>
+</tbody></table>
+<h3>Message Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Message</td>
+  <td>Textarea</td>
+  <td>Additional notes or custom reason text</td>
+</tr>
+<tr>
+  <td>Print</td>
+  <td>Button</td>
+  <td>Generate and print the notice</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>Part 4: Parcel Context Pages</h1>
+<h2>4.1 Parcel Sub-Navigation Tabs</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Route</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>GENERAL</td>
+  <td>Tab</td>
+  <td><code>/parcels/{id}/edit</code></td>
+  <td>Parcel configuration and address</td>
+</tr>
+<tr>
+  <td>METERS</td>
+  <td>Tab</td>
+  <td><code>/parcels/{id}/meters</code></td>
+  <td>Meter management for this parcel</td>
+</tr>
+<tr>
+  <td>SERVICE CALLS</td>
+  <td>Tab</td>
+  <td><code>/parcels/{id}/service_calls</code></td>
+  <td>Service calls for this parcel</td>
+</tr>
+<tr>
+  <td>CUSTOMER HISTORY</td>
+  <td>Tab</td>
+  <td><code>/parcels/{id}/customer_history</code></td>
+  <td>Past and current customers at this parcel</td>
+</tr>
+<tr>
+  <td>BACKFLOW DEVICES</td>
+  <td>Tab</td>
+  <td><code>/parcels/{id}/backflow_devices</code></td>
+  <td>Backflow prevention device tracking</td>
+</tr>
+<tr>
+  <td>DOCUMENTS</td>
+  <td>Tab</td>
+  <td><code>/parcels/{id}/documents</code></td>
+  <td>Uploaded parcel documents</td>
+</tr>
+<tr>
+  <td>BUILDING PERMITS</td>
+  <td>Tab</td>
+  <td><code>/parcels/{id}/permits</code></td>
+  <td>Building permit records</td>
+</tr>
+</tbody></table>
+<h2>4.2 Parcel Header Bar (Present on All Parcel Tabs)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Service Address</td>
+  <td>Label</td>
+  <td>Full parcel address (street + city/state/zip)</td>
+</tr>
+<tr>
+  <td>Current Customer</td>
+  <td>Link</td>
+  <td>Navigate to current customer detail page</td>
+</tr>
+<tr>
+  <td>First Name</td>
+  <td>Label</td>
+  <td>Current customer first name</td>
+</tr>
+<tr>
+  <td>Last Name</td>
+  <td>Label</td>
+  <td>Current customer last name</td>
+</tr>
+<tr>
+  <td>Account Number</td>
+  <td>Label</td>
+  <td>Current customer account number</td>
+</tr>
+<tr>
+  <td>Current Balance</td>
+  <td>Label</td>
+  <td>Current customer balance</td>
+</tr>
+</tbody></table>
+<h2>4.3 Parcel Edit Page (`/parcels/{id}/edit`)</h2>
+<h3>Parcel Configuration Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Parcel number</td>
+  <td>Text Input</td>
+  <td>Parcel identification number</td>
+</tr>
+<tr>
+  <td>Auxiliary Acct Number</td>
+  <td>Text Input</td>
+  <td>Secondary/auxiliary account number</td>
+</tr>
+<tr>
+  <td>Type</td>
+  <td>Dropdown</td>
+  <td>Parcel type (company-configured, e.g., BOAT, BUS, COT, MAN, STD)</td>
+</tr>
+<tr>
+  <td>Category</td>
+  <td>Dropdown</td>
+  <td>Parcel category (company-configured, e.g., Business, Economy, Executive)</td>
+</tr>
+<tr>
+  <td>Parcel Code</td>
+  <td>Dropdown</td>
+  <td>Classification code (company-configured)</td>
+</tr>
+<tr>
+  <td>Multi-Parcel Owner</td>
+  <td>Link</td>
+  <td>Navigate to linked MPO record</td>
+</tr>
+<tr>
+  <td>Remove (MPO)</td>
+  <td>Link</td>
+  <td>Remove MPO association from this parcel</td>
+</tr>
+<tr>
+  <td>Credit</td>
+  <td>Spinbutton</td>
+  <td>Credit amount applied to parcel</td>
+</tr>
+<tr>
+  <td>Rate Set</td>
+  <td>Label/Search</td>
+  <td>Assigned rate set (with search input)</td>
+</tr>
+<tr>
+  <td>Save</td>
+  <td>Button</td>
+  <td>Save all parcel changes</td>
+</tr>
+</tbody></table>
+<h3>Billing Rate Information Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>{Rate Name} checkbox</td>
+  <td>Checkbox (per rate)</td>
+  <td>Enable/disable each billing rate for this parcel</td>
+</tr>
+<tr>
+  <td>{Rate Name} multiplier</td>
+  <td>Text Input (per rate)</td>
+  <td>Multiplier value for each billing rate</td>
+</tr>
+<tr>
+  <td>Add Flat Fee?</td>
+  <td>Checkbox</td>
+  <td>Toggle flat fee addition to billing</td>
+</tr>
+<tr>
+  <td>Flat Fee Amount</td>
+  <td>Spinbutton</td>
+  <td>Dollar amount for flat fee</td>
+</tr>
+</tbody></table>
+<div class="meta">
+  <strong>Note</strong>: Rate names are company-configured. Example rates from CID 9006: Water Usage, Service Charge, Sewer Charges, Water Meter Charge, Environmental Mandates Charge, Jail & City Service & Excise, Local Tax, STEP, TEST.<br>
+</div>
+<h3>Parcel Address and Delivery Preferences Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Country</td>
+  <td>Dropdown</td>
+  <td>Country selection (250+ options, defaults to USA)</td>
+</tr>
+<tr>
+  <td>Address Line 1</td>
+  <td>Text Input</td>
+  <td>Primary street address</td>
+</tr>
+<tr>
+  <td>Address Line 2</td>
+  <td>Text Input</td>
+  <td>Secondary address (apt, suite, etc.)</td>
+</tr>
+<tr>
+  <td>City</td>
+  <td>Text Input</td>
+  <td>City name</td>
+</tr>
+<tr>
+  <td>State</td>
+  <td>Dropdown</td>
+  <td>State/province (US states + territories)</td>
+</tr>
+<tr>
+  <td>Zip Code</td>
+  <td>Text Input</td>
+  <td>Postal code</td>
+</tr>
+<tr>
+  <td>Is Active?</td>
+  <td>Checkbox</td>
+  <td>Parcel active status flag</td>
+</tr>
+<tr>
+  <td>Deliver Bill: Mail</td>
+  <td>Checkbox</td>
+  <td>Enable physical mail bill delivery</td>
+</tr>
+<tr>
+  <td>Deliver Bill: E-Mail</td>
+  <td>Checkbox</td>
+  <td>Enable email bill delivery</td>
+</tr>
+<tr>
+  <td>Email</td>
+  <td>Text Input</td>
+  <td>Email address for bill delivery</td>
+</tr>
+<tr>
+  <td>First</td>
+  <td>Text Input</td>
+  <td>Contact first name</td>
+</tr>
+<tr>
+  <td>Last</td>
+  <td>Text Input</td>
+  <td>Contact last name</td>
+</tr>
+<tr>
+  <td>Tenant Billing Address Different?</td>
+  <td>Checkbox</td>
+  <td>Toggle separate tenant billing address</td>
+</tr>
+</tbody></table>
+<h3>Previous Customers Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>{Customer Name} ${balance}</td>
+  <td>Link (per customer)</td>
+  <td>Navigate to previous customer's record (shows open balance)</td>
+</tr>
+</tbody></table>
+<h3>Parcel Record Information Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Group</td>
+  <td>Text Input</td>
+  <td>Parcel group assignment</td>
+</tr>
+<tr>
+  <td>Route Code</td>
+  <td>Dropdown</td>
+  <td>Billing route code</td>
+</tr>
+<tr>
+  <td>Order Number</td>
+  <td>Text Input</td>
+  <td>Primary order/sequence number</td>
+</tr>
+<tr>
+  <td>Order Number 2</td>
+  <td>Text Input</td>
+  <td>Secondary order number</td>
+</tr>
+<tr>
+  <td>Report Sort</td>
+  <td>Text Input</td>
+  <td>Sort order for reports</td>
+</tr>
+<tr>
+  <td>Latitude</td>
+  <td>Text Input</td>
+  <td>GPS latitude coordinate</td>
+</tr>
+<tr>
+  <td>Longitude</td>
+  <td>Text Input</td>
+  <td>GPS longitude coordinate</td>
+</tr>
+<tr>
+  <td>Parcel</td>
+  <td>Text Input</td>
+  <td>Additional parcel identifier</td>
+</tr>
+<tr>
+  <td>Minimum Calc Constant 1</td>
+  <td>Text Input</td>
+  <td>First minimum billing calculation constant</td>
+</tr>
+<tr>
+  <td>Minimum Calc Rate 1</td>
+  <td>Label/Search</td>
+  <td>First minimum calculation rate (with search)</td>
+</tr>
+<tr>
+  <td>Minimum Calc Constant 2</td>
+  <td>Text Input</td>
+  <td>Second minimum billing calculation constant</td>
+</tr>
+<tr>
+  <td>Minimum Calc Rate 2</td>
+  <td>Label/Search</td>
+  <td>Second minimum calculation rate (with search)</td>
+</tr>
+<tr>
+  <td>Notes</td>
+  <td>Textarea</td>
+  <td>Free-text parcel notes (multiline)</td>
+</tr>
+</tbody></table>
+<h3>Taxes Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>+ Add New</td>
+  <td>Button</td>
+  <td>Add a new tax entry for this parcel</td>
+</tr>
+</tbody></table>
+<h4>Taxes Grid Columns</h4>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Description</td>
+  <td>Tax description/name</td>
+</tr>
+<tr>
+  <td>Tax</td>
+  <td>Tax rate or amount</td>
+</tr>
+<tr>
+  <td>Filter Billing Type</td>
+  <td>Which billing types this tax applies to</td>
+</tr>
+</tbody></table>
+<h2>4.4 Meters Page (`/parcels/{id}/meters`)</h2>
+<h3>Action Buttons</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Save All Meters</td>
+  <td>Button (Blue)</td>
+  <td>Save all meter changes at once</td>
+</tr>
+<tr>
+  <td>Show Inactive Meters</td>
+  <td>Button (Grey)</td>
+  <td>Toggle display of retired/inactive meters</td>
+</tr>
+<tr>
+  <td>+ Add Meter</td>
+  <td>Button (Green)</td>
+  <td>Add a new meter to this parcel</td>
+</tr>
+</tbody></table>
+<h3>Meter Information Form (per meter)</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Replace Meter</td>
+  <td>Link</td>
+  <td>Start meter replacement workflow</td>
+</tr>
+<tr>
+  <td>View Readings</td>
+  <td>Link</td>
+  <td>View historical meter reading data</td>
+</tr>
+<tr>
+  <td>Enter Reading</td>
+  <td>Link</td>
+  <td>Manually enter a new meter reading</td>
+</tr>
+<tr>
+  <td>Serial Number</td>
+  <td>Text Input</td>
+  <td>Meter serial number</td>
+</tr>
+<tr>
+  <td>Type</td>
+  <td>Dropdown</td>
+  <td>Meter type (WAT = Water, etc.)</td>
+</tr>
+<tr>
+  <td>Size</td>
+  <td>Dropdown</td>
+  <td>Meter size (e.g., 2-5, 2 Inch - 5 Dials)</td>
+</tr>
+<tr>
+  <td>Manufacturer</td>
+  <td>Dropdown</td>
+  <td>Meter manufacturer (e.g., SENSUS)</td>
+</tr>
+<tr>
+  <td>Location</td>
+  <td>Dropdown</td>
+  <td>Physical location code (e.g., GEN)</td>
+</tr>
+<tr>
+  <td>Location Note</td>
+  <td>Text Input</td>
+  <td>Free-text location description</td>
+</tr>
+<tr>
+  <td>Master Meter</td>
+  <td>Dropdown</td>
+  <td>Parent meter if sub-metered</td>
+</tr>
+<tr>
+  <td>Is Master Meter?</td>
+  <td>Checkbox</td>
+  <td>Flag this as a master meter</td>
+</tr>
+<tr>
+  <td>Install Date</td>
+  <td>Date Picker</td>
+  <td>Meter installation date</td>
+</tr>
+<tr>
+  <td>Last Service Date</td>
+  <td>Date Picker</td>
+  <td>Last maintenance/service date</td>
+</tr>
+<tr>
+  <td>Read Sequence</td>
+  <td>Text Input</td>
+  <td>Reading order sequence number</td>
+</tr>
+<tr>
+  <td>Status</td>
+  <td>Dropdown</td>
+  <td>Meter status (Active, Inactive, etc.)</td>
+</tr>
+<tr>
+  <td>Replaced Serial Number</td>
+  <td>Dropdown</td>
+  <td>Link to meter this one replaced</td>
+</tr>
+<tr>
+  <td>Save All Meters (bottom)</td>
+  <td>Button (Blue)</td>
+  <td>Save all meter changes (duplicate of top button)</td>
+</tr>
+</tbody></table>
+<h3>Reading Information (per meter)</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Transmitter</td>
+  <td>Text Input</td>
+  <td>AMI/AMR transmitter ID</td>
+</tr>
+<tr>
+  <td>High Read ID</td>
+  <td>Text Input</td>
+  <td>High-read threshold identifier</td>
+</tr>
+<tr>
+  <td>Read Type</td>
+  <td>Dropdown</td>
+  <td>Reading method (01 = Manual Read)</td>
+</tr>
+<tr>
+  <td>Note 1</td>
+  <td>Textarea</td>
+  <td>Reading note field 1</td>
+</tr>
+<tr>
+  <td>Note 2</td>
+  <td>Textarea</td>
+  <td>Reading note field 2</td>
+</tr>
+<tr>
+  <td>Note 3</td>
+  <td>Textarea</td>
+  <td>Reading note field 3</td>
+</tr>
+<tr>
+  <td>Note 4</td>
+  <td>Textarea</td>
+  <td>Reading note field 4</td>
+</tr>
+<tr>
+  <td>Code 1</td>
+  <td>Text Input</td>
+  <td>Custom meter code 1</td>
+</tr>
+<tr>
+  <td>Code 2</td>
+  <td>Text Input</td>
+  <td>Custom meter code 2</td>
+</tr>
+<tr>
+  <td>Meter Code</td>
+  <td>Dropdown</td>
+  <td>Primary meter classification code</td>
+</tr>
+<tr>
+  <td>Meter Code 2</td>
+  <td>Dropdown</td>
+  <td>Secondary meter classification code</td>
+</tr>
+<tr>
+  <td>Last Reading / Date</td>
+  <td>Label</td>
+  <td>Most recent reading value and date</td>
+</tr>
+</tbody></table>
+<h2>4.5 Service Calls (`/parcels/{id}/service_calls`)</h2>
+<h3>Action Buttons</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>+ New Service Call</td>
+  <td>Link (Green)</td>
+  <td>Create a new service call for this parcel</td>
+</tr>
+</tbody></table>
+<h3>Filters Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Status</td>
+  <td>Dropdown</td>
+  <td>Filter: All, Cancelled, Complete, In Progress, Incomplete, On Hold, Review</td>
+</tr>
+<tr>
+  <td>Date Created: Start</td>
+  <td>Date Picker</td>
+  <td>Filter by creation date start (read-only, calendar popup)</td>
+</tr>
+<tr>
+  <td>Date Created: End</td>
+  <td>Date Picker</td>
+  <td>Filter by creation date end</td>
+</tr>
+<tr>
+  <td>Date Created: Clear</td>
+  <td>Button</td>
+  <td>Clear creation date filter</td>
+</tr>
+<tr>
+  <td>Date Scheduled: Start</td>
+  <td>Date Picker</td>
+  <td>Filter by scheduled date start</td>
+</tr>
+<tr>
+  <td>Date Scheduled: End</td>
+  <td>Date Picker</td>
+  <td>Filter by scheduled date end</td>
+</tr>
+<tr>
+  <td>Date Scheduled: Clear</td>
+  <td>Button</td>
+  <td>Clear scheduled date filter</td>
+</tr>
+<tr>
+  <td>Date Completed: Start</td>
+  <td>Date Picker</td>
+  <td>Filter by completion date start</td>
+</tr>
+<tr>
+  <td>Date Completed: End</td>
+  <td>Date Picker</td>
+  <td>Filter by completion date end</td>
+</tr>
+<tr>
+  <td>Date Completed: Clear</td>
+  <td>Button</td>
+  <td>Clear completion date filter</td>
+</tr>
+<tr>
+  <td>Assigned Staff</td>
+  <td>Dropdown</td>
+  <td>Filter by staff member (company-configured user list)</td>
+</tr>
+<tr>
+  <td>Category</td>
+  <td>Dropdown</td>
+  <td>Filter by category (company-configured, e.g., LEAK TEST, INVESTIGATION, CONNECT/DISCONNECT)</td>
+</tr>
+<tr>
+  <td>Apply Filter</td>
+  <td>Button</td>
+  <td>Execute the filter query</td>
+</tr>
+</tbody></table>
+<h3>Results Grid Columns</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Scheduled</td>
+  <td>Scheduled date for the service call</td>
+</tr>
+<tr>
+  <td>Completed</td>
+  <td>Completion date</td>
+</tr>
+<tr>
+  <td>Status</td>
+  <td>Current status</td>
+</tr>
+<tr>
+  <td>Route</td>
+  <td>Assigned route code</td>
+</tr>
+<tr>
+  <td>Category</td>
+  <td>Service call category/type</td>
+</tr>
+<tr>
+  <td>Details</td>
+  <td>Description and action links</td>
+</tr>
+</tbody></table>
+<h2>4.6 Customer History (`/parcels/{id}/customer_history`)</h2>
+<h3>Results Grid</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Name</td>
+  <td>Link</td>
+  <td>Customer name -- click to view customer detail</td>
+</tr>
+<tr>
+  <td>Open Date</td>
+  <td>Label</td>
+  <td>Date customer was associated with this parcel</td>
+</tr>
+<tr>
+  <td>Close Date</td>
+  <td>Label</td>
+  <td>Date association was closed (blank if active)</td>
+</tr>
+<tr>
+  <td>Active?</td>
+  <td>Icon</td>
+  <td>Check mark indicates current active customer</td>
+</tr>
+</tbody></table>
+<h2>4.7 Backflow Devices (`/parcels/{id}/backflow_devices`)</h2>
+<h3>Action Buttons</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Add New</td>
+  <td>Button</td>
+  <td>Add a new backflow prevention device</td>
+</tr>
+</tbody></table>
+<h3>Devices Grid Columns</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Name</td>
+  <td>Device name/description</td>
+</tr>
+<tr>
+  <td>Serial Number</td>
+  <td>Device serial number</td>
+</tr>
+<tr>
+  <td>Meter</td>
+  <td>Associated meter</td>
+</tr>
+<tr>
+  <td>Next Test</td>
+  <td>Scheduled next test date</td>
+</tr>
+</tbody></table>
+<h2>4.8 Parcel Documents (`/parcels/{id}/documents`)</h2>
+<h3>Upload Document Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Select file to upload</td>
+  <td>File Input</td>
+  <td>Choose a file from local machine</td>
+</tr>
+<tr>
+  <td>Description</td>
+  <td>Textarea</td>
+  <td>Free-text description of the document</td>
+</tr>
+<tr>
+  <td>Upload</td>
+  <td>Button</td>
+  <td>Upload the selected file with description</td>
+</tr>
+</tbody></table>
+<h3>Documents Grid Columns</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>File Name</td>
+  <td>Uploaded document name (clickable to download)</td>
+</tr>
+<tr>
+  <td>Description</td>
+  <td>User-entered description</td>
+</tr>
+<tr>
+  <td>Uploaded</td>
+  <td>Upload timestamp</td>
+</tr>
+</tbody></table>
+<h2>4.9 Building Permits (`/parcels/{id}/permits`)</h2>
+<h3>Action Buttons</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>+ New Permit</td>
+  <td>Link (Green)</td>
+  <td>Create a new building permit record</td>
+</tr>
+</tbody></table>
+<h3>Permits Grid Columns</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Date</td>
+  <td>Permit date</td>
+</tr>
+<tr>
+  <td>Permit ID</td>
+  <td>Permit identification number</td>
+</tr>
+<tr>
+  <td>Contractor</td>
+  <td>Associated contractor name</td>
+</tr>
+<tr>
+  <td>Improvements</td>
+  <td>Description of improvements</td>
+</tr>
+<tr>
+  <td>Cost of Improvement</td>
+  <td>Dollar cost of the improvement</td>
+</tr>
+<tr>
+  <td>Status</td>
+  <td>Permit status</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>Part 5: Billing Pipeline Pages</h1>
+<p><em>(These pages are accessed from the BILLING top-nav dropdown and follow a sequential workflow: Export → Import → Review → Bill → Print/Post)</em></p>
+<h2>5.1 Billing Pipeline Sub-Navigation</h2>
+<p><em>(Present on all billing pipeline pages -- horizontal step indicator)</em></p>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Route</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Export Meter File</td>
+  <td>Link</td>
+  <td><code>/billing_exports</code></td>
+  <td>Step 1: Export meter data for field reading devices</td>
+</tr>
+<tr>
+  <td>Import Meter Readings</td>
+  <td>Link</td>
+  <td><code>/saved_documents/import_meter_readings</code></td>
+  <td>Step 2: Upload completed meter reading files</td>
+</tr>
+<tr>
+  <td>Review Meter Readings</td>
+  <td>Link</td>
+  <td><code>/meter_readings</code></td>
+  <td>Step 3: Review, filter, and correct imported readings</td>
+</tr>
+<tr>
+  <td>Bill Customers</td>
+  <td>Link</td>
+  <td><code>/bill_customers</code></td>
+  <td>Step 4: Generate bills from reviewed readings</td>
+</tr>
+<tr>
+  <td>Print Bills</td>
+  <td>Link</td>
+  <td><code>/post_bills</code></td>
+  <td>Step 5: Print, email, post, and manage generated bills</td>
+</tr>
+</tbody></table>
+<h2>5.2 Import Transactions (`/saved_documents/import_transactions`)</h2>
+<p><em>(Standalone billing import -- not part of the meter reading pipeline)</em></p>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Select File</td>
+  <td>File Input</td>
+  <td>Choose a transaction file to upload</td>
+</tr>
+<tr>
+  <td>Penalty Date</td>
+  <td>Date Input</td>
+  <td>Date picker for penalty date on imported transactions</td>
+</tr>
+<tr>
+  <td>Override Bill Date</td>
+  <td>Date Input</td>
+  <td>Date picker to override the bill date</td>
+</tr>
+<tr>
+  <td>Upload</td>
+  <td>Button</td>
+  <td>Upload and process the selected file</td>
+</tr>
+<tr>
+  <td>Transactions Review</td>
+  <td>Button</td>
+  <td>Navigate to review staged transactions</td>
+</tr>
+</tbody></table>
+<h2>5.3 Transaction Stages (`/transaction_stages`)</h2>
+<p><em>(Review area for imported transactions before posting)</em></p>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Post Transactions</td>
+  <td>Button</td>
+  <td>Post all staged transactions to customer accounts</td>
+</tr>
+<tr>
+  <td>Delete Transaction Stages</td>
+  <td>Button</td>
+  <td>Delete all staged transactions without posting</td>
+</tr>
+<tr>
+  <td>Import a New File</td>
+  <td>Link / Button</td>
+  <td>Navigate back to Import Transactions page</td>
+</tr>
+</tbody></table>
+<h3>Transaction Stages Summary</h3>
+<table><thead><tr>
+  <th>Field</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Record Count</td>
+  <td>Number of staged transaction records</td>
+</tr>
+<tr>
+  <td>Total Amount</td>
+  <td>Sum of all staged transactions</td>
+</tr>
+<tr>
+  <td>Total Amount With Errors</td>
+  <td>Sum of transactions flagged with errors</td>
+</tr>
+</tbody></table>
+<h3>Transaction Stages Grid Columns</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Customer</td>
+  <td>Customer name linked to transaction</td>
+</tr>
+<tr>
+  <td>Date</td>
+  <td>Transaction date</td>
+</tr>
+<tr>
+  <td>Amount</td>
+  <td>Transaction amount</td>
+</tr>
+<tr>
+  <td>Open Balance</td>
+  <td>Customer open balance</td>
+</tr>
+<tr>
+  <td>Billing Type</td>
+  <td>Type of billing transaction</td>
+</tr>
+<tr>
+  <td>Payment Type</td>
+  <td>Method of payment</td>
+</tr>
+<tr>
+  <td>Rate</td>
+  <td>Applied billing rate</td>
+</tr>
+<tr>
+  <td>Note</td>
+  <td>Transaction notes</td>
+</tr>
+</tbody></table>
+<h2>5.4 Billing Exports -- Export Meter File (`/billing_exports`)</h2>
+<h3>Filter Options</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Format</td>
+  <td>Dropdown</td>
+  <td>Export format (Meter Initialization, Simple, Neptune v4, etc.)</td>
+</tr>
+<tr>
+  <td>Account Category</td>
+  <td>Dropdown</td>
+  <td>Filter by category (All, company-configured values)</td>
+</tr>
+<tr>
+  <td>Account Type</td>
+  <td>Dropdown</td>
+  <td>Filter by type (All, IRRIG, MULTI, NONRES, OTH, PUB, RES)</td>
+</tr>
+<tr>
+  <td>Route</td>
+  <td>Dropdown</td>
+  <td>Filter by billing route (All, company-configured routes)</td>
+</tr>
+<tr>
+  <td>Meter Type</td>
+  <td>Dropdown</td>
+  <td>Filter by meter type (All, WAT, WATER - Old Meter, etc.)</td>
+</tr>
+</tbody></table>
+<h3>Meter Manufacturer Checkboxes</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>All</td>
+  <td>Checkbox</td>
+  <td>Select all manufacturers</td>
+</tr>
+<tr>
+  <td>{Manufacturer}</td>
+  <td>Checkbox</td>
+  <td>Per-manufacturer filter (company-configured, e.g., GEN, NEPTUNE)</td>
+</tr>
+</tbody></table>
+<h3>Actions</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Export Meter File</td>
+  <td>Button</td>
+  <td>Generate and download the meter export file</td>
+</tr>
+<tr>
+  <td>Continue to Import Meter Readings</td>
+  <td>Button</td>
+  <td>Advance to the next pipeline step</td>
+</tr>
+</tbody></table>
+<h2>5.5 Import Meter Readings (`/saved_documents/import_meter_readings`)</h2>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Select file to upload</td>
+  <td>File Input</td>
+  <td>Choose a meter reading file to import</td>
+</tr>
+<tr>
+  <td>Select import type</td>
+  <td>Dropdown</td>
+  <td>Import method (File Format, Neptune V4)</td>
+</tr>
+<tr>
+  <td>Select import format</td>
+  <td>Dropdown</td>
+  <td>File format (Meter Initialization, Simple, etc.)</td>
+</tr>
+<tr>
+  <td>Upload</td>
+  <td>Button</td>
+  <td>Upload and process the selected file</td>
+</tr>
+<tr>
+  <td>Continue to Review Meter Readings</td>
+  <td>Button</td>
+  <td>Advance to the next pipeline step</td>
+</tr>
+</tbody></table>
+<h2>5.6 Review Meter Readings (`/meter_readings`)</h2>
+<p><em>(Most complex billing page -- filter, add, edit readings inline)</em></p>
+<h3>Filter Readings Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Start Reading Before Date</td>
+  <td>Date Input</td>
+  <td>Filter: readings starting before this date</td>
+</tr>
+<tr>
+  <td>Start Reading After Date</td>
+  <td>Date Input</td>
+  <td>Filter: readings starting after this date</td>
+</tr>
+<tr>
+  <td>End Reading Before Date</td>
+  <td>Date Input</td>
+  <td>Filter: readings ending before this date</td>
+</tr>
+<tr>
+  <td>End Reading After Date</td>
+  <td>Date Input</td>
+  <td>Filter: readings ending after this date</td>
+</tr>
+<tr>
+  <td>Clear (x4)</td>
+  <td>Button (x4)</td>
+  <td>Clear each corresponding date filter</td>
+</tr>
+<tr>
+  <td>Account Type</td>
+  <td>Dropdown</td>
+  <td>Filter by account type (All, IRRIG, MULTI, etc.)</td>
+</tr>
+<tr>
+  <td>Account Category</td>
+  <td>Dropdown</td>
+  <td>Filter by category (All, company-configured)</td>
+</tr>
+<tr>
+  <td>Route</td>
+  <td>Dropdown</td>
+  <td>Filter by billing route</td>
+</tr>
+<tr>
+  <td>Meter Type</td>
+  <td>Dropdown</td>
+  <td>Filter by meter type</td>
+</tr>
+</tbody></table>
+<h3>Warning Radio Filters</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Show All</td>
+  <td>Radio</td>
+  <td>Display all readings (default)</td>
+</tr>
+<tr>
+  <td>Show All Warnings</td>
+  <td>Radio</td>
+  <td>Display only readings with any warning</td>
+</tr>
+<tr>
+  <td>0 / Negative Consumption</td>
+  <td>Radio</td>
+  <td>Zero or negative usage flagged readings</td>
+</tr>
+<tr>
+  <td>No Matching Meter</td>
+  <td>Radio</td>
+  <td>Readings with no linked meter</td>
+</tr>
+<tr>
+  <td>No Customer To Bill</td>
+  <td>Radio</td>
+  <td>Readings with no active customer</td>
+</tr>
+<tr>
+  <td>Reading Variance</td>
+  <td>Radio</td>
+  <td>Readings exceeding variance threshold</td>
+</tr>
+<tr>
+  <td>Missing End Date</td>
+  <td>Radio</td>
+  <td>Readings without an end date</td>
+</tr>
+<tr>
+  <td>Invalid dates</td>
+  <td>Radio</td>
+  <td>Readings with date validation errors</td>
+</tr>
+<tr>
+  <td>Days under company threshold</td>
+  <td>Radio</td>
+  <td>Readings below minimum day threshold</td>
+</tr>
+<tr>
+  <td>Duplicate meters</td>
+  <td>Radio</td>
+  <td>Readings with duplicate meter entries</td>
+</tr>
+<tr>
+  <td>Has Bill</td>
+  <td>Radio</td>
+  <td>Readings already billed</td>
+</tr>
+<tr>
+  <td>Active Customers with Meters</td>
+  <td>Radio</td>
+  <td>All active customers with meters</td>
+</tr>
+</tbody></table>
+<h3>Filter Actions</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Print List</td>
+  <td>Button</td>
+  <td>Print the filtered readings list</td>
+</tr>
+<tr>
+  <td>Continue to Bill Customers</td>
+  <td>Button</td>
+  <td>Advance to the next pipeline step</td>
+</tr>
+</tbody></table>
+<h3>Add Readings Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Account Type</td>
+  <td>Dropdown</td>
+  <td>Filter accounts for reading generation</td>
+</tr>
+<tr>
+  <td>Add Readings</td>
+  <td>Button</td>
+  <td>Generate new reading entries for selected accounts</td>
+</tr>
+<tr>
+  <td>Estimate Consumption</td>
+  <td>Button</td>
+  <td>Auto-estimate consumption for all readings</td>
+</tr>
+<tr>
+  <td>Delete Readings</td>
+  <td>Button</td>
+  <td>Delete all current readings</td>
+</tr>
+<tr>
+  <td>Delete readings with no meter only</td>
+  <td>Checkbox</td>
+  <td>Limit deletion to unmatched-meter readings only</td>
+</tr>
+<tr>
+  <td>Account Category</td>
+  <td>Dropdown</td>
+  <td>Filter by category for reading generation</td>
+</tr>
+<tr>
+  <td>Route</td>
+  <td>Dropdown</td>
+  <td>Filter by route for reading generation</td>
+</tr>
+<tr>
+  <td>Read Type</td>
+  <td>Dropdown</td>
+  <td>Reading type code (e.g., 0002, GEN)</td>
+</tr>
+<tr>
+  <td>End Read Date</td>
+  <td>Date Input</td>
+  <td>End date for generated readings</td>
+</tr>
+<tr>
+  <td>Meter Types</td>
+  <td>Checkbox (per type)</td>
+  <td>Select which meter types to include</td>
+</tr>
+<tr>
+  <td>Start Date</td>
+  <td>Date Input</td>
+  <td>Override start date for readings</td>
+</tr>
+<tr>
+  <td>End Date</td>
+  <td>Date Input</td>
+  <td>Override end date for readings</td>
+</tr>
+<tr>
+  <td>Override Dates</td>
+  <td>Button</td>
+  <td>Apply date overrides to all readings</td>
+</tr>
+</tbody></table>
+<h3>Per-Reading Row (Inline Editable)</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Account #</td>
+  <td>Link</td>
+  <td>Navigate to customer detail page</td>
+</tr>
+<tr>
+  <td>Address</td>
+  <td>Link</td>
+  <td>Navigate to parcel edit page</td>
+</tr>
+<tr>
+  <td>Meter #</td>
+  <td>Link</td>
+  <td>Navigate to meter readings history</td>
+</tr>
+<tr>
+  <td>Estimate</td>
+  <td>Link</td>
+  <td>Auto-estimate this reading</td>
+</tr>
+<tr>
+  <td>Read ID</td>
+  <td>Text Input</td>
+  <td>Reading identifier</td>
+</tr>
+<tr>
+  <td>Customer</td>
+  <td>Dropdown</td>
+  <td>Select which customer to bill for this meter</td>
+</tr>
+<tr>
+  <td>Start Date</td>
+  <td>Date Input</td>
+  <td>Editable reading start date</td>
+</tr>
+<tr>
+  <td>End Date</td>
+  <td>Date Input</td>
+  <td>Editable reading end date</td>
+</tr>
+<tr>
+  <td>Start Read</td>
+  <td>Text Input</td>
+  <td>Starting meter reading value</td>
+</tr>
+<tr>
+  <td>End Read</td>
+  <td>Text Input</td>
+  <td>Ending meter reading value</td>
+</tr>
+<tr>
+  <td>Usage</td>
+  <td>Text Input</td>
+  <td>Calculated consumption (editable)</td>
+</tr>
+<tr>
+  <td>Use</td>
+  <td>Checkbox</td>
+  <td>Include this reading in billing</td>
+</tr>
+<tr>
+  <td>Delete</td>
+  <td>Button</td>
+  <td>Remove this reading row</td>
+</tr>
+</tbody></table>
+<h3>Usage Summary Section</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Type</td>
+  <td>Meter type code</td>
+</tr>
+<tr>
+  <td>Count</td>
+  <td>Number of readings</td>
+</tr>
+<tr>
+  <td>Raw Usage</td>
+  <td>Total raw consumption</td>
+</tr>
+<tr>
+  <td>Multiplied Usage</td>
+  <td>Consumption after multiplier applied</td>
+</tr>
+</tbody></table>
+<h2>5.7 Bill Customers (`/bill_customers`)</h2>
+<h3>Filter Options</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Account Type</td>
+  <td>Text Input</td>
+  <td>Filter by account type (autocomplete, default: All)</td>
+</tr>
+<tr>
+  <td>Account Category</td>
+  <td>Text Input</td>
+  <td>Filter by account category (autocomplete, default: All)</td>
+</tr>
+<tr>
+  <td>Route</td>
+  <td>Text Input</td>
+  <td>Filter by billing route (autocomplete, default: All)</td>
+</tr>
+</tbody></table>
+<h3>Date Fields (For Un-Metered Rates)</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Bill Period Start Date</td>
+  <td>Date Input</td>
+  <td>Start of the billing period</td>
+</tr>
+<tr>
+  <td>Bill Period End Date</td>
+  <td>Date Input</td>
+  <td>End of the billing period</td>
+</tr>
+<tr>
+  <td>Bill Date</td>
+  <td>Date Input</td>
+  <td>Date printed on the bill</td>
+</tr>
+<tr>
+  <td>Due Date</td>
+  <td>Date Input</td>
+  <td>Payment due date</td>
+</tr>
+<tr>
+  <td>Discount Date</td>
+  <td>Date Input</td>
+  <td>Early-pay discount deadline (with Clear button)</td>
+</tr>
+<tr>
+  <td>Exclude Bills With Zero Consumption</td>
+  <td>Checkbox</td>
+  <td>Skip customers with no usage</td>
+</tr>
+</tbody></table>
+<h3>Rate Selection</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Select All</td>
+  <td>Checkbox</td>
+  <td>Toggle all rate checkboxes</td>
+</tr>
+<tr>
+  <td>{Rate Name}</td>
+  <td>Checkbox (per rate)</td>
+  <td>Company-configured rates (CID 9007 has 24 rates including Admin Fee, Backflow Testing, Garbage, Base Service tiers, Reserve)</td>
+</tr>
+<tr>
+  <td>Bill Meter Readings</td>
+  <td>Checkbox</td>
+  <td>Include meter-based charges in billing</td>
+</tr>
+</tbody></table>
+<h3>Actions</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Create Bills</td>
+  <td>Button</td>
+  <td>Generate bills for selected rates and customers</td>
+</tr>
+<tr>
+  <td>Continue to Print Bills</td>
+  <td>Button</td>
+  <td>Advance to the next pipeline step</td>
+</tr>
+</tbody></table>
+<h2>5.8 Post Bills -- Print Preview (`/post_bills`)</h2>
+<p><em>(Most complex page in the application -- 8 functional sections)</em></p>
+<h3>Filter Actions</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Account Type</td>
+  <td>Dropdown</td>
+  <td>Filter bills by account type</td>
+</tr>
+<tr>
+  <td>Account Category</td>
+  <td>Dropdown</td>
+  <td>Filter bills by category</td>
+</tr>
+<tr>
+  <td>Route (For Delete Only)</td>
+  <td>Dropdown</td>
+  <td>Filter scope for bill deletion</td>
+</tr>
+</tbody></table>
+<h3>Print Account Bills Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Format</td>
+  <td>Dropdown</td>
+  <td>Bill format (Statement, Postcard Single Sided)</td>
+</tr>
+<tr>
+  <td>Due Date</td>
+  <td>Date Input</td>
+  <td>Due date printed on bills</td>
+</tr>
+<tr>
+  <td>Print Failed Emails</td>
+  <td>Checkbox</td>
+  <td>Include bills that failed email delivery</td>
+</tr>
+<tr>
+  <td>Print Positive Balance Bills Only</td>
+  <td>Checkbox</td>
+  <td>Exclude zero/credit balance bills</td>
+</tr>
+<tr>
+  <td>Print Excluded Third Party</td>
+  <td>Checkbox</td>
+  <td>Include customers excluded from 3rd-party print</td>
+</tr>
+<tr>
+  <td>Print Multi-Parcel Owners</td>
+  <td>Checkbox</td>
+  <td>Include MPO consolidated bills</td>
+</tr>
+<tr>
+  <td>Include Customers Without Bills</td>
+  <td>Checkbox</td>
+  <td>Show customers even if no bill generated</td>
+</tr>
+<tr>
+  <td>Include Inactive Customers</td>
+  <td>Checkbox</td>
+  <td>Include closed/inactive accounts</td>
+</tr>
+<tr>
+  <td>Include Email Customers Only</td>
+  <td>Checkbox</td>
+  <td>Limit to email-delivery customers</td>
+</tr>
+<tr>
+  <td>Print Account Bills</td>
+  <td>Button</td>
+  <td>Generate printable bill PDF</td>
+</tr>
+</tbody></table>
+<h3>Email Account Bills Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>View Emailed Bills</td>
+  <td>Link</td>
+  <td>Navigate to email batch history</td>
+</tr>
+<tr>
+  <td>Email Positive Balance Only</td>
+  <td>Checkbox (checked)</td>
+  <td>Only email bills with positive balance</td>
+</tr>
+<tr>
+  <td>Send Test Email</td>
+  <td>Checkbox</td>
+  <td>Send to test address instead of customers</td>
+</tr>
+<tr>
+  <td>Due Date</td>
+  <td>Date Input</td>
+  <td>Due date included in email</td>
+</tr>
+<tr>
+  <td>Email Account Bills</td>
+  <td>Button</td>
+  <td>Send bills via email</td>
+</tr>
+</tbody></table>
+<h3>Post Bills to Customers Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Override Sending Email</td>
+  <td>Checkbox</td>
+  <td>Skip email notifications during posting</td>
+</tr>
+<tr>
+  <td>Post Bills to Customers</td>
+  <td>Button</td>
+  <td>Finalize bills and update customer balances</td>
+</tr>
+</tbody></table>
+<h3>Bill Actions Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>View Previously Printed Bills</td>
+  <td>Link / Button</td>
+  <td>Navigate to saved documents archive</td>
+</tr>
+</tbody></table>
+<h3>Recalculate Bills Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Recalculate Bills</td>
+  <td>Button</td>
+  <td>Recalculate all unposted bills at current rates</td>
+</tr>
+</tbody></table>
+<h3>Set Dates Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Fill Blank Start Dates With Fixed Date</td>
+  <td>Radio</td>
+  <td>Only fill empty start dates</td>
+</tr>
+<tr>
+  <td>Override All Start Dates</td>
+  <td>Radio</td>
+  <td>Replace all start dates</td>
+</tr>
+<tr>
+  <td>Fill Blank End Dates With Fixed Date</td>
+  <td>Radio</td>
+  <td>Only fill empty end dates</td>
+</tr>
+<tr>
+  <td>Override All End Dates</td>
+  <td>Radio</td>
+  <td>Replace all end dates (default)</td>
+</tr>
+<tr>
+  <td>Date to Fill</td>
+  <td>Date Input</td>
+  <td>The date value to apply</td>
+</tr>
+<tr>
+  <td>Set Dates</td>
+  <td>Button</td>
+  <td>Apply the selected date operation</td>
+</tr>
+</tbody></table>
+<h3>Delete All Bills Section</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Delete</td>
+  <td>Button</td>
+  <td>Delete all unposted bills and associated credits</td>
+</tr>
+</tbody></table>
+<h3>Overview Section</h3>
+<table><thead><tr>
+  <th>Field</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Total Customers</td>
+  <td>Count of customers with bills</td>
+</tr>
+<tr>
+  <td>Total Bills</td>
+  <td>Count of generated bills</td>
+</tr>
+<tr>
+  <td>Total Amount</td>
+  <td>Sum of all bill amounts</td>
+</tr>
+<tr>
+  <td>Total Emails</td>
+  <td>Count of bills queued for email</td>
+</tr>
+<tr>
+  <td>Total Printouts</td>
+  <td>Count of bills queued for print</td>
+</tr>
+<tr>
+  <td>Refresh</td>
+  <td>Button -- reload overview statistics</td>
+</tr>
+</tbody></table>
+<h3>Bills Grid</h3>
+<table><thead><tr>
+  <th>Element</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>High-Low</td>
+  <td>Sort Link</td>
+  <td>Sort by current/last bill ratio descending</td>
+</tr>
+<tr>
+  <td>Low-High</td>
+  <td>Sort Link</td>
+  <td>Sort by current/last bill ratio ascending</td>
+</tr>
+<tr>
+  <td>Go to Page</td>
+  <td>Text Input</td>
+  <td>Jump to specific page in bill listing</td>
+</tr>
+</tbody></table>
+<h3>Bills Grid Columns</h3>
+<table><thead><tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr></thead><tbody>
+<tr>
+  <td>Name</td>
+  <td>Customer name</td>
+</tr>
+<tr>
+  <td>Acct. #</td>
+  <td>Account number</td>
+</tr>
+<tr>
+  <td>Addr.</td>
+  <td>Service address</td>
+</tr>
+<tr>
+  <td>Rate</td>
+  <td>Applied billing rate</td>
+</tr>
+<tr>
+  <td>Start Date</td>
+  <td>Billing period start (editable, yellow background)</td>
+</tr>
+<tr>
+  <td>End Date</td>
+  <td>Billing period end (editable, yellow background)</td>
+</tr>
+<tr>
+  <td>Days</td>
+  <td>Number of days in period</td>
+</tr>
+<tr>
+  <td>Beg. Read</td>
+  <td>Beginning meter reading</td>
+</tr>
+<tr>
+  <td>End Read</td>
+  <td>Ending meter reading</td>
+</tr>
+<tr>
+  <td>Consumption</td>
+  <td>Calculated usage</td>
+</tr>
+<tr>
+  <td>Usage Charge</td>
+  <td>Charge for consumption</td>
+</tr>
+<tr>
+  <td>Other</td>
+  <td>Other charges (fees, taxes)</td>
+</tr>
+<tr>
+  <td>Total</td>
+  <td>Total bill amount</td>
+</tr>
+<tr>
+  <td>Last Bill</td>
+  <td>Previous bill amount for comparison</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>Part 6: Summary Statistics</h1>
+<h2>Element Counts by Page</h2>
+<table><thead><tr>
+  <th>Page</th>
+  <th>Links</th>
+  <th>Buttons</th>
+  <th>Inputs</th>
+  <th>Dropdowns</th>
+  <th>Checkboxes</th>
+  <th>Radios</th>
+  <th>Total</th>
+</tr></thead><tbody>
+<tr>
+  <td><strong>Global Elements</strong></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>Global Nav Bar</td>
+  <td>7</td>
+  <td>2</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>9</strong></td>
+</tr>
+<tr>
+  <td>Sidebar Quick Links</td>
+  <td>10</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>10</strong></td>
+</tr>
+<tr>
+  <td>Sidebar Widgets</td>
+  <td>6</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>6</strong></td>
+</tr>
+<tr>
+  <td><strong>Search Pages</strong></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>Customer Search</td>
+  <td>0</td>
+  <td>1</td>
+  <td>10</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>11</strong></td>
+</tr>
+<tr>
+  <td>Parcel Search</td>
+  <td>0</td>
+  <td>0</td>
+  <td>3</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>3</strong></td>
+</tr>
+<tr>
+  <td>Payment Search</td>
+  <td>0</td>
+  <td>5</td>
+  <td>4</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>10</strong></td>
+</tr>
+<tr>
+  <td>MPO Search</td>
+  <td>1</td>
+  <td>1</td>
+  <td>4</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>6</strong></td>
+</tr>
+<tr>
+  <td>Contractor Search</td>
+  <td>0</td>
+  <td>0</td>
+  <td>4</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>4</strong></td>
+</tr>
+<tr>
+  <td>Business Search</td>
+  <td>0</td>
+  <td>0</td>
+  <td>3</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>4</strong></td>
+</tr>
+<tr>
+  <td><strong>Customer Pages</strong></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>Customer Detail</td>
+  <td>4</td>
+  <td>10</td>
+  <td>7</td>
+  <td>1</td>
+  <td>7</td>
+  <td>0</td>
+  <td><strong>29</strong></td>
+</tr>
+<tr>
+  <td>Customer Events</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>1</strong></td>
+</tr>
+<tr>
+  <td>Customer Other -- Notes</td>
+  <td>0</td>
+  <td>2</td>
+  <td>1</td>
+  <td>0</td>
+  <td>5</td>
+  <td>0</td>
+  <td><strong>8</strong></td>
+</tr>
+<tr>
+  <td>Customer Other -- Activities</td>
+  <td>0</td>
+  <td>5</td>
+  <td>5</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>11</strong></td>
+</tr>
+<tr>
+  <td>Customer Other -- Reports</td>
+  <td>4</td>
+  <td>7</td>
+  <td>3</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>14</strong></td>
+</tr>
+<tr>
+  <td>Customer Pay Plans</td>
+  <td>0</td>
+  <td>5</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>5</strong></td>
+</tr>
+<tr>
+  <td>Customer Bank Accounts</td>
+  <td>0</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>1</strong></td>
+</tr>
+<tr>
+  <td>Customer Future Bill</td>
+  <td>0</td>
+  <td>2</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>3</strong></td>
+</tr>
+<tr>
+  <td>Customer Misc Letter</td>
+  <td>0</td>
+  <td>1</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>2</strong></td>
+</tr>
+<tr>
+  <td>Customer Misc Notice</td>
+  <td>0</td>
+  <td>1</td>
+  <td>1</td>
+  <td>0</td>
+  <td>8</td>
+  <td>0</td>
+  <td><strong>10</strong></td>
+</tr>
+<tr>
+  <td><strong>Parcel Pages</strong></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>Parcel Edit</td>
+  <td>2</td>
+  <td>2</td>
+  <td>22</td>
+  <td>4</td>
+  <td>13</td>
+  <td>0</td>
+  <td><strong>43</strong></td>
+</tr>
+<tr>
+  <td>Meters</td>
+  <td>3</td>
+  <td>3</td>
+  <td>10</td>
+  <td>8</td>
+  <td>1</td>
+  <td>0</td>
+  <td><strong>25</strong></td>
+</tr>
+<tr>
+  <td>Meter Readings</td>
+  <td>0</td>
+  <td>0</td>
+  <td>5</td>
+  <td>3</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>8</strong></td>
+</tr>
+<tr>
+  <td>Service Calls</td>
+  <td>1</td>
+  <td>4</td>
+  <td>6</td>
+  <td>3</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>14</strong></td>
+</tr>
+<tr>
+  <td>Customer History</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>0</strong></td>
+</tr>
+<tr>
+  <td>Backflow Devices</td>
+  <td>0</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>1</strong></td>
+</tr>
+<tr>
+  <td>Parcel Documents</td>
+  <td>0</td>
+  <td>2</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>3</strong></td>
+</tr>
+<tr>
+  <td>Building Permits</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>1</strong></td>
+</tr>
+<tr>
+  <td><strong>Billing Pipeline</strong></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>Billing Pipeline Nav</td>
+  <td>5</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>5</strong></td>
+</tr>
+<tr>
+  <td>Import Transactions</td>
+  <td>0</td>
+  <td>4</td>
+  <td>2</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>6</strong></td>
+</tr>
+<tr>
+  <td>Transaction Stages</td>
+  <td>1</td>
+  <td>2</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>3</strong></td>
+</tr>
+<tr>
+  <td>Billing Exports</td>
+  <td>0</td>
+  <td>2</td>
+  <td>0</td>
+  <td>5</td>
+  <td>3</td>
+  <td>0</td>
+  <td><strong>10</strong></td>
+</tr>
+<tr>
+  <td>Import Meter Readings</td>
+  <td>0</td>
+  <td>2</td>
+  <td>0</td>
+  <td>2</td>
+  <td>0</td>
+  <td>0</td>
+  <td><strong>4</strong></td>
+</tr>
+<tr>
+  <td>Review Meter Readings</td>
+  <td>3</td>
+  <td>11</td>
+  <td>7</td>
+  <td>8</td>
+  <td>3</td>
+  <td>12</td>
+  <td><strong>44</strong></td>
+</tr>
+<tr>
+  <td>Bill Customers</td>
+  <td>0</td>
+  <td>3</td>
+  <td>8</td>
+  <td>0</td>
+  <td>27</td>
+  <td>0</td>
+  <td><strong>38</strong></td>
+</tr>
+<tr>
+  <td>Post Bills</td>
+  <td>4</td>
+  <td>10</td>
+  <td>4</td>
+  <td>4</td>
+  <td>10</td>
+  <td>4</td>
+  <td><strong>36</strong></td>
+</tr>
+<tr>
+  <td><strong>TOTALS</strong></td>
+  <td><strong>53</strong></td>
+  <td><strong>89</strong></td>
+  <td><strong>112</strong></td>
+  <td><strong>41</strong></td>
+  <td><strong>77</strong></td>
+  <td><strong>16</strong></td>
+  <td><strong>388</strong></td>
+</tr>
+</tbody></table>
+<h2>Page Complexity Ranking</h2>
+<table><thead><tr>
+  <th>Rank</th>
+  <th>Page</th>
+  <th>Elements</th>
+  <th>Notes</th>
+</tr></thead><tbody>
+<tr>
+  <td>1</td>
+  <td>Review Meter Readings</td>
+  <td>44</td>
+  <td>Filter, warnings, add/edit readings inline + per-row controls</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>Parcel Edit</td>
+  <td>43</td>
+  <td>5 sections -- rates, address, record info</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>Bill Customers</td>
+  <td>38</td>
+  <td>5 date pickers + 25 rate checkboxes</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>Post Bills</td>
+  <td>36</td>
+  <td>8 functional sections -- print, email, post, recalculate, delete</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>Customer Detail</td>
+  <td>29</td>
+  <td>Operational hub -- contact, billing, rates, portal</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td>Meters</td>
+  <td>25</td>
+  <td>Dense form per meter + reading info</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td>Customer Other -- Reports</td>
+  <td>14</td>
+  <td>3 date pickers + 4 print letter links + 4 process buttons</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td>Service Calls</td>
+  <td>14</td>
+  <td>Rich filter section with 3 date ranges</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td>Customer Search</td>
+  <td>11</td>
+  <td>Variable -- custom fields expand it per company</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td>Billing Exports</td>
+  <td>10</td>
+  <td>5 filter dropdowns + manufacturer checkboxes</td>
+</tr>
+</tbody></table>
+<hr>
+<div class="footer"><em>Version 1.1 -- Document generated from live browser snapshots of CID 9006 (QA Property Management), CID 9007 (Town of Palm Harbor), and CID South Pasadena admin interface. For MetroBill UI mapping, onboarding, QA test coverage, and feature planning reference.</em></div>
+</body></html>

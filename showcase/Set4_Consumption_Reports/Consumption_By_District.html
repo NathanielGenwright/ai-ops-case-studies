@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Town of Rivervale — Meter Consumption by District Summary (Mar 2026)</title>
+<style>
+  :root {
+    --ink:        #000;
+    --line:       #000;
+    --rule-soft:  #bbb;
+    --band:       #ececec;   /* subtotal band  */
+    --band-strong:#d8d8d8;   /* section total  */
+    --band-grand: #c2c2c2;   /* grand total    */
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: "Helvetica Neue", Arial, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: #fff;
+    margin: 0;
+    padding: 32px 36px 48px;
+    font-size: 12px;
+    line-height: 1.35;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet { max-width: 960px; margin: 0 auto; }
+
+  /* ---------- Report header ---------- */
+  header.report {
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+  header.report h1 {
+    font-size: 20px;
+    margin: 0 0 2px;
+    letter-spacing: .2px;
+  }
+  header.report h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: #222;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 28px;
+    font-size: 11px;
+    color: #333;
+  }
+  .meta span b { font-weight: 600; }
+
+  /* ---------- Section ---------- */
+  section.district-group { margin-bottom: 26px; }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    background: var(--ink);
+    color: #fff;
+    padding: 5px 10px;
+    margin: 0 0 0;
+  }
+
+  /* ---------- Table ---------- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+
+  thead th {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    text-align: right;
+    padding: 6px 10px;
+    border-bottom: 1.5px solid var(--line);
+    white-space: nowrap;
+  }
+  thead th.l { text-align: left; }
+
+  tbody td {
+    padding: 3px 10px;
+    text-align: right;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+  }
+  tbody td.l   { text-align: left; }
+  tbody td.dist{ padding-left: 22px; color: #333; }  /* detail rows indented under district */
+
+  /* subtotal per district */
+  tr.subtotal td {
+    background: var(--band);
+    font-weight: 700;
+    border-top: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  tr.subtotal td.l { padding-left: 10px; }
+
+  /* section total (Water / Sewer) */
+  tr.section-total td {
+    background: var(--band-strong);
+    font-weight: 800;
+    border-top: 1.5px solid var(--line);
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  /* grand total */
+  table.grand td {
+    padding: 8px 10px;
+    background: var(--band-grand);
+    font-weight: 800;
+    font-size: 13px;
+    border-top: 2px solid var(--line);
+    border-bottom: 2px solid var(--line);
+    text-align: right;
+  }
+  table.grand td.l { text-align: left; letter-spacing: .5px; }
+
+  /* spacer row between districts for readability */
+  tr.gap td { padding: 0; height: 4px; border: 0; background: #fff; }
+
+  /* zero values muted so the eye lands on real consumption */
+  .zero { color: #999; }
+
+  footer.report {
+    margin-top: 22px;
+    padding-top: 8px;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 10px;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ---------- Print ---------- */
+  @media print {
+    body { padding: 0; font-size: 10.5px; }
+    .sheet { max-width: none; }
+    section.district-group { break-inside: avoid; }
+    tr.subtotal td, tr.section-total td, table.grand td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { margin: 14mm 12mm; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="report">
+    <h1>Town of Rivervale</h1>
+    <h2>Meter Consumption by District&nbsp;&mdash;&nbsp;Summary</h2>
+    <div class="meta">
+      <span><b>Period:</b> 03/01/2026 &ndash; 03/31/2026</span>
+      <span><b>Reporting Units:</b> Gallons</span>
+      <span><b>Printed:</b> June&nbsp;12,&nbsp;2026 08:42</span>
+    </div>
+  </header>
+
+  <!-- ============================ WATER ============================ -->
+  <section class="district-group">
+    <h3 class="section-title">Water Districts</h3>
+    <table>
+      <thead>
+        <tr>
+          <th class="l">District ID</th>
+          <th>Meter Read Date</th>
+          <th>Customers</th>
+          <th>Reads</th>
+          <th>Estimated</th>
+          <th>Manual</th>
+          <th>Handheld</th>
+          <th>Total Consumption</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- MASTER-WATER -->
+        <tr><td class="l dist">MASTER-WATER</td><td>03/06/2026</td><td>2</td><td>2</td><td class="zero">0</td><td>2</td><td class="zero">0</td><td>101,774,000</td></tr>
+        <tr class="subtotal"><td class="l">MASTER-WATER Subtotal</td><td></td><td>2</td><td>2</td><td>0</td><td>2</td><td>0</td><td>101,774,000</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- POLKVILLE MASTER -->
+        <tr><td class="l dist">POLKVILLE MASTER</td><td>03/05/2026</td><td>4</td><td>4</td><td class="zero">0</td><td>4</td><td class="zero">0</td><td>1,188,730</td></tr>
+        <tr class="subtotal"><td class="l">POLKVILLE MASTER Subtotal</td><td></td><td>4</td><td>4</td><td>0</td><td>4</td><td>0</td><td>1,188,730</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- POLKVILLE WATER -->
+        <tr><td class="l dist">POLKVILLE WATER</td><td>03/05/2026</td><td>38</td><td>38</td><td class="zero">0</td><td>38</td><td class="zero">0</td><td>1,255,196</td></tr>
+        <tr><td class="l dist">POLKVILLE WATER</td><td>03/06/2026</td><td>2</td><td>2</td><td class="zero">0</td><td>2</td><td class="zero">0</td><td>47,766</td></tr>
+        <tr class="subtotal"><td class="l">POLKVILLE WATER Subtotal</td><td></td><td>40</td><td>40</td><td>0</td><td>40</td><td>0</td><td>1,302,962</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- WATER -->
+        <tr><td class="l dist">WATER</td><td>03/02/2026</td><td>5</td><td>5</td><td class="zero">0</td><td>5</td><td class="zero">0</td><td>39,998</td></tr>
+        <tr><td class="l dist">WATER</td><td>03/03/2026</td><td>21</td><td>21</td><td class="zero">0</td><td>21</td><td class="zero">0</td><td>154,361</td></tr>
+        <tr><td class="l dist">WATER</td><td>03/04/2026</td><td>2</td><td>2</td><td class="zero">0</td><td>2</td><td class="zero">0</td><td>5,026</td></tr>
+        <tr><td class="l dist">WATER</td><td>03/05/2026</td><td>1,567</td><td>1,568</td><td>2</td><td>1,566</td><td class="zero">0</td><td>57,432,831</td></tr>
+        <tr><td class="l dist">WATER</td><td>03/06/2026</td><td>6</td><td>7</td><td class="zero">0</td><td>7</td><td class="zero">0</td><td>32,964</td></tr>
+        <tr><td class="l dist">WATER</td><td>03/26/2026</td><td>1</td><td>2</td><td class="zero">0</td><td>2</td><td class="zero">0</td><td>1,170</td></tr>
+        <tr><td class="l dist">WATER</td><td>03/27/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>1,612</td></tr>
+        <tr class="subtotal"><td class="l">WATER Subtotal</td><td></td><td>1,600</td><td>1,606</td><td>2</td><td>1,604</td><td>0</td><td>57,667,962</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- Water section total -->
+        <tr class="section-total"><td class="l">Water Districts Total</td><td></td><td>1,646</td><td>1,652</td><td>2</td><td>1,650</td><td>0</td><td>161,933,654</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================ SEWER ============================ -->
+  <section class="district-group">
+    <h3 class="section-title">Sewer Districts</h3>
+    <table>
+      <thead>
+        <tr>
+          <th class="l">District ID</th>
+          <th>Meter Read Date</th>
+          <th>Customers</th>
+          <th>Reads</th>
+          <th>Estimated</th>
+          <th>Manual</th>
+          <th>Handheld</th>
+          <th>Total Consumption</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- S-Pendelton_Oak -->
+        <tr><td class="l dist">S-Pendelton_Oak</td><td>03/05/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>12,481</td></tr>
+        <tr class="subtotal"><td class="l">S-Pendelton_Oak Subtotal</td><td></td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>12,481</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-CIRCLE_DRIVE -->
+        <tr><td class="l dist">S-CIRCLE_DRIVE</td><td>03/05/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>15,966</td></tr>
+        <tr class="subtotal"><td class="l">S-CIRCLE_DRIVE Subtotal</td><td></td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>15,966</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-MAPLE_AVE -->
+        <tr><td class="l dist">S-MAPLE_AVE</td><td>03/05/2026</td><td>244</td><td>244</td><td class="zero">0</td><td>244</td><td class="zero">0</td><td>5,211,345</td></tr>
+        <tr><td class="l dist">S-MAPLE_AVE</td><td>03/06/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>7,016</td></tr>
+        <tr class="subtotal"><td class="l">S-MAPLE_AVE Subtotal</td><td></td><td>245</td><td>245</td><td>0</td><td>245</td><td>0</td><td>5,218,361</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-HOMER_AVE -->
+        <tr><td class="l dist">S-HOMER_AVE</td><td>03/02/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>10,488</td></tr>
+        <tr><td class="l dist">S-HOMER_AVE</td><td>03/05/2026</td><td>162</td><td>162</td><td class="zero">0</td><td>162</td><td class="zero">0</td><td>2,143,094</td></tr>
+        <tr><td class="l dist">S-HOMER_AVE</td><td>03/26/2026</td><td>1</td><td>2</td><td class="zero">0</td><td>2</td><td class="zero">0</td><td>1,170</td></tr>
+        <tr><td class="l dist">S-HOMER_AVE</td><td>03/27/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>1,612</td></tr>
+        <tr class="subtotal"><td class="l">S-HOMER_AVE Subtotal</td><td></td><td>163</td><td>166</td><td>0</td><td>166</td><td>0</td><td>2,156,364</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-ISABEL_DRIVE -->
+        <tr><td class="l dist">S-ISABEL_DRIVE</td><td>03/03/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>5,530</td></tr>
+        <tr><td class="l dist">S-ISABEL_DRIVE</td><td>03/05/2026</td><td>166</td><td>166</td><td class="zero">0</td><td>166</td><td class="zero">0</td><td>1,935,520</td></tr>
+        <tr><td class="l dist">S-ISABEL_DRIVE</td><td>03/06/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>2,422</td></tr>
+        <tr class="subtotal"><td class="l">S-ISABEL_DRIVE Subtotal</td><td></td><td>168</td><td>168</td><td>0</td><td>168</td><td>0</td><td>1,943,472</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-JOSEPH_ST -->
+        <tr><td class="l dist">S-JOSEPH_ST</td><td>03/02/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>0</td></tr>
+        <tr><td class="l dist">S-JOSEPH_ST</td><td>03/05/2026</td><td>332</td><td>332</td><td class="zero">0</td><td>332</td><td class="zero">0</td><td>9,937,357</td></tr>
+        <tr class="subtotal"><td class="l">S-JOSEPH_ST Subtotal</td><td></td><td>333</td><td>333</td><td>0</td><td>333</td><td>0</td><td>9,937,357</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-LEVYDALE -->
+        <tr><td class="l dist">S-LEVYDALE</td><td>03/05/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>9,699</td></tr>
+        <tr class="subtotal"><td class="l">S-LEVYDALE Subtotal</td><td></td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>9,699</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-MCGRAW_POLKVIL -->
+        <tr><td class="l dist">S-MCGRAW_POLKVIL</td><td>03/05/2026</td><td>23</td><td>23</td><td class="zero">0</td><td>23</td><td class="zero">0</td><td>1,045,638</td></tr>
+        <tr><td class="l dist">S-MCGRAW_POLKVIL</td><td>03/06/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>47,692</td></tr>
+        <tr class="subtotal"><td class="l">S-MCGRAW_POLKVIL Subtotal</td><td></td><td>24</td><td>24</td><td>0</td><td>24</td><td>0</td><td>1,093,330</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-PAGEGREEN -->
+        <tr><td class="l dist">S-PAGEGREEN</td><td>03/02/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>9,280</td></tr>
+        <tr><td class="l dist">S-PAGEGREEN</td><td>03/05/2026</td><td>15</td><td>15</td><td class="zero">0</td><td>15</td><td class="zero">0</td><td>94,447</td></tr>
+        <tr class="subtotal"><td class="l">S-PAGEGREEN Subtotal</td><td></td><td>16</td><td>16</td><td>0</td><td>16</td><td>0</td><td>103,727</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-PENDLETON_OAK -->
+        <tr><td class="l dist">S-PENDLETON_OAK</td><td>03/05/2026</td><td>9</td><td>9</td><td class="zero">0</td><td>9</td><td class="zero">0</td><td>73,138</td></tr>
+        <tr class="subtotal"><td class="l">S-PENDLETON_OAK Subtotal</td><td></td><td>9</td><td>9</td><td>0</td><td>9</td><td>0</td><td>73,138</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-ROUTE 13 -->
+        <tr><td class="l dist">S-ROUTE 13</td><td>03/02/2026</td><td>2</td><td>2</td><td class="zero">0</td><td>2</td><td class="zero">0</td><td>20,230</td></tr>
+        <tr><td class="l dist">S-ROUTE 13</td><td>03/03/2026</td><td>19</td><td>19</td><td class="zero">0</td><td>19</td><td class="zero">0</td><td>148,781</td></tr>
+        <tr><td class="l dist">S-ROUTE 13</td><td>03/05/2026</td><td>225</td><td>225</td><td>2</td><td>223</td><td class="zero">0</td><td>35,124,938</td></tr>
+        <tr><td class="l dist">S-ROUTE 13</td><td>03/06/2026</td><td>3</td><td>4</td><td class="zero">0</td><td>4</td><td class="zero">0</td><td>14,155</td></tr>
+        <tr class="subtotal"><td class="l">S-ROUTE 13 Subtotal</td><td></td><td>248</td><td>250</td><td>2</td><td>248</td><td>0</td><td>35,308,104</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-ROUTE 215 -->
+        <tr><td class="l dist">S-ROUTE 215</td><td>03/05/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>2,950</td></tr>
+        <tr class="subtotal"><td class="l">S-ROUTE 215 Subtotal</td><td></td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>2,950</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- S-WEST_MAIN -->
+        <tr><td class="l dist">S-WEST_MAIN</td><td>03/05/2026</td><td>11</td><td>11</td><td class="zero">0</td><td>11</td><td class="zero">0</td><td>141,961</td></tr>
+        <tr class="subtotal"><td class="l">S-WEST_MAIN Subtotal</td><td></td><td>11</td><td>11</td><td>0</td><td>11</td><td>0</td><td>141,961</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- SEWER -->
+        <tr><td class="l dist">SEWER</td><td>03/03/2026</td><td>1</td><td>1</td><td class="zero">0</td><td>1</td><td class="zero">0</td><td>50</td></tr>
+        <tr><td class="l dist">SEWER</td><td>03/05/2026</td><td>43</td><td>43</td><td class="zero">0</td><td>43</td><td class="zero">0</td><td>540,824</td></tr>
+        <tr class="subtotal"><td class="l">SEWER Subtotal</td><td></td><td>44</td><td>44</td><td>0</td><td>44</td><td>0</td><td>540,874</td></tr>
+        <tr class="gap"><td colspan="8"></td></tr>
+
+        <!-- Sewer section total -->
+        <tr class="section-total"><td class="l">Sewer Districts Total</td><td></td><td>1,265</td><td>1,270</td><td>2</td><td>1,268</td><td>0</td><td>56,557,784</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================ GRAND TOTAL ============================ -->
+  <table class="grand">
+    <tbody>
+      <tr>
+        <td class="l">GRAND TOTAL</td>
+        <td></td>
+        <td>1,665</td>
+        <td>2,922</td>
+        <td>4</td>
+        <td>2,918</td>
+        <td>0</td>
+        <td>218,491,438</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <footer class="report">
+    <span>Town of Rivervale &middot; Meter Consumption by District Summary</span>
+    <span>03/01/2026 &ndash; 03/31/2026 &middot; Units: Gallons</span>
+  </footer>
+
+</div>
+</body>
+</html>

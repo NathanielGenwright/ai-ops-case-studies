@@ -1,36 +1,24 @@
 # Interactive Showcase
 
-> Self-contained, browser-runnable artifacts — each proving a single idea. Open any `.html` file directly in a browser; no server or build step.
+> Self-contained, browser-runnable artifacts — each proving a single idea. Where the [written case studies](../README.md) explain a *process*, these show the *output*: working proofs, requirement-to-screen mockups, and a calculation engine you can edit and re-run.
 
-Where the [written case studies](../README.md) explain a *process*, these show the *output*: working proofs, requirement-to-screen mockups, and a calculation engine you can edit and re-run. They're the tangible half of the same practice — turning an idea into something a stakeholder can see and click, not just read.
+Each set below is a small deliverable bundle in the shape I actually ship them — typically a **Project Charter** and a **Functional Requirements Document** (the "why" and the "what"), paired with a **working mockup or proof** (the "see it"). Open the folder for that set's own write-up; open the `.html` files in a browser to run them.
 
-> **Migration in progress.** The interactive files are being moved in from a private portfolio. Filenames below are the intended homes; blurbs describe what each demonstrates.
+> **Viewing the HTML:** GitHub shows `.html` as source, not a live page. To run one, download the file and open it locally, or prefix its GitHub URL with `https://htmlpreview.github.io/?`. No server or build step is needed either way.
 
-## Working proofs
+## The sets
 
-| Artifact | What it demonstrates |
-|---|---|
-| `benefit-tax-engine.html` | An in-browser calculation engine that reproduces a municipality's water/sewer benefit-tax math **to the penny** against its own extract — eleven scenarios validated live, editable inputs, a pass/fail per row. A runnable proof that a legacy calculation can be reproduced correctly, not a plausible-looking mockup. |
-| `consumption-report.html` | Rendered output of a district meter-consumption report — per-district subtotals and a grand total — produced from a full requirements-to-delivery specification. |
-| `payment-health-dashboard.html` | A reassurance dashboard that proves *no customer money is missing* when a payment gateway's confirmation lags settlement — counts and dollars only, reconciled to a hand-verified baseline. Replaces an engineering escalation with a self-serve view. |
-
-## Requirement-to-screen mockups
-
-| Artifact | What it demonstrates |
-|---|---|
-| `reconcile-payments-ux.html` | A reconciliation-screen redesign that ties a written requirement to a concrete current-vs-proposed visual, so engineering and QA build to the same picture. |
-| `meter-reading-screen.html` | A clunky meter-reading workflow reimagined side-by-side, giving decision-makers a tangible "better" to approve before build cost is sunk. |
-| `split-bill-ui.html` | A complex split-billing scenario reworked so the breakdown is visible at a glance instead of leaving the operator to do the mental math. |
-
-## Migration instrumentation
-
-| Artifact | What it demonstrates |
-|---|---|
-| `admin-element-map.html` | An exhaustive inventory of a legacy admin surface — every page's interactive elements, with counts and a complexity ranking — that gives a legacy-to-new-product migration a concrete definition of "done." |
-| `parity-dashboard.html` | A parity tracker that joins feature → ticket → status → test result → screen across hundreds of features and tickets, with a burndown and projected completion — the launch-readiness scoreboard leadership, engineering, and QA share. |
+| Set | What it demonstrates | Artifacts |
+|---|---|---|
+| [**1 · Payment Gateway Integration**](Set1_Payment_Gateway/) | A platform-agnostic requirements package for an embedded-vs-redirect payment integration, with two sandbox reconciliation dashboards that prove the model. | Charter · FRD · [Dashboard A](Set1_Payment_Gateway/Reconciliation_Dashboard_A.html) · [Dashboard B](Set1_Payment_Gateway/Reconciliation_Dashboard_B.html) |
+| [**2 · Password Security Remediation**](Set2_Password_Security/) | A third-party security audit (Critical + High findings) converted into a governed, phased remediation plan, with enforcement pinned to the shared auth service so one fix covers white-label flows. | Charter · FRD · [Complexity mockup](Set2_Password_Security/Password_Complexity_Mockup.html) |
+| [**3 · Benefit Tax Calculation Engine**](Set3_Benefit_Tax/) | An in-browser engine that reproduces a municipality's water/sewer benefit-tax math **to the penny** against its own extract — eleven scenarios validated live, editable inputs, pass/fail per row. A runnable proof, not a plausible-looking mockup. | [POC engine](Set3_Benefit_Tax/Benefit_Tax_POC.html) · [FRD](Set3_Benefit_Tax/FRD_Benefit_Tax.md) |
+| [**4 · Consumption Reports**](Set4_Consumption_Reports/) | A full requirements-to-delivery lifecycle on one report — a traceable FRD carried into a dev-tested build, plus the rendered district-consumption output. | [Rendered report](Set4_Consumption_Reports/Consumption_By_District.html) · [FRD](Set4_Consumption_Reports/FRD_Consumption_Reports.md) |
+| [**5 · Platform Update Tracking**](Set5_Platform_Update_Tracking/) | The instrumentation behind a legacy-to-new-product migration — an exhaustive admin-surface inventory that defines "done," and a parity tracker that scores progress against it. | [Element map](Set5_Platform_Update_Tracking/Admin_UI_Element_Map.html) · [Parity dashboard](Set5_Platform_Update_Tracking/Legacy_UI_Parity_Dashboard.html) |
+| [**Standalone mockups**](Standalone/) | Four smaller artifacts, each proving one idea: a payment-reassurance dashboard, a reconciliation redesign, a reimagined meter-reading workflow, and an enhanced split-bill UI. | [Payment health](Standalone/Payment_Display_Health_Dashboard.html) · [Reconcile UX](Standalone/Reconcile_Payments_UX_Mockup.html) · [Meter reading](Standalone/Meter_Reading_Screen_Mockup.html) · [Split bill](Standalone/Split_Bill_Enhanced_Mockup.html) |
 
 ---
 
-*Sanitization: interactive files use synthetic, anonymized data; customer, company, and vendor names are fictitious or withheld. The approaches are real; the proprietary data is not.*
+*Sanitization: all artifacts use synthetic and sandbox data; client, vendor, municipality, and personal names are fictitious throughout. The approaches, calculations, and requirements are real; the proprietary data is not.*
 
 — Nathaniel Genwright
