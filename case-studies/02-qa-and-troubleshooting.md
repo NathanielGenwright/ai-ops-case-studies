@@ -2,6 +2,8 @@
 
 > A multi-agent harness that runs plain-English test scenarios against a real browser — and a repeatable way to find the *actual* cause of a bug.
 
+*This is one build in my broader [AI operating environment](../docs/ai-operating-environment.md) — the full set of tools I drive and skills I've codified on top of them.*
+
 ## The problem
 
 Two recurring, manual jobs:

@@ -4,6 +4,17 @@
 
 I'm a Product Owner / technical business analyst. I don't have a QA team, a release team, or an analyst team behind me — so I built one. Every system below is connected to a single AI agent ([Claude Code](https://claude.com/claude-code)) through the **Model Context Protocol (MCP)**, and every workflow is a codified *skill* the agent runs the same way twice. The organizing idea is simple: **repetitive manual work is un-codified process** — so I codify it.
 
+**At a glance: 13 connected tools · 26 codified skills · one agent — with me on every judgment call.**
+
+```mermaid
+flowchart LR
+    H["Me — the human<br>judgment + final word"] --> A["A single AI agent<br>Claude Code + MCP"]
+    A --> S["Codified skills — 26<br>release · sessions · meetings · QA"]
+    S --> T["Connected tools — 13<br>Jira · Datadog · SQL · Microsoft 365<br>Playwright · SendGrid · …"]
+    T --> W["Work product<br>releases · specs · tests · briefs"]
+    W --> H
+```
+
 Two halves:
 
 - **The toolstack** — the systems the agent can reach. Each row answers *what changes when the tool is wired into an agent* instead of driven by hand.

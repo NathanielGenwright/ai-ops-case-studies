@@ -4,6 +4,17 @@
 
 I'm a Product Owner / technical business analyst. Across ~20 years in government and payments software, I've come to see most slow, manual work as **un-codified process** — so I codify it into tools that lift my throughput, accuracy, and consistency, while keeping a human on the judgment calls. This repo collects that practice in three layers: the deep-dive **case studies**, the **operating environment** they run in, and the interactive **showcase** artifacts they produce.
 
+> **Start here → [The AI Operating Environment](docs/ai-operating-environment.md).** The whole system on one page: the tools I drive and the workflows I've codified on top of them. **13 connected tools · 26 codified skills · one agent, with me on every judgment call.**
+
+```mermaid
+flowchart LR
+    H["Me — the human<br>judgment + final word"] --> A["A single AI agent<br>Claude Code + MCP"]
+    A --> S["Codified skills — 26<br>release · sessions · meetings · QA"]
+    S --> T["Connected tools — 13<br>Jira · Datadog · SQL · Microsoft 365<br>Playwright · SendGrid · …"]
+    T --> W["Work product<br>releases · specs · tests · briefs"]
+    W --> H
+```
+
 ## Case studies — the process, the build, what changed
 
 | Case study | The gist | Outcome |
