@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Payment Display Health — MetroBill</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  /* ---- theme tokens: the single source of truth both CSS and ECharts read ---- */
+  html[data-theme="dark"]{
+    --bg:#0b0f17; --bg-glow:#172036; --panel:#121826; --panel2:#0e1421; --line:#1f2937;
+    --txt:#e6edf3; --txt2:#c7d0db; --muted:#8b98a9;
+    --good:#34d399; --good-soft:rgba(52,211,153,.14); --warn:#f0b66f; --info:#7eb6ed;
+    --ring-track:#26314a; --chart-grid:#1f2937; --chart-axis:#8b98a9; --shadow:rgba(0,0,0,.35);
+  }
+  html[data-theme="light"]{
+    --bg:#eef2f7; --bg-glow:#dbe6f5; --panel:#ffffff; --panel2:#f4f7fb; --line:#e2e8f0;
+    --txt:#16202e; --txt2:#33414f; --muted:#5b6b7f;
+    --good:#0f9d6b; --good-soft:rgba(15,157,107,.12); --warn:#c17d28; --info:#2f6fb3;
+    --ring-track:#e2e8f0; --chart-grid:#e7ecf3; --chart-axis:#5b6b7f; --shadow:rgba(15,30,60,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--txt);background:
+      radial-gradient(1100px 560px at 82% -12%,var(--bg-glow) 0,var(--bg) 55%);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    transition:background .25s ease,color .25s ease;}
+  .wrap{max-width:1200px;margin:0 auto;padding:26px 22px 64px}
+  a{color:var(--info)}
+
+  header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:13px}
+  .logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--good),var(--info));
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#08111c;font-size:19px}
+  h1{font-size:20px;margin:0;letter-spacing:.2px}
+  .sub{color:var(--muted);font-size:13px;margin-top:3px}
+  .badge{font-size:10.5px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:middle}
+  .badge-live{background:var(--good-soft);color:var(--good)}
+  .badge-sample{background:rgba(240,182,111,.16);color:var(--warn)}
+  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  select#clientFilter{background:var(--panel);border:1px solid var(--line);color:var(--txt);
+    border-radius:10px;padding:9px 13px;font-size:14px;font-weight:600;outline:none;cursor:pointer;min-width:210px}
+  .toggle{background:var(--panel);border:1px solid var(--line);color:var(--txt2);border-radius:10px;
+    padding:9px 12px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px}
+  .toggle:hover{border-color:var(--info)}
+
+  .banner{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--good);
+    border-radius:14px;padding:16px 20px;margin-bottom:20px;font-size:16px;line-height:1.6;
+    box-shadow:0 1px 3px var(--shadow)}
+  .banner b{color:var(--txt)}
+
+  .hero{display:grid;grid-template-columns:1.05fr 2fr;gap:16px;margin-bottom:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 3px var(--shadow)}
+  .ring-card{position:relative;padding:10px;min-height:210px;display:flex;align-items:center;justify-content:center}
+  #ringChart{width:100%;height:210px}
+  .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;padding:0 16px;text-align:center}
+  .ring-pct{font-size:34px;font-weight:800;color:var(--good);font-variant-numeric:tabular-nums;line-height:1}
+  .ring-lbl{color:var(--muted);font-size:10.5px;margin-top:6px;text-transform:uppercase;letter-spacing:.4px}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .kpi{padding:18px 18px}
+  .kpi .l{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px}
+  .kpi .v{font-size:26px;font-weight:800;margin-top:8px;font-variant-numeric:tabular-nums}
+  .kpi .s{color:var(--muted);font-size:12.5px;margin-top:5px}
+  .kpi.safe .v{color:var(--good)} .kpi.catch .v{color:var(--warn)} .kpi.acct .v{color:var(--info)}
+
+  section{margin-bottom:22px}
+  h2{font-size:15px;letter-spacing:.2px;margin:0 0 12px;display:flex;align-items:center;gap:9px}
+  h2 .hint{color:var(--muted);font-weight:500;font-size:12.5px}
+  .talk{padding:18px 20px}
+  .talk h2{margin-bottom:14px}
+  .talk ul{margin:0;padding:0;list-style:none;display:grid;gap:11px}
+  .talk li{position:relative;padding-left:26px;font-size:15px;color:var(--txt2);line-height:1.55}
+  .talk li::before{content:'\201C';position:absolute;left:0;top:2px;color:var(--good);font-size:24px;font-weight:800;line-height:1}
+  .talk li b{color:var(--txt)}
+
+  .panel-pad{padding:14px 14px 6px}
+  #trendChart{width:100%;height:280px}
+
+  table.grid{width:100%;border-collapse:collapse;font-size:14px}
+  table.grid th{text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;
+    letter-spacing:.5px;padding:11px 14px;border-bottom:1px solid var(--line)}
+  table.grid td{padding:11px 14px;border-bottom:1px solid var(--panel2)}
+  table.grid tbody tr:last-child td{border-bottom:none}
+  table.grid tbody tr:hover{background:var(--good-soft)}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .acc{color:var(--good);font-weight:700}
+  .muted{color:var(--muted)}
+
+  details.explain{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:4px 18px}
+  details.explain summary{cursor:pointer;padding:14px 0;font-weight:700;font-size:15px;list-style:none;display:flex;align-items:center;gap:9px}
+  details.explain summary::-webkit-details-marker{display:none}
+  details.explain summary::before{content:'\25B8';color:var(--info);transition:transform .2s}
+  details.explain[open] summary::before{transform:rotate(90deg)}
+  details.explain .body{padding:2px 0 16px;color:var(--txt2);font-size:14.5px;line-height:1.65}
+  details.explain .body p{margin:0 0 11px}
+  details.explain .body b{color:var(--txt)}
+
+  footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:16px;margin-top:26px;line-height:1.7}
+
+  @media(max-width:900px){
+    .hero{grid-template-columns:1fr}
+    .kpis{grid-template-columns:1fr}
+    header{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">M</div>
+      <div>
+        <h1>Payment Display Health <span class="badge badge-sample">SAMPLE DATA</span></h1>
+        <div class="sub">PayFlow payments · window <strong id="winRange">2025-10-16 → 2026-07-17</strong> · client-facing summary</div>
+      </div>
+    </div>
+    <div class="controls">
+      <select id="clientFilter" aria-label="Choose a client"></select>
+      <button class="toggle" id="themeToggle" type="button" aria-label="Toggle dark or light mode">
+        <span id="themeIcon">☾</span><span id="themeLabel">Dark</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="banner" id="banner"></div>
+
+  <div class="hero">
+    <div class="card ring-card">
+      <div id="ringChart"></div>
+      <div class="ring-center">
+        <div class="ring-pct" id="ringPct">—</div>
+        <div class="ring-lbl">displayed correctly</div>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="card kpi safe">
+        <div class="l">Captured &amp; safe</div>
+        <div class="v" id="kpiSafe">—</div>
+        <div class="s" id="kpiSafeSub"></div>
+      </div>
+      <div class="card kpi catch">
+        <div class="l">Catching up on display</div>
+        <div class="v" id="kpiCatch">—</div>
+        <div class="s" id="kpiCatchSub"></div>
+      </div>
+      <div class="card kpi acct">
+        <div class="l">Accounts affected</div>
+        <div class="v" id="kpiAcct">—</div>
+        <div class="s" id="kpiAcctSub"></div>
+      </div>
+    </div>
+  </div>
+
+  <section class="card talk">
+    <h2>What you can say <span class="hint">· ready-to-read talking points</span></h2>
+    <ul id="talkList"></ul>
+  </section>
+
+  <section>
+    <h2>How this looks over time <span class="hint">· payments shown correctly, and the display rate</span></h2>
+    <div class="card panel-pad"><div id="trendChart"></div></div>
+  </section>
+
+  <section class="card" id="compareCard" style="display:none">
+    <div class="panel-pad" style="padding-bottom:0"><h2 style="margin:6px 6px 12px">By client</h2></div>
+    <table class="grid">
+      <thead><tr>
+        <th>Client</th>
+        <th class="num">Payments displayed</th>
+        <th class="num">Catching up</th>
+        <th class="num">Display accuracy</th>
+      </tr></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <details class="explain">
+      <summary>Why does a payment take time to display? (plain-English)</summary>
+      <div class="body">
+        <p>When a customer pays online, their bank approves the charge <b>right away</b> and the money is captured. Almost always, that approval flows straight back into our system and shows on the account within seconds.</p>
+        <p>Once in a while, that final hand-off hiccups: <b>the bank already has the money</b>, but our screen didn't get the confirmation, so the payment hasn't finished showing on the customer's account yet. <b>Nothing is lost</b> — the funds are captured and safe.</p>
+        <p>We catch these and post them, and we're working with our payment provider to stop the hiccup from happening. That's what "catching up on display" means on this page.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer id="footer"></footer>
+</div>
+
+<script>window.__CSM__ = {"metadata":{"generatedAt":"2026-07-18T16:09:34.476Z","window":{"start":"2025-10-16","end":"2026-07-17"},"periodLabels":{"P3":{"short":"6–9 mo ago","range":"Oct–Jan"},"P2":{"short":"3–6 mo ago","range":"Jan–Apr"},"P1":{"short":"last 3 mo","range":"Apr–Jul"}},"order":["P3","P2","P1"],"source":"fixtures","gateway":"PayFlow","verifiedNote":"Every catching-up payment shown here was individually confirmed at PayFlow as real, captured funds — no money is missing."},"clients":[{"cid":9101,"name":"Seaside Utilities","periods":{"P3":{"charges":587,"posted":566,"postedAmount":109129.92,"catchingUp":0,"catchingUpAmount":0,"notCharged":21},"P2":{"charges":663,"posted":512,"postedAmount":108727.49,"catchingUp":1,"catchingUpAmount":41.49,"notCharged":150},"P1":{"charges":773,"posted":600,"postedAmount":136970.2,"catchingUp":0,"catchingUpAmount":0,"notCharged":173}},"totals":{"charges":2023,"posted":1678,"postedAmount":354827.61,"catchingUp":1,"catchingUpAmount":41.49,"notCharged":344,"accounts":1},"accuracy":99.94},{"cid":9102,"name":"City of Fairhaven","periods":{"P3":{"charges":1555,"posted":1529,"postedAmount":214039.06,"catchingUp":0,"catchingUpAmount":0,"notCharged":26},"P2":{"charges":1819,"posted":1628,"postedAmount":188298.61,"catchingUp":3,"catchingUpAmount":256.07,"notCharged":188},"P1":{"charges":1955,"posted":1688,"postedAmount":202673.85,"catchingUp":3,"catchingUpAmount":253.06,"notCharged":264}},"totals":{"charges":5329,"posted":4845,"postedAmount":605011.52,"catchingUp":6,"catchingUpAmount":509.13,"notCharged":478,"accounts":6},"accuracy":99.88},{"cid":9103,"name":"Clearwater District – North","periods":{"P3":{"charges":1313,"posted":1126,"postedAmount":98666.01,"catchingUp":5,"catchingUpAmount":471.56,"notCharged":182},"P2":{"charges":3442,"posted":3080,"postedAmount":286266.68,"catchingUp":3,"catchingUpAmount":322.2,"notCharged":359},"P1":{"charges":3375,"posted":3046,"postedAmount":355642.24,"catchingUp":4,"catchingUpAmount":397.21,"notCharged":325}},"totals":{"charges":8130,"posted":7252,"postedAmount":740574.9299999999,"catchingUp":12,"catchingUpAmount":1190.97,"notCharged":866,"accounts":12},"accuracy":99.83},{"cid":9104,"name":"Clearwater District – South","periods":{"P3":{"charges":5943,"posted":5855,"postedAmount":636067.6,"catchingUp":1,"catchingUpAmount":43.95,"notCharged":87},"P2":{"charges":6647,"posted":5976,"postedAmount":650888.65,"catchingUp":1,"catchingUpAmount":103.17,"notCharged":670},"P1":{"charges":7251,"posted":6446,"postedAmount":664743.41,"catchingUp":10,"catchingUpAmount":680.77,"notCharged":795}},"totals":{"charges":19841,"posted":18277,"postedAmount":1951699.6600000001,"catchingUp":12,"catchingUpAmount":827.89,"notCharged":1552,"accounts":9},"accuracy":99.93}],"portfolio":{"periods":{"P3":{"charges":9398,"posted":9076,"postedAmount":1057902.5899999999,"catchingUp":6,"catchingUpAmount":515.51,"notCharged":316},"P2":{"charges":12571,"posted":11196,"postedAmount":1234181.4300000002,"catchingUp":8,"catchingUpAmount":722.93,"notCharged":1367},"P1":{"charges":13354,"posted":11780,"postedAmount":1360029.7000000002,"catchingUp":17,"catchingUpAmount":1331.04,"notCharged":1557}},"totals":{"charges":35323,"posted":32052,"postedAmount":3652113.72,"catchingUp":31,"catchingUpAmount":2569.48,"notCharged":3240,"accounts":28},"accuracy":99.9,"clientCount":4}};</script>
+<script>
+(function(){
+  var M = window.__CSM__ || {};
+  var meta = M.metadata || {};
+  var order = meta.order || ['P3','P2','P1'];
+  var labels = meta.periodLabels || {};
+  var currentCid = 'all';
+  var ready = false;
+
+  // ---------- formatting ----------
+  function money(n){ return '$' + Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function int(n){ return Number(n||0).toLocaleString('en-US'); }
+  function pct(n){ return Number(n||0).toFixed(2) + '%'; }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function hexToRgba(hex,a){
+    var h=(hex||'').replace('#',''); if(h.length===3){h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];}
+    var r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+    if(isNaN(r)||isNaN(g)||isNaN(b)) return 'rgba(52,211,153,'+a+')';
+    return 'rgba('+r+','+g+','+b+','+a+')';
+  }
+
+  // ---------- theme ----------
+  function currentTheme(){ return document.documentElement.getAttribute('data-theme') || 'dark'; }
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    try { localStorage.setItem('csm-theme', t); } catch(e){}
+    var icon=document.getElementById('themeIcon'), lbl=document.getElementById('themeLabel');
+    if(icon) icon.textContent = (t==='dark' ? '\u263E' : '\u2600');
+    if(lbl) lbl.textContent = (t==='dark' ? 'Dark' : 'Light');
+  }
+  function resolveInitialTheme(){
+    var saved=null; try { saved=localStorage.getItem('csm-theme'); } catch(e){}
+    if(saved==='dark'||saved==='light') return saved;
+    if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+    return 'dark';
+  }
+
+  // ---------- view selection ----------
+  function viewFor(cid){
+    if(cid==='all'){
+      var p=M.portfolio||{};
+      return {name:'All Clients', isAll:true, periods:p.periods||{}, totals:p.totals||{}, accuracy:p.accuracy||100, clientCount:p.clientCount||0};
+    }
+    var c=(M.clients||[]).filter(function(x){return String(x.cid)===String(cid);})[0];
+    return c ? {name:c.name,isAll:false,periods:c.periods,totals:c.totals,accuracy:c.accuracy,cid:c.cid} : null;
+  }
+
+  // ---------- copy ----------
+  function bannerText(v){
+    var t=v.totals, acc=pct(v.accuracy);
+    if(v.isAll){
+      return 'Across your PayFlow clients, <b>'+acc+'</b> of payments display correctly. '
+        + '<b>No money is missing</b> \u2014 every payment was captured by the bank. '
+        + 'A small number ('+int(t.catchingUp)+', '+money(t.catchingUpAmount)+') are still catching up on display, '
+        + 'and we\u2019re clearing them as we find them, working with our provider.';
+    }
+    if((t.catchingUp||0)===0){
+      return 'For <b>'+esc(v.name)+'</b>, <b>100% of payments are displaying correctly</b> right now \u2014 '
+        + 'nothing outstanding, and no money is or was missing.';
+    }
+    var one=(t.catchingUp===1);
+    return 'For <b>'+esc(v.name)+'</b>, <b>'+acc+'</b> of payments display correctly. '
+      + '<b>No money is missing</b> \u2014 '+int(t.catchingUp)+' payment'+(one?'':'s')+' totaling '+money(t.catchingUpAmount)+' '
+      + (one?'is':'are')+' captured and safe at the bank, just catching up on display. '
+      + 'We\u2019re clearing '+(one?'it':'these')+' and working with our provider to prevent '+(one?'it':'them')+'.';
+  }
+
+  function talkingPoints(v){
+    var t=v.totals, out=[];
+    if(v.isAll){
+      var denom=(t.posted||0)+(t.catchingUp||0);
+      var per1000 = denom>0 ? (t.catchingUp/denom*1000) : 0;
+      out.push('Across <b>'+int(v.clientCount)+'</b> PayFlow clients, <b>'+int(t.posted)+'</b> payments totaling <b>'+money(t.postedAmount)+'</b> posted correctly over the last 9 months.');
+      out.push('Just <b>'+int(t.catchingUp)+'</b> payments ('+money(t.catchingUpAmount)+') are catching up on display \u2014 about <b>'+per1000.toFixed(1)+' in every 1,000</b>.');
+      out.push('<b>No money is missing anywhere.</b> Every one of those was captured by the bank and individually confirmed.');
+    } else {
+      var one=(t.catchingUp===1), acctOne=(t.accounts===1);
+      out.push('Over the last 9 months, <b>'+esc(v.name)+'</b> made <b>'+int(t.posted)+'</b> payments totaling <b>'+money(t.postedAmount)+'</b> that posted correctly.');
+      if((t.catchingUp||0)>0){
+        out.push('<b>'+int(t.catchingUp)+'</b> payment'+(one?'':'s')+' ('+money(t.catchingUpAmount)+') across <b>'+int(t.accounts)+'</b> account'+(acctOne?'':'s')+' '+(one?'is':'are')+' captured and safe at the bank \u2014 just not finished displaying yet.');
+        out.push('That\u2019s a <b>'+pct(v.accuracy)+'</b> display rate. The money was never lost; anything catching up is a display delay we\u2019re actively clearing with our provider.');
+      } else {
+        out.push('Right now <b>every payment</b> for '+esc(v.name)+' is displaying correctly \u2014 nothing outstanding.');
+        out.push('The money is always captured by the bank first; this client currently has a <b>100%</b> display rate.');
+      }
+    }
+    return out;
+  }
+
+  // ---------- charts ----------
+  function chart(el){ return echarts.getInstanceByDom(el) || echarts.init(el); }
+
+  function ringChart(v){
+    var el=document.getElementById('ringChart'); if(!el||!window.echarts) return;
+    var acc=Number(v.accuracy||0), rem=Math.max(0,100-acc);
+    var good=cssVar('--good'), track=cssVar('--ring-track');
+    chart(el).setOption({
+      tooltip:{trigger:'item',formatter:function(p){return p.name+': '+Number(p.value).toFixed(2)+'%';}},
+      series:[{ type:'pie', radius:['79%','94%'], startAngle:90, minAngle:2, avoidLabelOverlap:false,
+        label:{show:false}, labelLine:{show:false},
+        data:[
+          {value:acc,name:'Displayed correctly',itemStyle:{color:good}},
+          {value:rem,name:'Catching up',itemStyle:{color:track}}
+        ]}]
+    }, true);
+    var c=document.getElementById('ringPct'); if(c){ c.textContent=pct(acc); c.style.color=good; }
+  }
+
+  function trendChart(v){
+    var el=document.getElementById('trendChart'); if(!el||!window.echarts) return;
+    var detail=order.map(function(p){
+      var b=v.periods[p]||{}; var l=labels[p]||{};
+      var denom=(b.posted||0)+(b.catchingUp||0);
+      return {
+        range:l.range||p, short:l.short||'',
+        posted:(b.charges>0?b.posted:null),
+        catchingUp:b.catchingUp||0, catchingUpAmount:b.catchingUpAmount||0,
+        acc: denom>0 ? Math.round(b.posted/denom*10000)/100 : null
+      };
+    });
+    var good=cssVar('--good'), info=cssVar('--info'), axis=cssVar('--chart-axis'), grid=cssVar('--chart-grid');
+    var accVals=detail.map(function(d){return d.acc;}).filter(function(x){return x!=null;});
+    var yMin = accVals.length ? Math.max(0, Math.floor(Math.min.apply(null,accVals)) - 0.5) : 99;
+    chart(el).setOption({
+      grid:{left:6,right:6,top:36,bottom:28,containLabel:true},
+      legend:{data:['Payments displayed','Display accuracy'],textStyle:{color:axis},top:2},
+      tooltip:{trigger:'axis',backgroundColor:cssVar('--panel'),borderColor:cssVar('--line'),textStyle:{color:cssVar('--txt')},
+        formatter:function(ps){ var i=ps[0].dataIndex, d=detail[i];
+          return '<b>'+d.range+'</b> ('+d.short+')<br/>'
+            + 'Displayed: '+int(d.posted)+'<br/>'
+            + 'Catching up: '+int(d.catchingUp)+(d.catchingUp?' ('+money(d.catchingUpAmount)+')':'')+'<br/>'
+            + 'Accuracy: '+(d.acc==null?'\u2014':d.acc.toFixed(2)+'%'); }},
+      xAxis:{type:'category',data:detail.map(function(d){return d.range+'\n'+d.short;}),
+        axisLabel:{color:axis,lineHeight:15},axisLine:{lineStyle:{color:grid}},axisTick:{show:false}},
+      yAxis:[
+        {type:'value',axisLabel:{color:axis},splitLine:{lineStyle:{color:grid}}},
+        {type:'value',min:yMin,max:100,position:'right',axisLabel:{color:axis,formatter:'{value}%'},splitLine:{show:false}}
+      ],
+      series:[
+        {name:'Payments displayed',type:'bar',yAxisIndex:0,data:detail.map(function(d){return d.posted;}),
+          barWidth:'40%',itemStyle:{color:hexToRgba(good,.85),borderRadius:[6,6,0,0]}},
+        {name:'Display accuracy',type:'line',yAxisIndex:1,data:detail.map(function(d){return d.acc;}),
+          smooth:true,symbol:'circle',symbolSize:7,connectNulls:true,
+          lineStyle:{color:info,width:3},itemStyle:{color:info},
+          areaStyle:{color:hexToRgba(info,.10)}}
+      ]
+    }, true);
+  }
+
+  function renderCompare(){
+    var rows=(M.clients||[]).map(function(c){
+      var t=c.totals||{};
+      return '<tr>'
+        + '<td>'+esc(c.name)+'</td>'
+        + '<td class="num">'+int(t.posted)+'</td>'
+        + '<td class="num">'+int(t.catchingUp)+(t.catchingUp?' <span class="muted">('+money(t.catchingUpAmount)+')</span>':'')+'</td>'
+        + '<td class="num"><span class="acc">'+pct(c.accuracy)+'</span></td>'
+        + '</tr>';
+    }).join('');
+    document.getElementById('compareBody').innerHTML=rows;
+  }
+
+  // ---------- render ----------
+  function setText(id,txt){ var e=document.getElementById(id); if(e) e.textContent=txt; }
+  function render(cid){
+    var v=viewFor(cid); if(!v) return;
+    currentCid=cid;
+    var t=v.totals;
+    document.getElementById('banner').innerHTML = bannerText(v);
+    setText('kpiSafe', money(t.postedAmount));
+    setText('kpiSafeSub', int(t.posted)+' payments shown correctly');
+    setText('kpiCatch', int(t.catchingUp));
+    setText('kpiCatchSub', money(t.catchingUpAmount)+' \u00b7 being cleared');
+    setText('kpiAcct', int(t.accounts));
+    setText('kpiAcctSub', v.isAll ? 'across '+int(v.clientCount)+' clients' : 'of thousands served');
+    document.getElementById('talkList').innerHTML = talkingPoints(v).map(function(s){return '<li>'+s+'</li>';}).join('');
+    var comp=document.getElementById('compareCard');
+    if(v.isAll){ comp.style.display=''; renderCompare(); } else { comp.style.display='none'; }
+    ringChart(v); trendChart(v);
+    ready=true;
+  }
+
+  // ---------- footer ----------
+  (function footer(){
+    var f=document.getElementById('footer'); if(!f) return;
+    var gen=(meta.generatedAt||'').slice(0,16).replace('T',' ');
+    f.innerHTML = 'Window '+esc((meta.window||{}).start)+' \u2192 '+esc((meta.window||{}).end)
+      + ' \u00b7 generated '+esc(gen)
+      + ' \u00b7 source: '+(meta.source==='fixtures'?'sample data (offline)':'live prod replica, read-only')
+      + '<br/>'+esc(meta.verifiedNote||'');
+  })();
+
+  // ---------- init ----------
+  applyTheme(resolveInitialTheme());
+  var sel=document.getElementById('clientFilter');
+  if(sel){
+    sel.innerHTML = '<option value="all">All Clients ('+((M.clients||[]).length)+')</option>'
+      + (M.clients||[]).map(function(c){return '<option value="'+c.cid+'">'+esc(c.name)+'</option>';}).join('');
+    sel.addEventListener('change', function(){ render(this.value); });
+  }
+  var tg=document.getElementById('themeToggle');
+  if(tg) tg.addEventListener('click', function(){
+    applyTheme(currentTheme()==='dark'?'light':'dark');
+    if(ready) render(currentCid);
+  });
+  if(window.matchMedia){
+    var mq=window.matchMedia('(prefers-color-scheme: light)');
+    var onChange=function(){ var saved=null; try{saved=localStorage.getItem('csm-theme');}catch(e){}
+      if(!saved){ applyTheme(mq.matches?'light':'dark'); if(ready) render(currentCid); } };
+    if(mq.addEventListener) mq.addEventListener('change',onChange); else if(mq.addListener) mq.addListener(onChange);
+  }
+  window.addEventListener('resize', function(){
+    ['ringChart','trendChart'].forEach(function(id){ var e=document.getElementById(id);
+      if(e){ var i=echarts.getInstanceByDom(e); if(i) i.resize(); } });
+  });
+
+  if(window.echarts){ render('all'); }
+  else { // ECharts CDN unreachable — still show the numbers, just no charts.
+    document.getElementById('ringChart').innerHTML='';
+    render('all');
+  }
+})();
+</script>
+</body>
+</html>

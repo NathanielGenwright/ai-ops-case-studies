@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cascade Pay Reconciliation — 2026-05-28</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  :root{
+    --bg:#0b0f17; --panel:#121826; --panel2:#0e1421; --line:#1f2937;
+    --txt:#e6edf3; --muted:#8b98a9; --accent:#7c93ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#172036 0,var(--bg) 55%);
+    color:var(--txt);font:14px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1240px;margin:0 auto;padding:28px 22px 60px}
+  header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#7c93ff,#41d6c3);
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#0b0f17}
+  h1{font-size:20px;margin:0;letter-spacing:.2px}
+  .sub{color:var(--muted);font-size:13px;margin-top:2px}
+  .env-badge{font-size:11px;font-weight:700;letter-spacing:.4px;padding:3px 8px;border-radius:999px;
+    background:rgba(124,147,255,.15);color:#9db0ff;margin-left:8px;vertical-align:middle}
+  .env-badge.fix{background:rgba(251,191,36,.15);color:#fbbf24}
+  .env-badge.mode{background:rgba(65,214,195,.15);color:#41d6c3}
+  .status-pill{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+  .dot{display:inline-flex;align-items:center;gap:8px;font-weight:800;letter-spacing:.6px;font-size:13px}
+  .dot i{width:10px;height:10px;border-radius:50%}
+  .status-msg{color:var(--muted);font-size:12px}
+  .narrative{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:18px;font-size:15px}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr) 1.1fr;gap:14px;margin-bottom:14px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+  .kpi::after{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,#7c93ff,#41d6c3)}
+  .kpi-label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+  .kpi-value{font-size:27px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums}
+  .kpi-sub{color:var(--muted);font-size:12px;margin-top:4px}
+  .chartcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px 8px 0}
+  .strip{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .stat .l{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+  .stat .v{font-size:18px;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums}
+  .row2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:22px}
+  section{margin-bottom:26px}
+  h2{font-size:15px;letter-spacing:.3px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  h2 .count{color:var(--muted);font-weight:500;font-size:13px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px 4px}
+  table.grid{width:100%;border-collapse:collapse;font-size:13px}
+  table.grid th{ text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;
+    letter-spacing:.5px;padding:10px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel)}
+  table.grid td{padding:10px 12px;border-bottom:1px solid var(--panel2)}
+  table.grid tbody tr:hover{background:rgba(124,147,255,.05)}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .ok{color:#34d399}.warn{color:#fbbf24}.bad{color:#f87171}.muted{color:var(--muted)}
+  .exc{background:var(--panel);border:1px solid var(--line);border-left:4px solid;border-radius:10px;padding:11px 14px;margin-bottom:10px}
+  .exc-head{display:flex;align-items:center;gap:12px;margin-bottom:3px}
+  .exc-sev{font-size:11px;font-weight:800;letter-spacing:.5px}
+  .exc-ref{font-weight:700}.exc-amt{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:700}
+  .exc-msg{color:#c7d0db;font-size:13px}
+  .ok-exc{border-left-color:#34d399;color:#aef0d2}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  .filters input,.filters select{background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+    border-radius:9px;padding:8px 11px;font-size:13px;outline:none}
+  .filters input{min-width:240px}
+  .tag{font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px}
+  .tag.cc{background:rgba(124,147,255,.15);color:#9db0ff}
+  .tag.ach{background:rgba(65,214,195,.15);color:#41d6c3}
+  .empty{color:var(--muted);padding:14px}
+  footer{color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
+  @media(max-width:980px){.kpis{grid-template-columns:1fr 1fr}.strip{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">A</div>
+      <div>
+        <h1>Cascade Pay Daily Reconciliation <span class="env-badge fix">SAMPLE DATA</span><span class="env-badge">SANDBOX</span></h1>
+        <div class="sub">Reconciliation date <strong>2026-05-28</strong> ·
+          as of 2026-05-29 09:00 · https://api-sandbox.cascadepay.example.com</div>
+      </div>
+    </div>
+    <div class="status-pill">
+      <span class="dot" style="color:#f87171"><i style="background:#f87171"></i>ACTION REQUIRED</span>
+      <span class="status-msg">2 critical issues, 3 warnings</span>
+    </div>
+  </header>
+
+  <div class="narrative">Portal shows <strong>$5,128.24</strong> vs Cascade Pay's <strong>$5,078.23</strong> — a $50.01 gap (more in the portal than at Cascade Pay), explained by the exceptions below. $0.00 has hit the bank so far.</div>
+
+  <div class="kpis">
+    
+    <div class="kpi">
+      <div class="kpi-label">Portal Collected</div>
+      <div class="kpi-value" style="color:#9db0ff">$5,128.24</div>
+      <div class="kpi-sub">Layer 1 · billing portal</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Cascade Pay Captured</div>
+      <div class="kpi-value" style="color:#41d6c3">$5,078.23</div>
+      <div class="kpi-sub">Layer 2 · 16 payments</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Bank Deposited</div>
+      <div class="kpi-value" style="color:#34d399">$0.00</div>
+      <div class="kpi-sub">Layer 3 · funded batches</div>
+    </div>
+    <div class="chartcard"><div id="fundingChart" style="height:150px"></div></div>
+  </div>
+
+  <div class="strip">
+    <div class="stat"><div class="l">Settled (net)</div><div class="v">$3,362.99</div></div>
+         <div class="stat"><div class="l">Pending deposit</div><div class="v" style="color:#fbbf24">$3,362.99</div></div>
+         <div class="stat"><div class="l">Overdue deposit</div><div class="v" style="color:#f87171">$2,100.00</div></div>
+         <div class="stat"><div class="l">In-flight (open)</div><div class="v" style="color:#60a5fa">$1,925.74</div></div>
+         <div class="stat"><div class="l">Refunds today</div><div class="v">$75.00</div></div>
+  </div>
+
+  <div class="row2">
+    <div>
+      <h2>Money flow trend <span class="count">· captured vs settled, last 3 active days</span></h2>
+      <div class="panel"><div id="trendChart" style="height:240px"></div></div>
+    </div>
+    <div>
+      <h2>Funding status</h2>
+      <div class="panel"><div id="statusChart" style="height:240px"></div></div>
+    </div>
+  </div>
+
+  <section>
+    <h2>⚑ Exceptions &amp; follow-ups <span class="count">· 5</span></h2>
+    <div class="exc" style="border-left-color:#f87171">
+      <div class="exc-head">
+        <span class="exc-sev" style="color:#f87171">CRITICAL</span>
+        <span class="exc-ref">INV-5099</span>
+        <span class="exc-amt">$150.00</span>
+      </div>
+      <div class="exc-msg">Billing recorded $150.00 for INV-5099 but no matching transaction exists at Cascade Pay — did this payment actually process?</div>
+    </div><div class="exc" style="border-left-color:#f87171">
+      <div class="exc-head">
+        <span class="exc-sev" style="color:#f87171">CRITICAL</span>
+        <span class="exc-ref">Batch 9000</span>
+        <span class="exc-amt">$2,100.00</span>
+      </div>
+      <div class="exc-msg">Batch 9000 closed 2026-05-25 (expected deposit 2026-05-27) — $2,100.00 still not in the bank. Follow up with Cascade Pay.</div>
+    </div><div class="exc" style="border-left-color:#fbbf24">
+      <div class="exc-head">
+        <span class="exc-sev" style="color:#fbbf24">WARNING</span>
+        <span class="exc-ref">INV-5017</span>
+        <span class="exc-amt">$99.99</span>
+      </div>
+      <div class="exc-msg">Cascade Pay has a $99.99 CC charge (INV-5017) with no matching row in the billing export — recording gap to investigate.</div>
+    </div><div class="exc" style="border-left-color:#fbbf24">
+      <div class="exc-head">
+        <span class="exc-sev" style="color:#fbbf24">WARNING</span>
+        <span class="exc-ref">INV-4805</span>
+        <span class="exc-amt">$210.00</span>
+      </div>
+      <div class="exc-msg">$210.00 CC (INV-4805) authorized 5 days ago is still unsettled (batch 9004 open).</div>
+    </div><div class="exc" style="border-left-color:#fbbf24">
+      <div class="exc-head">
+        <span class="exc-sev" style="color:#fbbf24">WARNING</span>
+        <span class="exc-ref">INV-4806</span>
+        <span class="exc-amt">$75.50</span>
+      </div>
+      <div class="exc-msg">$75.50 ACH (INV-4806) authorized 5 days ago is still unsettled (batch 9004 open).</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Batched payments <span class="count">· 5 batches in window</span></h2>
+    <div class="panel"><table class="grid">
+    <thead><tr>
+      <th>Batch</th><th>Status</th><th>Closed</th><th class="num">Gateway sales</th>
+      <th class="num">Gateway $</th><th class="num">Net (expected deposit)</th>
+      <th>Due</th><th>Bank match</th>
+    </tr></thead>
+    <tbody><tr>
+      <td><strong>#9002</strong></td>
+      <td><span class="pill" style="background:rgba(251,191,36,.15);color:#fbbf24">Pending</span></td>
+      <td>2026-05-28</td>
+      <td class="num">3</td>
+      <td class="num">$1,930.50</td>
+      
+      <td class="num"><strong>$1,930.50</strong></td>
+      <td>2026-06-01</td>
+      <td><span class="warn">awaiting</span></td>
+    </tr><tr>
+      <td><strong>#9001</strong></td>
+      <td><span class="pill" style="background:rgba(251,191,36,.15);color:#fbbf24">Pending</span></td>
+      <td>2026-05-28</td>
+      <td class="num">8</td>
+      <td class="num">$1,507.49</td>
+      
+      <td class="num"><strong>$1,432.49</strong></td>
+      <td>2026-06-01</td>
+      <td><span class="warn">awaiting</span></td>
+    </tr><tr>
+      <td><strong>#9000</strong></td>
+      <td><span class="pill" style="background:rgba(248,113,113,.15);color:#f87171">Overdue</span></td>
+      <td>2026-05-25</td>
+      <td class="num">2</td>
+      <td class="num">$2,100.00</td>
+      
+      <td class="num"><strong>$2,100.00</strong></td>
+      <td>2026-05-27</td>
+      <td><span class="bad">none</span></td>
+    </tr><tr>
+      <td><strong>#9003</strong></td>
+      <td><span class="pill" style="background:rgba(96,165,250,.15);color:#60a5fa">Open / In-flight</span></td>
+      <td><span class="muted">open</span></td>
+      <td class="num">5</td>
+      <td class="num">$1,640.24</td>
+      
+      <td class="num"><strong>$1,640.24</strong></td>
+      <td><span class="muted">—</span></td>
+      <td><span class="muted">—</span></td>
+    </tr><tr>
+      <td><strong>#9004</strong></td>
+      <td><span class="pill" style="background:rgba(96,165,250,.15);color:#60a5fa">Open / In-flight</span></td>
+      <td><span class="muted">open</span></td>
+      <td class="num">2</td>
+      <td class="num">$285.50</td>
+      
+      <td class="num"><strong>$285.50</strong></td>
+      <td><span class="muted">—</span></td>
+      <td><span class="muted">—</span></td>
+    </tr></tbody>
+  </table></div>
+  </section>
+
+  <section>
+    <h2>Single payments <span class="count">· 18 on 2026-05-28</span></h2>
+    <div class="filters">
+      <input id="q" placeholder="Search customer or reference…">
+      <select id="fMethod"><option value="">All methods</option><option value="cc">Card</option><option value="ach">ACH</option></select>
+      <select id="fSettled"><option value="">Settled &amp; pending</option><option value="yes">Settled only</option><option value="no">Unsettled only</option></select>
+      <select id="fType"><option value="">All types</option><option value="sale">Sales</option><option value="refund">Refunds</option><option value="void">Voids</option></select>
+    </div>
+    <div class="panel">
+      <table class="grid" id="txTable">
+        <thead><tr>
+          <th>Time</th><th>Customer</th><th>Reference</th><th>Method</th>
+          <th class="num">Amount</th><th class="num">Fee</th><th>Status</th><th>Settled</th><th class="num">Batch</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Generated 2026-06-02 03:56 · window 2026-05-21 → 2026-05-28
+    · SAMPLE DATA (no live gateway calls)
+    · Cascade Pay Reconciliation prototype
+  </footer>
+</div>
+
+<script>window.__RECON__ = {"metadata":{"reconciliationDate":"2026-05-28","asOf":"2026-05-29T09:00:00.000Z","env":"sandbox","baseUrl":"https://api-sandbox.cascadepay.example.com","usingFixtures":true,"generatedAt":"2026-06-02T03:56:58.262Z","searchWindow":{"start":"2026-05-21","end":"2026-05-28"},"hasBilling":true,"hasBank":false,"locationCount":1},"kpis":{"portalCollected":5128.24,"gatewayCaptured":5078.23,"gatewaySettledNet":3362.99,"bankDeposited":0,"pendingDeposits":3362.99,"overdueDeposits":2100,"inFlight":1925.74,"refundsToday":75,"portalVsGateway":50.01,"counts":{"transactions":18,"sales":16,"refunds":1,"batches":5,"openBatches":2}},"batches":[{"id":"B-9002","batchNum":9002,"isOpen":false,"processingStatus":"Closed","createdOn":"2026-05-28T06:00:00.000Z","closedOn":"2026-05-28T22:00:00.000Z","totalSaleAmount":1930.5,"totalSaleCount":3,"totalRefundAmount":0,"totalRefundCount":0,"totalVoidAmount":0,"totalVoidCount":0,"totalBlindRefundAmount":0,"totalBlindRefundCount":0,"currency":"USD","currencySymbol":"$","net":1930.5,"seenSales":1930.5,"totalsMismatch":false,"expectedDepositDate":"2026-06-01T00:00:00.000Z","fundingStatus":"pending","matchedDeposit":null,"transactions":[{"id":"t-1010","amount":500,"fee":15.25,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T22:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9002","batchNum":9002,"batchIsOpen":false,"batchCloseOn":"2026-05-28T22:00:00.000Z","contactId":"c-1010","customerName":"Irwin, D.","customerRef":"INV-5010","description":"Irwin, D. — INV-5010"},{"id":"t-1011","amount":1200,"fee":1.5,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T22:00:00.000Z","paymentMethod":"ach","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9002","batchNum":9002,"batchIsOpen":false,"batchCloseOn":"2026-05-28T22:00:00.000Z","contactId":"c-1011","customerName":"Jones, A.","customerRef":"INV-5011","description":"Jones, A. — INV-5011"},{"id":"t-1012","amount":230.5,"fee":7.17,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T22:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9002","batchNum":9002,"batchIsOpen":false,"batchCloseOn":"2026-05-28T22:00:00.000Z","contactId":"c-1012","customerName":"Kerr, B.","customerRef":"INV-5012","description":"Kerr, B. — INV-5012"}]},{"id":"B-9001","batchNum":9001,"isOpen":false,"processingStatus":"Closed","createdOn":"2026-05-28T06:00:00.000Z","closedOn":"2026-05-28T19:00:00.000Z","totalSaleAmount":1507.49,"totalSaleCount":8,"totalRefundAmount":75,"totalRefundCount":1,"totalVoidAmount":0,"totalVoidCount":0,"totalBlindRefundAmount":0,"totalBlindRefundCount":0,"currency":"USD","currencySymbol":"$","net":1432.49,"seenSales":1507.49,"totalsMismatch":false,"expectedDepositDate":"2026-06-01T00:00:00.000Z","fundingStatus":"pending","matchedDeposit":null,"transactions":[{"id":"t-1001","amount":125,"fee":4,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1001","customerName":"Alvarez, M.","customerRef":"INV-5001","description":"Alvarez, M. — INV-5001"},{"id":"t-1002","amount":240.5,"fee":7.47,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1002","customerName":"Booker, T.","customerRef":"INV-5002","description":"Booker, T. — INV-5002"},{"id":"t-1003","amount":89.99,"fee":1.5,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"ach","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1003","customerName":"Chen, L.","customerRef":"INV-5003","description":"Chen, L. — INV-5003"},{"id":"t-1004","amount":312,"fee":9.61,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1004","customerName":"Diaz, R.","customerRef":"INV-5004","description":"Diaz, R. — INV-5004"},{"id":"t-1005","amount":56.75,"fee":1.95,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1005","customerName":"Ellis, K.","customerRef":"INV-5005","description":"Ellis, K. — INV-5005"},{"id":"t-1006","amount":410,"fee":1.5,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"ach","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1006","customerName":"Farr, J.","customerRef":"INV-5006","description":"Farr, J. — INV-5006"},{"id":"t-1007","amount":178.25,"fee":5.6,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1007","customerName":"Greene, P.","customerRef":"INV-5007","description":"Greene, P. — INV-5007"},{"id":"t-1008","amount":95,"fee":3.1,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1008","customerName":"Hill, S.","customerRef":"INV-5008","description":"Hill, S. — INV-5008"},{"id":"t-1009","amount":75,"fee":2.5,"tax":0,"type":"refund","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1009","customerName":"Diaz, R. (refund)","customerRef":"INV-5004","description":"Diaz, R. (refund) — INV-5004"}]},{"id":"B-9000","batchNum":9000,"isOpen":false,"processingStatus":"Closed","createdOn":"2026-05-25T06:00:00.000Z","closedOn":"2026-05-25T19:00:00.000Z","totalSaleAmount":2100,"totalSaleCount":2,"totalRefundAmount":0,"totalRefundCount":0,"totalVoidAmount":0,"totalVoidCount":0,"totalBlindRefundAmount":0,"totalBlindRefundCount":0,"currency":"USD","currencySymbol":"$","net":2100,"seenSales":2100,"totalsMismatch":false,"expectedDepositDate":"2026-05-27T00:00:00.000Z","fundingStatus":"overdue","matchedDeposit":null,"transactions":[{"id":"t-1000a","amount":1100,"fee":33.25,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-25T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-25T10:00:00.000Z","batchId":"B-9000","batchNum":9000,"batchIsOpen":false,"batchCloseOn":"2026-05-25T19:00:00.000Z","contactId":"c-1000a","customerName":"Lopez, C.","customerRef":"INV-4901","description":"Lopez, C. — INV-4901"},{"id":"t-1000b","amount":1000,"fee":1.5,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-25T19:00:00.000Z","paymentMethod":"ach","locationId":"loc-001","createdOn":"2026-05-25T10:00:00.000Z","batchId":"B-9000","batchNum":9000,"batchIsOpen":false,"batchCloseOn":"2026-05-25T19:00:00.000Z","contactId":"c-1000b","customerName":"Moss, E.","customerRef":"INV-4902","description":"Moss, E. — INV-4902"}]},{"id":"B-9003","batchNum":9003,"isOpen":true,"processingStatus":"Open","createdOn":"2026-05-28T06:00:00.000Z","closedOn":null,"totalSaleAmount":1640.24,"totalSaleCount":5,"totalRefundAmount":0,"totalRefundCount":0,"totalVoidAmount":50,"totalVoidCount":1,"totalBlindRefundAmount":0,"totalBlindRefundCount":0,"currency":"USD","currencySymbol":"$","net":1640.24,"seenSales":1640.24,"totalsMismatch":false,"expectedDepositDate":null,"fundingStatus":"open","matchedDeposit":null,"transactions":[{"id":"t-1013","amount":320.25,"fee":9.86,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1013","customerName":"Nash, G.","customerRef":"INV-5013","description":"Nash, G. — INV-5013"},{"id":"t-1014","amount":180,"fee":5.65,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1014","customerName":"Owens, F.","customerRef":"INV-5014","description":"Owens, F. — INV-5014"},{"id":"t-1015","amount":640,"fee":1.5,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"ach","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1015","customerName":"Pratt, H.","customerRef":"INV-5015","description":"Pratt, H. — INV-5015"},{"id":"t-1016","amount":400,"fee":12.25,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1016","customerName":"Quinn, V.","customerRef":"INV-5016","description":"Quinn, V. — INV-5016"},{"id":"t-1017","amount":99.99,"fee":3.25,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1017","customerName":"Reed, W.","customerRef":"INV-5017","description":"Reed, W. — INV-5017"},{"id":"t-1018","amount":50,"fee":1.75,"tax":0,"type":"void","status":"voided","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1018","customerName":"Stone, X.","customerRef":"INV-5018","description":"Stone, X. — INV-5018"}]},{"id":"B-9004","batchNum":9004,"isOpen":true,"processingStatus":"Open","createdOn":"2026-05-28T06:00:00.000Z","closedOn":null,"totalSaleAmount":285.5,"totalSaleCount":2,"totalRefundAmount":0,"totalRefundCount":0,"totalVoidAmount":0,"totalVoidCount":0,"totalBlindRefundAmount":0,"totalBlindRefundCount":0,"currency":"USD","currencySymbol":"$","net":285.5,"seenSales":285.5,"totalsMismatch":false,"expectedDepositDate":null,"fundingStatus":"open","matchedDeposit":null,"transactions":[{"id":"t-0995","amount":210,"fee":6.55,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-23T10:00:00.000Z","batchId":"B-9004","batchNum":9004,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-0995","customerName":"Tate, Y.","customerRef":"INV-4805","description":"Tate, Y. — INV-4805"},{"id":"t-0996","amount":75.5,"fee":1.5,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"ach","locationId":"loc-001","createdOn":"2026-05-23T10:00:00.000Z","batchId":"B-9004","batchNum":9004,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-0996","customerName":"Usher, Z.","customerRef":"INV-4806","description":"Usher, Z. — INV-4806"}]}],"transactions":[{"id":"t-1001","amount":125,"fee":4,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1001","customerName":"Alvarez, M.","customerRef":"INV-5001","description":"Alvarez, M. — INV-5001"},{"id":"t-1002","amount":240.5,"fee":7.47,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1002","customerName":"Booker, T.","customerRef":"INV-5002","description":"Booker, T. — INV-5002"},{"id":"t-1003","amount":89.99,"fee":1.5,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"ach","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1003","customerName":"Chen, L.","customerRef":"INV-5003","description":"Chen, L. — INV-5003"},{"id":"t-1004","amount":312,"fee":9.61,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1004","customerName":"Diaz, R.","customerRef":"INV-5004","description":"Diaz, R. — INV-5004"},{"id":"t-1005","amount":56.75,"fee":1.95,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1005","customerName":"Ellis, K.","customerRef":"INV-5005","description":"Ellis, K. — INV-5005"},{"id":"t-1006","amount":410,"fee":1.5,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"ach","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1006","customerName":"Farr, J.","customerRef":"INV-5006","description":"Farr, J. — INV-5006"},{"id":"t-1007","amount":178.25,"fee":5.6,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1007","customerName":"Greene, P.","customerRef":"INV-5007","description":"Greene, P. — INV-5007"},{"id":"t-1008","amount":95,"fee":3.1,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1008","customerName":"Hill, S.","customerRef":"INV-5008","description":"Hill, S. — INV-5008"},{"id":"t-1009","amount":75,"fee":2.5,"tax":0,"type":"refund","status":"settled","isSettled":true,"settleDate":"2026-05-28T19:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9001","batchNum":9001,"batchIsOpen":false,"batchCloseOn":"2026-05-28T19:00:00.000Z","contactId":"c-1009","customerName":"Diaz, R. (refund)","customerRef":"INV-5004","description":"Diaz, R. (refund) — INV-5004"},{"id":"t-1010","amount":500,"fee":15.25,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T22:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9002","batchNum":9002,"batchIsOpen":false,"batchCloseOn":"2026-05-28T22:00:00.000Z","contactId":"c-1010","customerName":"Irwin, D.","customerRef":"INV-5010","description":"Irwin, D. — INV-5010"},{"id":"t-1011","amount":1200,"fee":1.5,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T22:00:00.000Z","paymentMethod":"ach","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9002","batchNum":9002,"batchIsOpen":false,"batchCloseOn":"2026-05-28T22:00:00.000Z","contactId":"c-1011","customerName":"Jones, A.","customerRef":"INV-5011","description":"Jones, A. — INV-5011"},{"id":"t-1012","amount":230.5,"fee":7.17,"tax":0,"type":"sale","status":"settled","isSettled":true,"settleDate":"2026-05-28T22:00:00.000Z","paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9002","batchNum":9002,"batchIsOpen":false,"batchCloseOn":"2026-05-28T22:00:00.000Z","contactId":"c-1012","customerName":"Kerr, B.","customerRef":"INV-5012","description":"Kerr, B. — INV-5012"},{"id":"t-1013","amount":320.25,"fee":9.86,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1013","customerName":"Nash, G.","customerRef":"INV-5013","description":"Nash, G. — INV-5013"},{"id":"t-1014","amount":180,"fee":5.65,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1014","customerName":"Owens, F.","customerRef":"INV-5014","description":"Owens, F. — INV-5014"},{"id":"t-1015","amount":640,"fee":1.5,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"ach","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1015","customerName":"Pratt, H.","customerRef":"INV-5015","description":"Pratt, H. — INV-5015"},{"id":"t-1016","amount":400,"fee":12.25,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1016","customerName":"Quinn, V.","customerRef":"INV-5016","description":"Quinn, V. — INV-5016"},{"id":"t-1017","amount":99.99,"fee":3.25,"tax":0,"type":"sale","status":"authorized","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1017","customerName":"Reed, W.","customerRef":"INV-5017","description":"Reed, W. — INV-5017"},{"id":"t-1018","amount":50,"fee":1.75,"tax":0,"type":"void","status":"voided","isSettled":false,"settleDate":null,"paymentMethod":"cc","locationId":"loc-001","createdOn":"2026-05-28T10:00:00.000Z","batchId":"B-9003","batchNum":9003,"batchIsOpen":true,"batchCloseOn":null,"contactId":"c-1018","customerName":"Stone, X.","customerRef":"INV-5018","description":"Stone, X. — INV-5018"}],"exceptions":[{"type":"ghost","severity":"critical","ref":"INV-5099","amount":150,"message":"Billing recorded $150.00 for INV-5099 but no matching transaction exists at Cascade Pay — did this payment actually process?"},{"type":"overdueDeposit","severity":"critical","ref":"Batch 9000","amount":2100,"message":"Batch 9000 closed 2026-05-25 (expected deposit 2026-05-27) — $2,100.00 still not in the bank. Follow up with Cascade Pay."},{"type":"gatewayOnly","severity":"warning","ref":"INV-5017","amount":99.99,"message":"Cascade Pay has a $99.99 CC charge (INV-5017) with no matching row in the billing export — recording gap to investigate."},{"type":"unsettledAging","severity":"warning","ref":"INV-4805","amount":210,"message":"$210.00 CC (INV-4805) authorized 5 days ago is still unsettled (batch 9004 open)."},{"type":"unsettledAging","severity":"warning","ref":"INV-4806","amount":75.5,"message":"$75.50 ACH (INV-4806) authorized 5 days ago is still unsettled (batch 9004 open)."}],"status":"CRITICAL","statusMessage":"2 critical issues, 3 warnings","errors":[],"trend":[{"date":"2026-05-23","captured":285.5,"settledNet":0},{"date":"2026-05-25","captured":2100,"settledNet":2100},{"date":"2026-05-28","captured":5078.23,"settledNet":3362.99}]};</script>
+<script>
+(function(){
+  var R = window.__RECON__ || {};
+  var K = R.kpis || {};
+  var money = function(n){ return '$' + Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+  var DARK = { textStyle:{ color:'#8b98a9' } };
+
+  function donut(){
+    var el = document.getElementById('fundingChart'); if(!el||!window.echarts) return;
+    var c = echarts.init(el);
+    var d = [
+      { value:+K.bankDeposited||0, name:'Funded', itemStyle:{color:'#34d399'} },
+      { value:+K.pendingDeposits||0, name:'Pending', itemStyle:{color:'#fbbf24'} },
+      { value:+K.overdueDeposits||0, name:'Overdue', itemStyle:{color:'#f87171'} },
+      { value:+K.inFlight||0, name:'In-flight', itemStyle:{color:'#60a5fa'} }
+    ].filter(function(x){return x.value>0;});
+    c.setOption({
+      tooltip:{ trigger:'item', formatter:function(p){ return p.name+': '+money(p.value)+' ('+p.percent+'%)'; } },
+      series:[{ type:'pie', radius:['62%','86%'], avoidLabelOverlap:false, label:{show:false},
+        data: d.length?d:[{value:1,name:'No data',itemStyle:{color:'#1f2937'}}] }]
+    });
+  }
+  function statusBar(){
+    var el = document.getElementById('statusChart'); if(!el||!window.echarts) return;
+    var c = echarts.init(el);
+    var cats=['Funded','Pending','Overdue','In-flight'];
+    var vals=[+K.bankDeposited||0,+K.pendingDeposits||0,+K.overdueDeposits||0,+K.inFlight||0];
+    var cols=['#34d399','#fbbf24','#f87171','#60a5fa'];
+    c.setOption({
+      grid:{left:8,right:18,top:14,bottom:6,containLabel:true},
+      tooltip:{trigger:'axis',valueFormatter:money},
+      xAxis:{type:'value',axisLabel:{color:'#8b98a9',formatter:function(v){return '$'+(v/1000)+'k';}},splitLine:{lineStyle:{color:'#1f2937'}}},
+      yAxis:{type:'category',data:cats,axisLabel:{color:'#c7d0db'},axisLine:{lineStyle:{color:'#1f2937'}}},
+      series:[{type:'bar',data:vals.map(function(v,i){return {value:v,itemStyle:{color:cols[i],borderRadius:[0,6,6,0]}};}),barWidth:'52%'}]
+    });
+  }
+  function trend(){
+    var el = document.getElementById('trendChart'); if(!el||!window.echarts) return;
+    var c = echarts.init(el);
+    var t = R.trend||[];
+    c.setOption({
+      grid:{left:8,right:16,top:30,bottom:6,containLabel:true},
+      legend:{data:['Captured','Settled (net)'],textStyle:{color:'#8b98a9'},right:8,top:0},
+      tooltip:{trigger:'axis',valueFormatter:money},
+      xAxis:{type:'category',data:t.map(function(d){return d.date;}),axisLabel:{color:'#8b98a9'},axisLine:{lineStyle:{color:'#1f2937'}}},
+      yAxis:{type:'value',axisLabel:{color:'#8b98a9',formatter:function(v){return '$'+(v/1000)+'k';}},splitLine:{lineStyle:{color:'#1f2937'}}},
+      series:[
+        {name:'Captured',type:'line',smooth:true,symbol:'circle',symbolSize:6,data:t.map(function(d){return d.captured;}),
+          lineStyle:{color:'#41d6c3',width:3},itemStyle:{color:'#41d6c3'},
+          areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(65,214,195,.35)'},{offset:1,color:'rgba(65,214,195,0)'}])}},
+        {name:'Settled (net)',type:'line',smooth:true,symbol:'circle',symbolSize:6,data:t.map(function(d){return d.settledNet;}),
+          lineStyle:{color:'#7c93ff',width:3},itemStyle:{color:'#7c93ff'},
+          areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(124,147,255,.30)'},{offset:1,color:'rgba(124,147,255,0)'}])}}
+      ]
+    });
+  }
+
+  // ---- single-payments table (render + filter) ----
+  var tbody = document.querySelector('#txTable tbody');
+  var txns = R.transactions || [];
+  function tag(m){ return '<span class="tag '+(m==='ach'?'ach':'cc')+'">'+(m==='ach'?'ACH':'CARD')+'</span>'; }
+  function rowHtml(t){
+    var settled = t.isSettled ? '<span class="ok">✓ '+( (t.settleDate||'').slice(0,10) )+'</span>' : '<span class="warn">pending</span>';
+    var amtColor = t.type==='refund' ? 'style="color:#f87171"' : (t.type==='void'?'style="color:#8b98a9"':'');
+    return '<tr>'
+      + '<td>'+ (t.createdOn||'').slice(0,16).replace('T',' ') +'</td>'
+      + '<td>'+ (t.customerName||'') +'</td>'
+      + '<td>'+ (t.customerRef||'') +'</td>'
+      + '<td>'+ tag(t.paymentMethod) +'</td>'
+      + '<td class="num" '+amtColor+'>'+ (t.type==='refund'?'-':'') + money(t.amount) +'</td>'
+      + '<td class="num muted">'+ money(t.fee) +'</td>'
+      + '<td>'+ (t.status||'') +'</td>'
+      + '<td>'+ settled +'</td>'
+      + '<td class="num">#'+ (t.batchNum!=null?t.batchNum:'—') +'</td>'
+      + '</tr>';
+  }
+  function render(){
+    var q = (document.getElementById('q').value||'').toLowerCase();
+    var fm = document.getElementById('fMethod').value;
+    var fs = document.getElementById('fSettled').value;
+    var ft = document.getElementById('fType').value;
+    var rows = txns.filter(function(t){
+      if(fm && t.paymentMethod!==fm) return false;
+      if(fs==='yes' && !t.isSettled) return false;
+      if(fs==='no' && t.isSettled) return false;
+      if(ft && t.type!==ft) return false;
+      if(q){ var hay=((t.customerName||'')+' '+(t.customerRef||'')).toLowerCase(); if(hay.indexOf(q)<0) return false; }
+      return true;
+    });
+    tbody.innerHTML = rows.length ? rows.map(rowHtml).join('') : '<tr><td colspan="9" class="empty">No payments match these filters.</td></tr>';
+  }
+  ['q','fMethod','fSettled','fType'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.addEventListener('input',render);
+  });
+
+  if(window.echarts){ donut(); statusBar(); trend(); window.addEventListener('resize',function(){
+    [['fundingChart'],['statusChart'],['trendChart']].forEach(function(p){ var e=document.getElementById(p[0]); if(e){var i=echarts.getInstanceByDom(e); if(i)i.resize();} });
+  }); }
+  render();
+})();
+</script>
+</body>
+</html>

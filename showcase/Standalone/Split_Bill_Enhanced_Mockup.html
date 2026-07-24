@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Split Bill Enhanced Mockup - MetroBill</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <style>
+    /* ── MetroBill app-matching styles ── */
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #333;
+      background: #f0f2f5;
+      padding: 20px;
+    }
+
+    .title__route-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #333;
+      margin: 0 0 15px 0;
+      padding: 0;
+    }
+
+    /* Tile container (matches user_bootstrap_layout) */
+    .tile--border {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: fit-content;
+      min-width: 900px;
+    }
+
+    .tile__header {
+      background: #f7f7f7;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 15px;
+    }
+
+    .tile__title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .tile__body--column {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Form layout classes */
+    .flex__column { display: flex; flex-direction: column; }
+    .flex__gap-sm > * + * { margin-top: 10px; }
+
+    .data__row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .data__title--base-bold {
+      font-weight: 700;
+      min-width: 120px;
+      font-size: 13px;
+    }
+
+    .form-label__input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-label__label {
+      font-weight: 700;
+      min-width: 120px;
+      font-size: 13px;
+    }
+
+    .form-label__checkbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-input {
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 4px 8px;
+      font-size: 13px;
+      height: 30px;
+    }
+
+    .form-input:focus {
+      border-color: #66afe9;
+      outline: 0;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+    }
+
+    /* Bills table (matches _split_bill_form inline styles) */
+    .bills-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 15px;
+    }
+
+    .bills-table th, .bills-table td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .bills-table th {
+      background-color: #f7f7f7;
+      font-weight: bold;
+    }
+
+    .bills-table tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+
+    .bills-table input, .bills-table select {
+      font-size: 13px;
+    }
+
+    .bills-table .consumption, .bills-table .total {
+      text-align: right;
+    }
+
+    /* Buttons (match app patterns) */
+    .button__primary {
+      background-color: #337ab7;
+      color: #fff;
+      border: 1px solid #2e6da4;
+      padding: 6px 16px;
+      border-radius: 3px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .button__primary:hover { background-color: #286090; }
+
+    .button__green--small {
+      background-color: #5cb85c;
+      color: #fff;
+      border: 1px solid #4cae4c;
+      padding: 4px 10px;
+      border-radius: 3px;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .button__green--small:hover { background-color: #449d44; color: #fff; text-decoration: none; }
+
+    .button__red--xs {
+      background-color: #d9534f;
+      color: #fff;
+      border: 1px solid #d43f3a;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .button__red--xs:hover { background-color: #c9302c; color: #fff; text-decoration: none; }
+
+    /* ── NEW: Print button styling ── */
+    .button__print {
+      background-color: #5bc0de;
+      color: #fff;
+      border: 1px solid #46b8da;
+      padding: 6px 16px;
+      border-radius: 3px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .button__print:hover { background-color: #31b0d5; }
+
+    /* ── NEW: Enhancement callouts ── */
+    .new-feature-badge {
+      display: inline-block;
+      background: #dff0d8;
+      color: #3c763d;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 6px;
+      vertical-align: middle;
+      letter-spacing: 0.5px;
+      border: 1px solid #d6e9c6;
+    }
+
+    .new-feature-highlight {
+      border: 2px dashed #5cb85c !important;
+      background: #f9fff9;
+      position: relative;
+    }
+
+    /* Actions bar */
+    .actions {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Reason textarea */
+    .reason-textarea {
+      width: 100%;
+      max-width: 550px;
+      height: 80px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 6px 8px;
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    .reason-textarea:focus {
+      border-color: #66afe9;
+      outline: 0;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+    }
+
+    /* ── NEW: No-meter row styling ── */
+    .no-meter-row {
+      background: #fdf8f0 !important;
+    }
+
+    .no-meter-row td {
+      border-color: #f0e0c0 !important;
+    }
+
+    .no-meter-description {
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 4px 8px;
+      font-size: 13px;
+      height: 30px;
+      width: 100%;
+    }
+
+    .no-meter-description:focus {
+      border-color: #66afe9;
+      outline: 0;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+    }
+
+    .meter-fields { /* visible when meter selected */ }
+    .no-meter-fields { display: none; /* visible when NO METER selected */ }
+
+    .no-meter-label {
+      font-size: 11px;
+      color: #8a6d3b;
+      font-style: italic;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* Legend box */
+    .mockup-legend {
+      background: #fcf8e3;
+      border: 1px solid #faebcc;
+      border-radius: 4px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      max-width: 900px;
+    }
+    .mockup-legend strong { color: #8a6d3b; }
+    .mockup-legend code {
+      background: #f5f5f5;
+      padding: 1px 4px;
+      border-radius: 2px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Mockup Legend ── -->
+<div class="mockup-legend">
+  <strong>MOCKUP</strong> &mdash; Enhanced Split Bill Screen<br>
+  Items with <span class="new-feature-badge">NEW</span> badges and
+  <span style="border: 2px dashed #5cb85c; padding: 1px 4px;">green dashed borders</span>
+  indicate restored features from the deprecated <code>miscellaneous_bills/new</code> screen.<br>
+  <em>Date: February 18, 2026 &middot; Customer: ZaMunda Public Utility (CID 9004)</em>
+</div>
+
+<!-- ── Page Title (matches split_bill.html.erb) ── -->
+<h2 class="title title__route-title">New Bills</h2>
+
+<!-- ── Main Tile Container ── -->
+<div class="tile--border">
+  <div class="tile__header">
+    <p class="tile__title">New Bills Information</p>
+  </div>
+
+  <form class="tile__body--column">
+    <div class="flex__column flex__gap-sm" style="width: 100%; max-width: 550px;">
+
+      <!-- Meters display -->
+      <div class="data__row">
+        <p class="data__title--base-bold" style="margin:0;"> Meters: </p>
+        <div>
+          123 Royal Palace Blvd: Water 5/8" WM-40821 1247 / 01/15/2026<br>
+          123 Royal Palace Blvd: Sewer 5/8" WM-40822 892 / 01/15/2026
+        </div>
+      </div>
+
+      <!-- Rates display -->
+      <div class="data__row" style="align-items: flex-start;">
+        <p class="data__title--base-bold" style="max-width: 200px; margin:0;">
+          Rates assigned to this customer:
+        </p>
+        <div>
+          123 Royal Palace Blvd WTR-RES<br>
+          123 Royal Palace Blvd SWR-FLAT
+        </div>
+      </div>
+
+      <!-- Bill Date -->
+      <label class="form-label__input">
+        <span class="form-label__label">Bill Date:</span>
+        <div>
+          <input type="text" class="form-input datepicker" readonly value="02/18/2026" style="max-width: 200px;">
+        </div>
+      </label>
+
+      <!-- Post Bills Immediately -->
+      <label class="form-label__checkbox">
+        <span class="form-label__label">Immediately post bills to customers?</span>
+        <input type="checkbox" style="align-self: center;">
+      </label>
+
+      <!-- ════════════════════════════════════════════ -->
+      <!-- NEW: Reason for Bill textarea               -->
+      <!-- ════════════════════════════════════════════ -->
+      <div class="new-feature-highlight" style="padding: 10px; border-radius: 4px; margin-top: 5px;">
+        <label class="form-label__input" style="align-items: flex-start;">
+          <span class="form-label__label">
+            Reason for Bill:
+            <span class="new-feature-badge">NEW</span>
+          </span>
+          <textarea
+            class="reason-textarea"
+            name="reason"
+            placeholder="Enter reason or notes for this billing (optional). This will be saved to the bill record and included in printed bills."
+          ></textarea>
+        </label>
+      </div>
+
+    </div>
+
+    <!-- Hidden field -->
+    <input type="hidden" name="customer_id" value="3042871">
+
+    <!-- Bills Table -->
+    <div id="billsdiv">
+      <table class="bills-table">
+        <thead>
+          <tr>
+            <th width="150px">Parcel / Meter</th>
+            <th width="130px">Rate</th>
+            <th width="90px">End Reading</th>
+            <th width="115px">Start Date</th>
+            <th width="115px">End Date</th>
+            <th width="115px">Due Date</th>
+            <th width="115px">Discount Date</th>
+            <th width="85px">Cons./Days</th>
+            <th width="100px">Usage Charge</th>
+            <th width="80px">Surcharge</th>
+            <th width="80px"><b>Total</b></th>
+            <th width="50px" title="Un-check if the reading is an estimate">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23337ab7' stroke='%23fff'/%3E%3Ctext x='8' y='12' font-size='11' fill='%23fff' text-anchor='middle' font-weight='bold'%3E%3F%3C/text%3E%3C/svg%3E" width="18" height="18" alt="?">
+            </th>
+            <th width="80px">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Row 1: Meter-based (standard) -->
+          <tr>
+            <td>
+              <select class="form-input meter-selector" style="width:140px;" data-row="1">
+                <option value="m-40821" selected>123 Royal Palace Blvd - WM-40821</option>
+                <option value="m-40822">123 Royal Palace Blvd - WM-40822</option>
+                <option value="p-1001">123 Royal Palace Blvd - NO METER</option>
+              </select>
+            </td>
+            <td class="meter-fields" data-row="1">
+              <select class="form-input" style="width:120px;">
+                <option>WTR-RES</option>
+                <option>SWR-FLAT</option>
+              </select>
+            </td>
+            <td class="meter-fields" data-row="1"><input type="number" class="form-input" value="1302" step="any" style="width:80px;"></td>
+            <td class="meter-fields" data-row="1"><input type="text" class="form-input datepicker" readonly value="01/15/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="1"><input type="text" class="form-input datepicker" readonly value="02/18/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="1"><input type="text" class="form-input datepicker" readonly value="03/20/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="1"><input type="text" class="form-input datepicker" readonly value="03/05/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="1" style="text-align:left;">55 / 34</td>
+            <td class="no-meter-fields" data-row="1" colspan="7" style="display:none;">
+              <div style="display:flex; gap:10px; align-items:center;">
+                <div style="flex:1;">
+                  <input type="text" class="no-meter-description" placeholder="Description (e.g., Connection fee, Deposit refund)">
+                  <span class="no-meter-label">Description <span class="new-feature-badge" style="margin-left:2px;">NEW</span></span>
+                </div>
+              </div>
+            </td>
+            <td><input type="number" class="form-input" value="42.75" step="0.01" style="width:90px;"></td>
+            <td class="meter-fields" data-row="1"><input type="number" class="form-input" value="18.50" step="0.01" style="width:70px;"></td>
+            <td class="no-meter-fields" data-row="1" style="display:none;"></td>
+            <td class="total" style="text-align:left;"><strong>$61.25</strong></td>
+            <td class="meter-fields" data-row="1" style="text-align:center;"><input type="checkbox" checked></td>
+            <td class="no-meter-fields" data-row="1" style="display:none;"></td>
+            <td><a href="#" class="button__red--xs" onclick="return false;">Remove</a></td>
+          </tr>
+          <!-- Row 2: Meter-based (standard) -->
+          <tr>
+            <td>
+              <select class="form-input meter-selector" style="width:140px;" data-row="2">
+                <option value="m-40821">123 Royal Palace Blvd - WM-40821</option>
+                <option value="m-40822" selected>123 Royal Palace Blvd - WM-40822</option>
+                <option value="p-1001">123 Royal Palace Blvd - NO METER</option>
+              </select>
+            </td>
+            <td class="meter-fields" data-row="2">
+              <select class="form-input" style="width:120px;">
+                <option>WTR-RES</option>
+                <option selected>SWR-FLAT</option>
+              </select>
+            </td>
+            <td class="meter-fields" data-row="2"><input type="number" class="form-input" value="934" step="any" style="width:80px;"></td>
+            <td class="meter-fields" data-row="2"><input type="text" class="form-input datepicker" readonly value="01/15/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="2"><input type="text" class="form-input datepicker" readonly value="02/18/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="2"><input type="text" class="form-input datepicker" readonly value="03/20/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="2"><input type="text" class="form-input datepicker" readonly value="03/05/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="2" style="text-align:left;">42 / 34</td>
+            <td class="no-meter-fields" data-row="2" colspan="7" style="display:none;">
+              <div style="display:flex; gap:10px; align-items:center;">
+                <div style="flex:1;">
+                  <input type="text" class="no-meter-description" placeholder="Description (e.g., Connection fee, Deposit refund)">
+                  <span class="no-meter-label">Description <span class="new-feature-badge" style="margin-left:2px;">NEW</span></span>
+                </div>
+              </div>
+            </td>
+            <td><input type="number" class="form-input" value="35.20" step="0.01" style="width:90px;"></td>
+            <td class="meter-fields" data-row="2"><input type="number" class="form-input" value="18.50" step="0.01" style="width:70px;"></td>
+            <td class="no-meter-fields" data-row="2" style="display:none;"></td>
+            <td class="total" style="text-align:left;"><strong>$53.70</strong></td>
+            <td class="meter-fields" data-row="2" style="text-align:center;"><input type="checkbox" checked></td>
+            <td class="no-meter-fields" data-row="2" style="display:none;"></td>
+            <td><a href="#" class="button__red--xs" onclick="return false;">Remove</a></td>
+          </tr>
+          <!-- ════════════════════════════════════════════════════ -->
+          <!-- Row 3: NO METER — contextual description mode  NEW -->
+          <!-- ════════════════════════════════════════════════════ -->
+          <tr class="no-meter-row new-feature-highlight">
+            <td>
+              <select class="form-input meter-selector" style="width:140px;" data-row="3">
+                <option value="m-40821">123 Royal Palace Blvd - WM-40821</option>
+                <option value="m-40822">123 Royal Palace Blvd - WM-40822</option>
+                <option value="p-1001" selected>123 Royal Palace Blvd - NO METER</option>
+              </select>
+            </td>
+            <!-- Meter fields (hidden for NO METER rows) -->
+            <td class="meter-fields" data-row="3" style="display:none;">
+              <select class="form-input" style="width:120px;">
+                <option>WTR-RES</option>
+                <option>SWR-FLAT</option>
+              </select>
+            </td>
+            <td class="meter-fields" data-row="3" style="display:none;"><input type="number" class="form-input" value="0" step="any" style="width:80px;"></td>
+            <td class="meter-fields" data-row="3" style="display:none;"><input type="text" class="form-input datepicker" readonly value="01/15/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="3" style="display:none;"><input type="text" class="form-input datepicker" readonly value="02/18/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="3" style="display:none;"><input type="text" class="form-input datepicker" readonly value="03/20/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="3" style="display:none;"><input type="text" class="form-input datepicker" readonly value="03/05/2026" style="width:105px;"></td>
+            <td class="meter-fields" data-row="3" style="display:none;"></td>
+            <!-- No-meter fields (shown for NO METER rows) — spans across meter columns -->
+            <td class="no-meter-fields" data-row="3" colspan="7" style="display:table-cell;">
+              <div style="display:flex; gap:10px; align-items:center;">
+                <div style="flex:1;">
+                  <input type="text" class="no-meter-description" placeholder="Description (e.g., Connection fee, Deposit refund, Late charge adjustment)"
+                         value="Backflow prevention test fee">
+                  <span class="no-meter-label">Description <span class="new-feature-badge" style="margin-left:2px;">NEW</span></span>
+                </div>
+              </div>
+            </td>
+            <!-- Amount (always visible) -->
+            <td><input type="number" class="form-input" value="75.00" step="0.01" style="width:90px;"></td>
+            <td class="meter-fields" data-row="3" style="display:none;"><input type="number" class="form-input" value="0" step="0.01" style="width:70px;"></td>
+            <td class="no-meter-fields" data-row="3" style="display:table-cell;"></td>
+            <td class="total" style="text-align:left;"><strong>$75.00</strong></td>
+            <td class="meter-fields" data-row="3" style="display:none; text-align:center;"><input type="checkbox" checked></td>
+            <td class="no-meter-fields" data-row="3" style="display:table-cell;"></td>
+            <td><a href="#" class="button__red--xs" onclick="return false;">Remove</a></td>
+          </tr>
+
+          <!-- Add row -->
+          <tr style="background: none;">
+            <td style="border: none; padding-left: 0;">
+              <a href="#" class="button__green--small" id="add_new_row" onclick="return false;">+ Add Bill</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ════════════════════════════════════════════════ -->
+    <!-- Actions: Save (existing) + Print Bill (NEW)     -->
+    <!-- ════════════════════════════════════════════════ -->
+    <div class="actions">
+      <button type="button" class="button__primary"
+              onclick="alert('This would save bills and post to the customer account.')">
+        Save
+      </button>
+
+      <!-- NEW: Print Bill button -->
+      <span class="new-feature-highlight" style="display: inline-flex; align-items: center; padding: 4px 6px; border-radius: 4px;">
+        <button type="button" class="button__print"
+                onclick="alert('This would generate a PDF preview of the bills with company header, customer address, line items, reason, and totals — before posting to the account.')">
+          Print Bill
+        </button>
+        <span class="new-feature-badge" style="margin-left: 8px;">NEW</span>
+      </span>
+    </div>
+
+  </form>
+</div>
+
+<!-- ── Comparison Reference ── -->
+<div style="margin-top: 30px; max-width: 900px;">
+  <h3 style="font-size: 16px; color: #555;">Feature Comparison Reference</h3>
+  <table class="table table-bordered table-condensed" style="font-size: 13px; background: #fff;">
+    <thead>
+      <tr style="background: #f7f7f7;">
+        <th>Feature</th>
+        <th style="text-align:center;">Old: Misc Bills</th>
+        <th style="text-align:center;">Current: Split Bill</th>
+        <th style="text-align:center;">Enhanced (This Mockup)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Bill Date</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+      </tr>
+      <tr>
+        <td>Parcel / Meter Selection</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003; (parcel only)</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003; (parcel + meter)</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+      </tr>
+      <tr>
+        <td>Rate-based Calculation (AJAX)</td>
+        <td style="text-align:center; color: #d9534f;">&#10007;</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+      </tr>
+      <tr>
+        <td>Meter Readings</td>
+        <td style="text-align:center; color: #d9534f;">&#10007;</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+      </tr>
+      <tr>
+        <td>Post Bills Immediately</td>
+        <td style="text-align:center; color: #d9534f;">&#10007;</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+      </tr>
+      <tr>
+        <td>Penalty / Discount Dates</td>
+        <td style="text-align:center; color: #d9534f;">&#10007;</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+      </tr>
+      <tr style="background: #f9fff9;">
+        <td><strong>Reason for Bill (notes)</strong></td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #d9534f;">&#10007; (lost)</td>
+        <td style="text-align:center; color: #5cb85c;"><strong>&#10003; RESTORED</strong></td>
+      </tr>
+      <tr style="background: #f9fff9;">
+        <td><strong>Print Bill (PDF preview)</strong></td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #d9534f;">&#10007; (lost)</td>
+        <td style="text-align:center; color: #5cb85c;"><strong>&#10003; RESTORED</strong></td>
+      </tr>
+      <tr>
+        <td>Billing Type Selection</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #d9534f;">&#10007;</td>
+        <td style="text-align:center; color: #999;">&#8212; (not in scope)</td>
+      </tr>
+      <tr>
+        <td>GL Account Selection</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #d9534f;">&#10007;</td>
+        <td style="text-align:center; color: #999;">&#8212; (not in scope)</td>
+      </tr>
+      <tr>
+        <td>Invoice Association</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003; (v3+)</td>
+        <td style="text-align:center; color: #d9534f;">&#10007;</td>
+        <td style="text-align:center; color: #999;">&#8212; (not in scope)</td>
+      </tr>
+      <tr>
+        <td>Simple Flat Amount Entry</td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #d9534f;">&#10007;</td>
+        <td style="text-align:center; color: #999;">&#8212; (not in scope)</td>
+      </tr>
+      <tr style="background: #f9fff9;">
+        <td><strong>Line Item Descriptions (no-meter rows)</strong></td>
+        <td style="text-align:center; color: #5cb85c;">&#10003;</td>
+        <td style="text-align:center; color: #d9534f;">&#10007; (lost)</td>
+        <td style="text-align:center; color: #5cb85c;"><strong>&#10003; RESTORED</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 15px; padding: 12px 16px; background: #f5f5f5; border-radius: 4px; font-size: 13px; border: 1px solid #ddd;">
+    <strong>Implementation Notes:</strong>
+    <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+      <li><strong>Reason for Bill</strong> maps to the existing <code>Bill.note</code> column &mdash; no schema changes needed.
+        The <code>create_split</code> action in <code>bills_controller.rb</code> would pass the <code>reason</code> param into each bill's <code>note</code> field.</li>
+      <li><strong>Print Bill</strong> reuses the existing <code>BillingPrintHelper.print_miscellaneous_bill()</code> method (line 2967 of <code>billing_print_helper.rb</code>).
+        A <code>print_flag</code> hidden field routes the form submission to PDF generation instead of (or before) saving.</li>
+      <li><strong>Line Item Description</strong> appears contextually when a "NO METER" parcel is selected (value starts with <code>p-</code>).
+        The meter-specific columns (End Reading, Start/End Date, Cons./Days, Surcharge, Actual Reading) collapse into a single
+        Description text field spanning those columns. The description saves to the same <code>Bill.note</code> column per-line.
+        The <code>meter_id</code> change handler in <code>_split_bill_form.html.erb</code> already fires on selection change &mdash;
+        the toggle logic hooks into this existing event.</li>
+      <li>All three features are additive &mdash; they don't change existing split_bill behavior for users who don't use them.</li>
+    </ul>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+  $(function() {
+    $(".datepicker").datepicker();
+
+    // ── Interactive demo: toggle row mode when parcel/meter changes ──
+    $(".meter-selector").on("change", function() {
+      var row = $(this).data("row");
+      var val = $(this).val();
+      var isNoMeter = val.startsWith("p-");
+      var tr = $(this).closest("tr");
+
+      if (isNoMeter) {
+        // Switch to no-meter (description) mode
+        tr.addClass("no-meter-row");
+        $(".meter-fields[data-row='" + row + "']").hide();
+        $(".no-meter-fields[data-row='" + row + "']").css("display", "table-cell");
+      } else {
+        // Switch to meter (reading) mode
+        tr.removeClass("no-meter-row");
+        $(".meter-fields[data-row='" + row + "']").css("display", "");
+        $(".no-meter-fields[data-row='" + row + "']").hide();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

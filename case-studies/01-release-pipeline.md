@@ -2,6 +2,8 @@
 
 > ~12 hours of manual release prep → ~90 minutes — with better consistency and a human still in control of the final word.
 
+*This is one build in my broader [AI operating environment](../docs/ai-operating-environment.md) — the full set of tools I drive and skills I've codified on top of them.*
+
 ## The problem
 
 Shipping a software release meant assembling a release-notes package by hand. For each release I had to:

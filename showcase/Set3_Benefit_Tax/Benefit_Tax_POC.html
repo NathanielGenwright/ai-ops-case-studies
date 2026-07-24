@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rivervale Benefit Tax — Calculation Engine (POC)</title>
+<style>
+  :root{
+    --bg:#0b0f1a; --bg2:#0e1424; --surface:#141b2e; --surface2:#1a2336;
+    --line:#243049; --text:#e7ecf6; --muted:#8b97b0; --faint:#5c6b8a;
+    --accent:#4f8cff; --accent2:#22d3ee; --good:#34d399; --bad:#fb7185;
+    --warn:#fbbf24; --override:#c084fc;
+    --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:var(--sans);color:var(--text);
+    background:radial-gradient(1200px 600px at 80% -10%,#16203a 0%,transparent 55%),
+               radial-gradient(900px 500px at -10% 10%,#15243a 0%,transparent 50%),
+               var(--bg);
+    min-height:100vh;font-size:14px;line-height:1.5;
+  }
+  .wrap{max-width:1320px;margin:0 auto;padding:28px 22px 60px}
+  header.hero{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+  h1{font-size:24px;margin:0 0 4px;letter-spacing:-.3px}
+  .sub{color:var(--muted);font-size:13px}
+  .pill{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.4px;
+    padding:4px 10px;border-radius:999px;background:linear-gradient(135deg,#3b2a6b,#1f3a6b);
+    border:1px solid #3a4a78;color:#cdd8f5;text-transform:uppercase}
+  a{color:var(--accent2);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* KPI row */
+  .kpis{display:grid;grid-template-columns:auto repeat(3,1fr);gap:14px;margin-bottom:22px}
+  .card{background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--line);
+    border-radius:14px;padding:16px 18px;box-shadow:0 10px 30px -18px rgba(0,0,0,.8)}
+  .kpi .label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px}
+  .kpi .val{font-family:var(--mono);font-size:26px;font-weight:600}
+  .kpi .val small{font-size:13px;color:var(--muted)}
+  .ringcard{display:flex;align-items:center;gap:16px}
+  .ring{--p:100;width:78px;height:78px;border-radius:50%;flex:none;
+    background:conic-gradient(var(--good) calc(var(--p)*1%),#27314a 0);
+    display:grid;place-items:center;transition:--p .4s}
+  .ring::after{content:"";width:58px;height:58px;border-radius:50%;background:var(--surface)}
+  .ring .inner{position:absolute;text-align:center}
+  .ring-wrap{position:relative;display:grid;place-items:center}
+  .ring .pct{font-family:var(--mono);font-size:18px;font-weight:700}
+  .ring .cap{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+  /* controls */
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+    border-radius:10px;padding:9px 14px;border:1px solid var(--line);
+    background:var(--surface2);color:var(--text);transition:.15s}
+  button:hover{border-color:var(--accent);transform:translateY(-1px)}
+  button.primary{background:linear-gradient(135deg,var(--accent),#3b6fd6);border-color:transparent}
+  .hint{color:var(--muted);font-size:12px}
+
+  /* consumption explorer */
+  .explorer{margin-bottom:22px}
+  .exp-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .exp-head h2{margin:0}
+  .exp-grid{display:grid;grid-template-columns:0.95fr 1.05fr;gap:28px}
+  @media(max-width:760px){.exp-grid{grid-template-columns:1fr}}
+  .exp-drivers{font-size:13px;color:var(--muted);line-height:2;margin-top:10px}
+  .exp-drivers b{color:var(--text);font-family:var(--mono)}
+  .exp-sel{background:#0c1322;border:1px solid #2a3650;color:var(--text);border-radius:8px;
+    padding:8px 10px;font-size:13px;font-family:var(--sans);width:100%;margin-top:4px}
+  .slider-row{display:flex;align-items:center;gap:12px;margin:8px 0 4px}
+  input[type=range]{flex:1;accent-color:var(--accent2);height:6px;cursor:pointer}
+  .exp-num{width:96px;background:#0c1322;border:1px solid #2a3650;color:var(--text);border-radius:8px;
+    padding:8px;font-family:var(--mono);font-size:15px;text-align:right}
+  .exp-num:focus,.exp-sel:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px #4f8cff33}
+  .gal{font-family:var(--mono);font-size:12px;color:var(--accent2)}
+  .exp-out{display:flex;gap:16px;margin-top:18px}
+  .exp-out .box{flex:1;background:#0c1322;border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-align:center}
+  .exp-out .box .lab{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  .exp-out .box .v{font-family:var(--mono);font-size:30px;font-weight:700;margin-top:4px}
+  .exp-out .box .v.na{color:var(--faint);font-size:20px}
+  .exp-out .box .v.ovr{color:var(--override)}
+  .status{margin-top:16px;padding:11px 14px;border-radius:10px;font-size:13px;border:1px solid;line-height:1.5}
+  .status.drive{background:#0f2a1f;border-color:#1c5c3f;color:#86efac}
+  .status.base{background:#2a230f;border-color:#5c4a1c;color:#fcd34d}
+  .status.ovr{background:#241a2e;border-color:#4a2c6b;color:#d8b4fe}
+
+  /* table */
+  .tablecard{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:1180px}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle}
+  thead th{position:sticky;top:0;background:#101728;color:var(--muted);font-size:11px;
+    text-transform:uppercase;letter-spacing:.4px;font-weight:600;z-index:2}
+  tbody tr:hover{background:#16203608}
+  tbody tr.detailrow:hover{background:transparent}
+  .acct{font-family:var(--mono);font-weight:600;color:#cdd8f5}
+  .scenario{max-width:230px;white-space:normal;color:var(--muted);font-size:12px}
+  .dist{font-family:var(--mono);font-size:11px;color:var(--accent2)}
+  .dist.off{color:var(--faint);opacity:.5}
+  input.cell{width:62px;background:#0c1322;border:1px solid #2a3650;color:var(--text);
+    border-radius:7px;padding:5px 6px;font-family:var(--mono);font-size:12px;text-align:right}
+  input.cell:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px #4f8cff33}
+  input.res{width:54px}
+  input.res::placeholder{color:#4a5572;font-style:italic}
+  .fu{font-family:var(--mono);font-size:10px;color:var(--accent2);margin-left:4px}
+  .comp{font-family:var(--mono);font-size:15px;font-weight:700}
+  .comp.na{color:var(--faint);font-weight:400}
+  .comp.ovr{color:var(--override)}
+  .prior{display:block;font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:400;margin-top:1px}
+  .exp{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .mark{font-size:15px}
+  .mark.ok{color:var(--good)} .mark.no{color:var(--bad)}
+  td.num{text-align:right}
+  .trace{font-family:var(--mono);font-size:12px;color:#b9c4dd;white-space:normal;
+    background:#0c1322;border-left:2px solid var(--accent);padding:10px 14px;border-radius:6px;margin:2px 0}
+  .trace b{color:var(--accent2)} .trace .ovr{color:var(--override)}
+  tr.clickable{cursor:pointer}
+  .chev{color:var(--faint);font-size:10px}
+
+  /* aggregation + footer */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+  h2{font-size:15px;margin:0 0 10px;letter-spacing:.2px}
+  .agg-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .agg-row:last-child{border-bottom:none}
+  .agg-tot{font-family:var(--mono);font-weight:700;color:var(--good)}
+  .note{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6}
+  ul.legend{list-style:none;padding:0;margin:0;font-size:12px;color:var(--muted)}
+  ul.legend li{margin:5px 0}
+  code{font-family:var(--mono);background:#0c1322;padding:1px 6px;border-radius:5px;color:#cdd8f5}
+  footer{margin-top:28px;color:var(--muted);font-size:12px;text-align:center;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div>
+      <span class="pill">Proof of Concept · runnable engine</span>
+      <h1>Water / Sewer Benefit Tax — Calculation Engine</h1>
+      <div class="sub">Town of Rivervale · SWIS&nbsp;990001 · reproducing the legacy HydroWorks benefit-tax calculation</div>
+    </div>
+    <div class="card" style="max-width:340px">
+      <div class="hint">Every value below is computed live by the same <code>unitsFor()</code> function — edit any input and the engine recomputes and re-checks itself against the town's known figures. Nothing here is hard-coded output.</div>
+    </div>
+  </header>
+
+  <section class="kpis">
+    <div class="card kpi ringcard">
+      <div class="ring-wrap">
+        <div class="ring" id="ring"></div>
+        <div class="inner"><div class="pct" id="ringPct">100%</div><div class="cap">match</div></div>
+      </div>
+      <div>
+        <div class="label">Engine vs. extract</div>
+        <div class="val"><span id="matchN">11</span><small>/<span id="matchT">11</span> rows</small></div>
+        <div class="hint" id="cellMatch">cells matched</div>
+      </div>
+    </div>
+    <div class="card kpi"><div class="label">Total Water units</div><div class="val" id="totW">0.00</div><div class="hint">Σ current-year WBT (sample)</div></div>
+    <div class="card kpi"><div class="label">Total Sewer units</div><div class="val" id="totS">0.00</div><div class="hint">Σ current-year SBT (sample)</div></div>
+    <div class="card kpi"><div class="label">Scenarios</div><div class="val" id="nRows">11</div><div class="hint">covering all 8 rule areas</div></div>
+  </section>
+
+  <section class="card explorer">
+    <div class="exp-head">
+      <h2>🔬 Consumption Explorer</h2>
+      <span class="hint">Pick a parcel, drag <b>consumption</b> up and down, and watch <b>New WBT</b> / <b>New SBT</b> respond live (Q4). The status banner tells you whether consumption is actually driving the charge — or whether the building/frontage minimum still wins.</span>
+    </div>
+    <div class="exp-grid">
+      <div>
+        <label class="hint">Parcel</label>
+        <select class="exp-sel" id="expSel"></select>
+        <div class="exp-drivers" id="expDrivers"></div>
+      </div>
+      <div>
+        <label class="hint">Consumption units &nbsp;·&nbsp; <span class="gal" id="expGal"></span></label>
+        <div class="slider-row">
+          <input type="range" id="expRange" min="0" max="180" step="0.01" value="86.92">
+          <input type="number" class="exp-num" id="expNum" step="0.01" value="86.92">
+        </div>
+        <div class="exp-out">
+          <div class="box"><div class="lab">→ New WBT</div><div class="v" id="expWBT">–</div></div>
+          <div class="box"><div class="lab">→ New SBT</div><div class="v" id="expSBT">–</div></div>
+        </div>
+        <div class="status" id="expStatus"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <button class="primary" id="rollBtn">↻ Roll over to prior year (Q5)</button>
+    <button id="resetBtn">Reset sample data</button>
+    <span class="hint">Tip: set Acct&nbsp;0734 frontage to <b>800</b> → <b>6.50</b> units · clear a resolution to see drivers take over · type <code>0</code> in a resolution to force-exempt.</span>
+  </div>
+
+  <div class="tablecard">
+    <table>
+      <thead>
+        <tr>
+          <th></th><th>Acct</th><th>Scenario</th><th>W·dist</th><th>S·dist</th>
+          <th>Frontage&nbsp;ft</th><th>Bld</th><th>Cons</th><th>Resol&nbsp;W</th><th>Resol&nbsp;S</th>
+          <th class="num">→ WBT</th><th class="num">Extract</th><th class="num">→ SBT</th><th class="num">Extract</th><th>✓</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>Parcel aggregation — multiple accounts (Q8)</h2>
+      <div id="aggBody"></div>
+      <div class="note" id="aggNote"></div>
+    </div>
+    <div class="card">
+      <h2>How the engine decides</h2>
+      <ul class="legend">
+        <li><b style="color:var(--override)">Resolution override</b> — a populated <code>Resol</code> field (incl. <code>0</code>) forces that exact value over everything (Q2, Q3).</li>
+        <li><b>Otherwise</b> charge <code>max(frontage, building, consumption)</code> — the largest driver wins.</li>
+        <li><b>Frontage → units</b>: ≤500 ft → <code>ft÷100</code>; &gt;500 ft → <code>5 + (ft−500)÷200</code> (Q1).</li>
+        <li><b>Consumption</b>: <code>Σ(last 4 reads) ÷ 75,000</code> (Q4) — here read from the precomputed value.</li>
+        <li><b>Blank district</b> → not charged for that tax (shows <span class="comp na">n/a</span>).</li>
+        <li>Click any row to expand its <b>step-by-step calculation trace</b>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Spec: <a href="FRD_Rivervale_Benefit_Tax.md">FRD_Rivervale_Benefit_Tax.md</a> ·
+    Rules: <a href="reference/Calculation_Rules_QA.md">Calculation_Rules_QA.md</a> ·
+    Data: <a href="reference/demo_parcels.csv">demo_parcels.csv</a><br>
+    POC · FRD-2026-BENTAX-001 · feasibility demonstration only — not production billing logic
+  </footer>
+</div>
+
+<script>
+/* ====================== CALCULATION ENGINE ====================== */
+
+// Half-up rounding to 2 decimals, robust against JS float error (0.725 -> 0.73, not 0.72).
+function round2(x){
+  if (x === null || x === undefined || x === '' || isNaN(x)) return null;
+  x = Number(x);
+  const eps = x >= 0 ? 1e-9 : -1e-9;
+  return Math.round(x * 100 + eps) / 100;
+}
+
+// Road frontage (feet) -> benefit-tax units (Q1).
+function frontageUnits(feet){
+  if (feet === null || feet === '' || isNaN(feet)) return 0;
+  feet = Number(feet);
+  if (feet <= 500) return round2(feet / 100);
+  return round2(5 + (feet - 500) / 200);
+}
+
+function isPopulated(v){ return v !== null && v !== '' && v !== undefined && !isNaN(v); }
+function numOr0(v){ return isPopulated(v) ? Number(v) : 0; }
+
+// Charged units for one account + one tax type ('w' | 's'). Returns {value, trace, mode}.
+function unitsFor(row, tax){
+  const inDistrict = tax === 'w' ? !!row.wtr : !!row.sew;
+  const taxName = tax === 'w' ? 'water' : 'sewer';
+  if (!inDistrict){
+    return { value:null, mode:'na', trace:`Not in a ${taxName} district → not charged (n/a).` };
+  }
+  const resol = tax === 'w' ? row.resolW : row.resolS;
+  if (isPopulated(resol)){
+    const v = round2(resol);
+    return { value:v, mode:'override',
+      trace:`Resolution (${taxName}) is populated → <span class="ovr">force ${v.toFixed(2)}</span>, ignoring frontage / building / consumption.` };
+  }
+  const fu = frontageUnits(row.feet);
+  const bu = numOr0(row.bld);
+  const cu = numOr0(row.cons);
+  const m  = Math.max(fu, bu, cu);
+  let winner = 'frontage', wv = fu;
+  if (bu > wv){ winner='building'; wv=bu; }
+  if (cu > wv){ winner='consumption'; wv=cu; }
+  // tie preference: if building equals max, call it the building floor
+  if (m === bu && bu >= fu && bu >= cu) winner = 'building';
+  const v = round2(m);
+  return { value:v, mode:'calc',
+    trace:`No resolution → <b>max</b>( frontage ${fu.toFixed(2)}, building ${bu.toFixed(2)}, consumption ${cu.toFixed(2)} ) = <b>${v.toFixed(2)}</b> · <b>${winner}</b> drives.` };
+}
+
+/* ====================== DEMONSTRATION DATA ====================== */
+// feet = canonical road frontage input. resolW/resolS: null = blank (no override), 0 = force-zero.
+const SEED = [
+ {custno:'45',   taxmap:'096.10-02-10.000', wtr:'WD001', sew:'SD002', feet:70,    bld:1, cons:0.11,  resolW:null, resolS:null, priorW:1,     priorS:1,     expW:1,    expS:1,    label:'Building floor — frontage & usage both < 1.0; building holds the 1.0 minimum'},
+ {custno:'963',  taxmap:'095.06-01-15.000', wtr:'WD001', sew:'',      feet:220,   bld:1, cons:0.23,  resolW:null, resolS:null, priorW:2.2,   priorS:null,  expW:2.2,  expS:null, label:'Frontage-driven & water-only — no sewer district, SBT is n/a'},
+ {custno:'1000', taxmap:'095.07-01-29.000', wtr:'WD001', sew:'',      feet:166,   bld:1, cons:0.83,  resolW:null, resolS:null, priorW:1.66,  priorS:null,  expW:1.66, expS:null, label:'Feet ↔ units display (PDF Acct #1000) — 166 ft = 1.66 units, correct but reads oddly'},
+ {custno:'734',  taxmap:'086.17-01-12.200', wtr:'WD001', sew:'SD002', feet:645,   bld:3, cons:0,     resolW:null, resolS:null, priorW:5.73,  priorS:5.73,  expW:5.73, expS:5.73, label:'Over-500 frontage (PDF Acct 0734) — 5 + (645−500)/200 = 5.73'},
+ {custno:'1508', taxmap:'086.13-01-29.000', wtr:'WD001', sew:'SD002', feet:87,    bld:1, cons:86.92, resolW:null, resolS:null, priorW:61.52, priorS:61.52, expW:86.92,expS:86.92,label:'Consumption-driven + large YoY jump (prior 61.52 → 86.92)'},
+ {custno:'1459', taxmap:'086.09-04-09.100', wtr:'WD001', sew:'SD002', feet:0,     bld:1, cons:0.17,  resolW:2,    resolS:2,    priorW:2,     priorS:2,     expW:2,    expS:2,    label:'Resolution forces a specific value (2.0) over all calculated drivers'},
+ {custno:'2185', taxmap:'095.20-03-01.000', wtr:'WD001', sew:'SD002', feet:0,     bld:1, cons:null,  resolW:0.5,  resolS:0.5,  priorW:0.5,   priorS:0.5,   expW:0.5,  expS:0.5,  label:'Developer resolution BELOW 1.0 (Q2) — forces 0.50 under the building minimum'},
+ {custno:'897',  taxmap:'097.02-01-01.000', wtr:'WD001', sew:'SD002', feet:446,   bld:1, cons:2.8,   resolW:null, resolS:0,    priorW:4.46,  priorS:0,     expW:4.46, expS:0,    label:'Partial exemption — water calculated (4.46); sewer resolution = 0 forces 0.00'},
+ {custno:'2042', taxmap:'087.00-03-16.122', wtr:'WD001', sew:'SD002', feet:0,     bld:0, cons:34.89, resolW:0,    resolS:0,    priorW:0,     priorS:0,     expW:0,    expS:0,    label:'Full exemption — resolution 0/0 forces zero despite 34.89 consumption units'},
+ {custno:'1665', taxmap:'086.13-01-13.000', wtr:'WD001', sew:'SD002', feet:159.64,bld:1, cons:null,  resolW:null, resolS:null, priorW:1,     priorS:1,     expW:1.6,  expS:1.6,  label:'DATA QUALITY — 159.64 in a units field is really FEET; converts to 1.60'},
+ {custno:'1922', taxmap:'096.06-01-15.100-1', wtr:'WD001', sew:'SD002', feet:0,   bld:1, cons:null,  resolW:1,    resolS:1,    priorW:1,     priorS:1,     expW:1,    expS:1,    label:'Multi-account condo child (Q8) — resolution forces 1.0'},
+ {custno:'1923', taxmap:'096.06-01-15.100-2', wtr:'WD001', sew:'SD002', feet:0,   bld:1, cons:null,  resolW:1,    resolS:1,    priorW:1,     priorS:1,     expW:1,    expS:1,    label:'Multi-account condo child (Q8)'},
+ {custno:'1924', taxmap:'096.06-01-15.100-3', wtr:'WD001', sew:'SD002', feet:0,   bld:1, cons:null,  resolW:1,    resolS:1,    priorW:1,     priorS:1,     expW:1,    expS:1,    label:'Multi-account condo child (Q8)'},
+ {custno:'243',  taxmap:'096.06-01-15.100',   wtr:'WD001', sew:'SD002', feet:0,   bld:1, cons:0.65,  resolW:0,    resolS:0,    priorW:0,     priorS:0,     expW:0,    expS:0,    label:'Multi-account condo master row (Q8) — resolution 0/0 exempts the common parcel'},
+];
+
+let rows = [];
+function clone(a){ return a.map(o => Object.assign({}, o)); }
+
+/* ====================== RENDER ====================== */
+const $ = id => document.getElementById(id);
+const tbody = $('tbody');
+
+function fmt(v){ return v === null ? '—' : Number(v).toFixed(2); }
+function approxEq(a,b){ return a !== null && b !== null && Math.abs(a-b) < 0.005; }
+
+function buildTable(){
+  tbody.innerHTML = '';
+  rows.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'clickable';
+    tr.dataset.i = i;
+    tr.innerHTML = `
+      <td class="chev" id="chev-${i}">▸</td>
+      <td class="acct">${r.custno}</td>
+      <td class="scenario">${r.label}</td>
+      <td><span class="dist ${r.wtr?'':'off'}">${r.wtr||'—'}</span></td>
+      <td><span class="dist ${r.sew?'':'off'}">${r.sew||'—'}</span></td>
+      <td><input class="cell" id="feet-${i}" type="number" step="0.01" value="${r.feet}"><span class="fu" id="fu-${i}"></span></td>
+      <td><input class="cell" id="bld-${i}" type="number" step="1" value="${r.bld}"></td>
+      <td><input class="cell" id="cons-${i}" type="number" step="0.01" value="${r.cons===null?'':r.cons}"></td>
+      <td><input class="cell res" id="resW-${i}" type="number" step="0.01" value="${r.resolW===null?'':r.resolW}" placeholder="blank"></td>
+      <td><input class="cell res" id="resS-${i}" type="number" step="0.01" value="${r.resolS===null?'':r.resolS}" placeholder="blank"></td>
+      <td class="num"><span class="comp" id="wbt-${i}">–</span></td>
+      <td class="num exp" id="expW-${i}">${fmt(r.expW)}</td>
+      <td class="num"><span class="comp" id="sbt-${i}">–</span></td>
+      <td class="num exp" id="expS-${i}">${fmt(r.expS)}</td>
+      <td><span class="mark" id="mark-${i}"></span></td>`;
+    tbody.appendChild(tr);
+
+    // detail/trace row
+    const dr = document.createElement('tr');
+    dr.className = 'detailrow';
+    dr.style.display = 'none';
+    dr.id = `detail-${i}`;
+    dr.innerHTML = `<td></td><td colspan="14"><div class="trace" id="trace-${i}"></div></td>`;
+    tbody.appendChild(dr);
+
+    // listeners
+    ['feet','bld','cons','resW','resS'].forEach(f=>{
+      $(`${f}-${i}`).addEventListener('input', e=>{
+        const map = {feet:'feet',bld:'bld',cons:'cons',resW:'resolW',resS:'resolS'};
+        const v = e.target.value;
+        r[map[f]] = (v === '' ? (f==='resW'||f==='resS'||f==='cons' ? null : '') : Number(v));
+        updateRow(i); updateGlobals();
+      });
+    });
+    // row click toggles trace (but not when clicking an input)
+    tr.addEventListener('click', e=>{ if(e.target.tagName!=='INPUT') toggleDetail(i); });
+  });
+}
+
+function toggleDetail(i){
+  const d = $(`detail-${i}`); const c = $(`chev-${i}`);
+  const open = d.style.display === 'none';
+  d.style.display = open ? '' : 'none';
+  c.textContent = open ? '▾' : '▸';
+  if(open) renderTrace(i);
+}
+
+function renderTrace(i){
+  const r = rows[i];
+  const w = unitsFor(r,'w'), s = unitsFor(r,'s');
+  $(`trace-${i}`).innerHTML =
+    `<div><b>WATER</b> · ${w.trace} ${w.value!==null?`Charged WBT = <b>${w.value.toFixed(2)}</b>`:''}</div>`+
+    `<div style="margin-top:6px"><b>SEWER</b> · ${s.trace} ${s.value!==null?`Charged SBT = <b>${s.value.toFixed(2)}</b>`:''}</div>`;
+}
+
+function updateRow(i){
+  const r = rows[i];
+  // frontage->units hint
+  $(`fu-${i}`).textContent = r.wtr||r.sew ? `= ${frontageUnits(r.feet).toFixed(2)}u` : '';
+  const w = unitsFor(r,'w'), s = unitsFor(r,'s');
+  paintComp($(`wbt-${i}`), w, r.priorW);
+  paintComp($(`sbt-${i}`), s, r.priorS);
+  // match
+  const wOk = r.expW === null ? true : approxEq(w.value, round2(r.expW));
+  const sOk = r.expS === null ? true : approxEq(s.value, round2(r.expS));
+  const mk = $(`mark-${i}`);
+  if (wOk && sOk){ mk.textContent='✅'; mk.className='mark ok'; }
+  else { mk.textContent='❌'; mk.className='mark no'; }
+  // refresh trace if open
+  if ($(`detail-${i}`).style.display !== 'none') renderTrace(i);
+}
+
+function paintComp(el, res, prior){
+  if (res.value === null){ el.textContent='n/a'; el.className='comp na'; return; }
+  el.textContent = res.value.toFixed(2);
+  el.className = 'comp' + (res.mode==='override' ? ' ovr' : '');
+  if (prior !== null && prior !== undefined){
+    const pr = document.createElement('span'); pr.className='prior';
+    pr.textContent = 'prior ' + Number(prior).toFixed(2);
+    el.appendChild(pr);
+  }
+}
+
+function updateGlobals(){
+  let totW=0, totS=0, rowMatch=0, cellOk=0, cellTot=0;
+  rows.forEach((r,i)=>{
+    const w=unitsFor(r,'w'), s=unitsFor(r,'s');
+    totW += (w.value||0); totS += (s.value||0);
+    let wOk=true, sOk=true;
+    if (r.expW!==null){ cellTot++; wOk=approxEq(w.value,round2(r.expW)); if(wOk)cellOk++; }
+    if (r.expS!==null){ cellTot++; sOk=approxEq(s.value,round2(r.expS)); if(sOk)cellOk++; }
+    if (wOk && sOk) rowMatch++;
+  });
+  $('totW').textContent = totW.toFixed(2);
+  $('totS').textContent = totS.toFixed(2);
+  $('nRows').textContent = rows.length;
+  $('matchN').textContent = rowMatch;
+  $('matchT').textContent = rows.length;
+  $('cellMatch').textContent = `${cellOk}/${cellTot} value cells matched`;
+  const pct = rows.length ? Math.round(rowMatch/rows.length*100) : 0;
+  $('ring').style.setProperty('--p', pct);
+  $('ring').style.background = `conic-gradient(${pct===100?'var(--good)':'var(--warn)'} ${pct}%, #27314a 0)`;
+  $('ringPct').textContent = pct + '%';
+  renderAggregation();
+}
+
+function baseTaxmap(t){ return t.replace(/-\d+$/, ''); }
+
+function renderAggregation(){
+  // group by base taxmap; show only groups with >1 account
+  const groups = {};
+  rows.forEach(r=>{ const b=baseTaxmap(r.taxmap); (groups[b]=groups[b]||[]).push(r); });
+  const body = $('aggBody'); body.innerHTML='';
+  let shown=false;
+  Object.keys(groups).forEach(b=>{
+    const g=groups[b]; if(g.length<2) return; shown=true;
+    let sw=0, ss=0;
+    g.forEach(r=>{ const w=unitsFor(r,'w'), s=unitsFor(r,'s'); sw+=(w.value||0); ss+=(s.value||0); });
+    const list = g.map(r=>r.custno).join(', ');
+    body.innerHTML +=
+      `<div class="agg-row"><span>Tax map <b style="font-family:var(--mono)">${b}</b><br>
+        <span class="hint">accounts: ${list}</span></span>
+        <span class="agg-tot">${sw.toFixed(2)} W&nbsp;·&nbsp;${ss.toFixed(2)} S</span></div>`;
+  });
+  $('aggNote').innerHTML = shown
+    ? `Per-account units are computed independently, then <b>summed by tax map</b> for the County levy (Q8). The full condo parcel <code>096.06-01-15.100</code> has <b>44 child units</b> (each forced to 1.0) + master rows forced to 0 → <b>44.00 W / 44.00 S</b>; the sample embeds 3 children + 1 master to show the mechanism.`
+    : `No multi-account parcels in the current sample.`;
+}
+
+function rollover(){
+  rows.forEach((r,i)=>{
+    const w=unitsFor(r,'w'), s=unitsFor(r,'s');
+    r.priorW = w.value; r.priorS = s.value;
+  });
+  rows.forEach((r,i)=>updateRow(i));
+  updateGlobals();
+}
+
+/* ====================== CONSUMPTION EXPLORER ====================== */
+let expIdx = 4;                       // default: Acct 1508 (consumption already dominates)
+let expCons = numOr0(SEED[4].cons);
+
+function fmtGal(u){ return Math.round(u*75000).toLocaleString() + ' gal  (≈ Σ last 4 reads)'; }
+
+function buildExpSelect(){
+  $('expSel').innerHTML = SEED.map((r,i)=>
+    `<option value="${i}">Acct ${r.custno} — ${r.label.split('—')[0].trim()}</option>`).join('');
+  $('expSel').value = expIdx;
+}
+
+function selectExpParcel(i){
+  expIdx = Number(i);
+  const r = SEED[expIdx];
+  expCons = numOr0(r.cons);
+  const baseline = Math.max(frontageUnits(r.feet), numOr0(r.bld));
+  const niceMax = Math.max(10, Math.ceil(Math.max(expCons, baseline) * 2));
+  const rng = $('expRange'); rng.max = niceMax; rng.value = expCons;
+  $('expNum').value = expCons;
+  renderExplorer();
+}
+
+function paintBox(el, res){
+  if (res.value === null){ el.textContent='n/a'; el.className='v na'; return; }
+  el.textContent = res.value.toFixed(2);
+  el.className = 'v' + (res.mode==='override' ? ' ovr' : '');
+}
+
+function renderExplorer(){
+  const r = SEED[expIdx];
+  const fu = frontageUnits(r.feet), bld = numOr0(r.bld), baseline = Math.max(fu, bld);
+  const tmp = Object.assign({}, r, { cons: expCons });
+  const w = unitsFor(tmp,'w'), s = unitsFor(tmp,'s');
+
+  $('expDrivers').innerHTML =
+    `Frontage <b>${fu.toFixed(2)}u</b> (${r.feet} ft) &nbsp;·&nbsp; Building <b>${bld.toFixed(2)}</b><br>`+
+    `Water <b>${r.wtr||'—'}</b> &nbsp;·&nbsp; Sewer <b>${r.sew||'—'}</b><br>`+
+    `Resolution&nbsp;W <b>${isPopulated(r.resolW)?Number(r.resolW).toFixed(2):'blank'}</b> &nbsp;·&nbsp; `+
+    `Resolution&nbsp;S <b>${isPopulated(r.resolS)?Number(r.resolS).toFixed(2):'blank'}</b>`;
+  $('expGal').textContent = fmtGal(expCons);
+  paintBox($('expWBT'), w);
+  paintBox($('expSBT'), s);
+
+  const st = $('expStatus');
+  const wOvr = isPopulated(r.resolW) && r.wtr;
+  const sOvr = isPopulated(r.resolS) && r.sew;
+  if (wOvr || sOvr){
+    st.className = 'status ovr';
+    st.innerHTML = `This parcel has a <b>resolution override</b> — consumption is <b>ignored</b> (the resolution forces the charge). Pick a parcel with blank resolutions to see consumption drive.`;
+  } else if (expCons > baseline){
+    st.className = 'status drive';
+    st.innerHTML = `▲ <b>Consumption is driving the charge</b> — ${expCons.toFixed(2)} &gt; baseline ${baseline.toFixed(2)} (frontage/building). Slide below <b>${baseline.toFixed(2)}</b> and the minimum takes back over.`;
+  } else {
+    st.className = 'status base';
+    st.innerHTML = `Baseline <b>${baseline.toFixed(2)}</b> (frontage/building) still wins — consumption has <b>no effect yet</b>. It must exceed <b>${baseline.toFixed(2)}</b> units (≈ ${Math.round(baseline*75000).toLocaleString()} gal) before it drives the charge.`;
+  }
+}
+
+$('expSel').addEventListener('change', e=>selectExpParcel(e.target.value));
+$('expRange').addEventListener('input', e=>{ expCons = numOr0(e.target.value); $('expNum').value = expCons; renderExplorer(); });
+$('expNum').addEventListener('input', e=>{ expCons = e.target.value===''?0:Number(e.target.value); $('expRange').value = expCons; renderExplorer(); });
+
+function init(){
+  rows = clone(SEED);
+  buildTable();
+  rows.forEach((r,i)=>updateRow(i));
+  updateGlobals();
+}
+$('rollBtn').addEventListener('click', rollover);
+$('resetBtn').addEventListener('click', init);
+init();
+buildExpSelect();
+selectExpParcel(expIdx);
+</script>
+</body>
+</html>

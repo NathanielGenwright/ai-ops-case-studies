@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cascade Pay Reconciliation — 2026-05-25</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  :root{
+    --bg:#0b0f17; --panel:#121826; --panel2:#0e1421; --line:#1f2937;
+    --txt:#e6edf3; --muted:#8b98a9; --accent:#7c93ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#172036 0,var(--bg) 55%);
+    color:var(--txt);font:14px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1240px;margin:0 auto;padding:28px 22px 60px}
+  header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#7c93ff,#41d6c3);
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#0b0f17}
+  h1{font-size:20px;margin:0;letter-spacing:.2px}
+  .sub{color:var(--muted);font-size:13px;margin-top:2px}
+  .env-badge{font-size:11px;font-weight:700;letter-spacing:.4px;padding:3px 8px;border-radius:999px;
+    background:rgba(124,147,255,.15);color:#9db0ff;margin-left:8px;vertical-align:middle}
+  .env-badge.fix{background:rgba(251,191,36,.15);color:#fbbf24}
+  .env-badge.mode{background:rgba(65,214,195,.15);color:#41d6c3}
+  .status-pill{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+  .dot{display:inline-flex;align-items:center;gap:8px;font-weight:800;letter-spacing:.6px;font-size:13px}
+  .dot i{width:10px;height:10px;border-radius:50%}
+  .status-msg{color:var(--muted);font-size:12px}
+  .narrative{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:18px;font-size:15px}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr) 1.1fr;gap:14px;margin-bottom:14px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+  .kpi::after{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,#7c93ff,#41d6c3)}
+  .kpi-label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+  .kpi-value{font-size:27px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums}
+  .kpi-sub{color:var(--muted);font-size:12px;margin-top:4px}
+  .chartcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px 8px 0}
+  .strip{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .stat .l{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+  .stat .v{font-size:18px;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums}
+  .row2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:22px}
+  section{margin-bottom:26px}
+  h2{font-size:15px;letter-spacing:.3px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  h2 .count{color:var(--muted);font-weight:500;font-size:13px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px 4px}
+  table.grid{width:100%;border-collapse:collapse;font-size:13px}
+  table.grid th{ text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;
+    letter-spacing:.5px;padding:10px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel)}
+  table.grid td{padding:10px 12px;border-bottom:1px solid var(--panel2)}
+  table.grid tbody tr:hover{background:rgba(124,147,255,.05)}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .ok{color:#34d399}.warn{color:#fbbf24}.bad{color:#f87171}.muted{color:var(--muted)}
+  .exc{background:var(--panel);border:1px solid var(--line);border-left:4px solid;border-radius:10px;padding:11px 14px;margin-bottom:10px}
+  .exc-head{display:flex;align-items:center;gap:12px;margin-bottom:3px}
+  .exc-sev{font-size:11px;font-weight:800;letter-spacing:.5px}
+  .exc-ref{font-weight:700}.exc-amt{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:700}
+  .exc-msg{color:#c7d0db;font-size:13px}
+  .ok-exc{border-left-color:#34d399;color:#aef0d2}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  .filters input,.filters select{background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+    border-radius:9px;padding:8px 11px;font-size:13px;outline:none}
+  .filters input{min-width:240px}
+  .tag{font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px}
+  .tag.cc{background:rgba(124,147,255,.15);color:#9db0ff}
+  .tag.ach{background:rgba(65,214,195,.15);color:#41d6c3}
+  .empty{color:var(--muted);padding:14px}
+  footer{color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
+  @media(max-width:980px){.kpis{grid-template-columns:1fr 1fr}.strip{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">A</div>
+      <div>
+        <h1>Cascade Pay Daily Reconciliation <span class="env-badge mode">BATCH-DRIVEN</span><span class="env-badge">SANDBOX</span></h1>
+        <div class="sub">Reconciliation date <strong>2026-05-25</strong> ·
+          as of 2026-06-02 04:36 · https://api-sandbox.cascadepay.example.com</div>
+      </div>
+    </div>
+    <div class="status-pill">
+      <span class="dot" style="color:#34d399"><i style="background:#34d399"></i>ALL RECONCILED</span>
+      <span class="status-msg">12 charges reconciled to 1 batch</span>
+    </div>
+  </header>
+
+  <div class="narrative">MetroBill originated <strong>$1,094.85</strong> across 12 card payments, 12 confirmed at Cascade Pay, reconciled to 1 batch. Those batches also hold <strong>$514,894.34</strong> (81 sales) <em>not</em> originated by MetroBill — measured, not reconciled (the demarcation line). $0.00 funded, $515,939.19 pending, $0.00 overdue.</div>
+
+  <div class="kpis">
+    
+    <div class="kpi">
+      <div class="kpi-label">Collected (MetroBill)</div>
+      <div class="kpi-value" style="color:#9db0ff">$1,094.85</div>
+      <div class="kpi-sub">Layer 1 · 12 card charges</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Confirmed at Cascade Pay</div>
+      <div class="kpi-value" style="color:#41d6c3">$1,094.85</div>
+      <div class="kpi-sub">Layer 2 · 12/12 confirmed</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Bank Deposited</div>
+      <div class="kpi-value" style="color:#34d399">$0.00</div>
+      <div class="kpi-sub">Layer 3 · batch funding</div>
+    </div>
+    <div class="chartcard"><div id="fundingChart" style="height:150px"></div></div>
+  </div>
+
+  <div class="strip">
+    <div class="stat"><div class="l">Unattributed</div><div class="v" style="color:#c9a96a">$514,894.34</div></div>
+         <div class="stat"><div class="l">Pending deposit</div><div class="v" style="color:#fbbf24">$515,939.19</div></div>
+         <div class="stat"><div class="l">Overdue deposit</div><div class="v" style="color:#f87171">$0.00</div></div>
+         <div class="stat"><div class="l">In-flight (open)</div><div class="v" style="color:#60a5fa">$0.00</div></div>
+         <div class="stat"><div class="l">Confirmed</div><div class="v">12/12</div></div>
+  </div>
+
+  <div class="row2">
+    <div>
+      <h2>Money flow trend <span class="count">· captured vs settled, last 2 active days</span></h2>
+      <div class="panel"><div id="trendChart" style="height:240px"></div></div>
+    </div>
+    <div>
+      <h2>Funding status</h2>
+      <div class="panel"><div id="statusChart" style="height:240px"></div></div>
+    </div>
+  </div>
+
+  <section>
+    <h2>⚑ Exceptions &amp; follow-ups <span class="count">· 1</span></h2>
+    <div class="exc" style="border-left-color:#60a5fa">
+      <div class="exc-head">
+        <span class="exc-sev" style="color:#60a5fa">INFO</span>
+        <span class="exc-ref">Batch 23</span>
+        <span class="exc-amt">$514,894.34</span>
+      </div>
+      <div class="exc-msg">Batch 23: 81 sales / $514,894.34 are NOT originated by MetroBill (gateway 93 vs attributed 12) — measured, not reconciled (demarcation line).</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Batched payments <span class="count">· 1 batches in window</span></h2>
+    <div class="panel"><table class="grid">
+    <thead><tr>
+      <th>Batch</th><th>Status</th><th>Closed</th><th class="num">Gateway sales</th>
+      <th class="num">Gateway $</th><th class="num">Attributed (MetroBill)</th><th class="num">Unattributed</th><th class="num">Net (expected deposit)</th>
+      <th>Due</th><th>Bank match</th>
+    </tr></thead>
+    <tbody><tr>
+      <td><strong>#23</strong></td>
+      <td><span class="pill" style="background:rgba(251,191,36,.15);color:#fbbf24">Pending</span></td>
+      <td>2026-06-01</td>
+      <td class="num">93</td>
+      <td class="num">$515,989.19</td>
+      <td class="num"><span class="ok">12</span> · $1,094.85</td>
+         <td class="num"><span class="warn">81 · $514,894.34</span></td>
+      <td class="num"><strong>$515,939.19</strong></td>
+      <td>2026-06-03</td>
+      <td><span class="warn">awaiting</span></td>
+    </tr></tbody>
+  </table></div>
+  </section>
+
+  <section>
+    <h2>Single payments <span class="count">· 12 on 2026-05-25</span></h2>
+    <div class="filters">
+      <input id="q" placeholder="Search customer or reference…">
+      <select id="fMethod"><option value="">All methods</option><option value="cc">Card</option><option value="ach">ACH</option></select>
+      <select id="fSettled"><option value="">Settled &amp; pending</option><option value="yes">Settled only</option><option value="no">Unsettled only</option></select>
+      <select id="fType"><option value="">All types</option><option value="sale">Sales</option><option value="refund">Refunds</option><option value="void">Voids</option></select>
+    </div>
+    <div class="panel">
+      <table class="grid" id="txTable">
+        <thead><tr>
+          <th>Time</th><th>Customer</th><th>Reference</th><th>Method</th>
+          <th class="num">Amount</th><th class="num">Fee</th><th>Status</th><th>Settled</th><th class="num">Batch</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Generated 2026-06-02 04:36 · window 2026-05-25 → 2026-05-25
+    · live gateway data
+    · Cascade Pay Reconciliation prototype
+  </footer>
+</div>
+
+<script>window.__RECON__ = {"metadata":{"reconciliationDate":"2026-05-25","asOf":"2026-06-02T04:36:45.327Z","env":"sandbox","baseUrl":"https://api-sandbox.cascadepay.example.com","usingFixtures":false,"mode":"batch-driven","confirmEach":false,"generatedAt":"2026-06-02T04:36:45.327Z","searchWindow":{"start":"2026-05-25","end":"2026-05-25"},"hasBilling":true,"hasBank":false},"kpis":{"portalCollected":1094.85,"gatewayCaptured":1094.85,"gatewaySettledNet":1094.85,"bankDeposited":0,"pendingDeposits":515939.19,"overdueDeposits":0,"inFlight":0,"refundsToday":0,"unattributedAmount":514894.34,"unattributedCount":81,"portalVsGateway":0,"counts":{"transactions":12,"sales":12,"refunds":0,"batches":1,"openBatches":0,"confirmed":12}},"batches":[{"id":"11f14a4fca8791308b281590","batchNum":23,"isOpen":false,"processingStatus":"Settled","closedOn":"2026-06-01T11:36:41Z","totalSaleAmount":515989.19,"totalSaleCount":93,"totalRefundAmount":50,"net":515939.19,"attributedAmount":1094.85,"attributedCount":12,"unattributedAmount":514894.34,"unattributedCount":81,"fundingStatus":"pending","expectedDepositDate":"2026-06-03T00:00:00.000Z","matchedDeposit":null,"charges":[{"ref":"3086300d-70fc-4af6-8a39-fcdcb2c57ada","amount":154.75,"date":"2026-05-25","createdOn":"2026-05-25T10:42:26Z","customerName":null,"account":"7301","chargeId":5302828,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f15826739089f6827e4f62","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302828,"account":"7301","name":null,"pgpId":5501},"confirmed":true},{"ref":"e44ffdbc-c370-47d6-81b0-f5703cd5cab1","amount":2.32,"date":"2026-05-25","createdOn":"2026-05-25T10:42:27Z","customerName":null,"account":"7301","chargeId":5302829,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f1582672edd7a6bbbffb84","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302829,"account":"7301","name":null,"pgpId":5501},"confirmed":true},{"ref":"ee04fc36-931e-4794-b41f-57154071809e","amount":154.75,"date":"2026-05-25","createdOn":"2026-05-25T11:05:11Z","customerName":null,"account":"7301","chargeId":5302839,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f158299c1b8f6c8ca9d970","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302839,"account":"7301","name":null,"pgpId":5501},"confirmed":true},{"ref":"3844dba0-6fc5-4972-bfe9-9c1742e56155","amount":154.75,"date":"2026-05-25","createdOn":"2026-05-25T11:05:12Z","customerName":null,"account":"7301","chargeId":5302843,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f15829a15fd172ba4c423c","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302843,"account":"7301","name":null,"pgpId":5501},"confirmed":true},{"ref":"b59d626a-9a50-4376-8a69-5affddff6d55","amount":2.32,"date":"2026-05-25","createdOn":"2026-05-25T11:05:12Z","customerName":null,"account":"7301","chargeId":5302844,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f158299e033d2a86ae8b2f","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302844,"account":"7301","name":null,"pgpId":5501},"confirmed":true},{"ref":"b97bda97-035c-4f25-9b9b-b95afafbf495","amount":2.32,"date":"2026-05-25","createdOn":"2026-05-25T11:18:47Z","customerName":null,"account":"7302","chargeId":5302859,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f1582b81e9ea60833dac75","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302859,"account":"7302","name":null,"pgpId":5501},"confirmed":true},{"ref":"af71ed4f-486f-4e4f-8de0-39b1a893b55f","amount":154.75,"date":"2026-05-25","createdOn":"2026-05-25T11:36:23Z","customerName":null,"account":"7302","chargeId":5302864,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f1582dfc973b76932413ff","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302864,"account":"7302","name":null,"pgpId":5501},"confirmed":true},{"ref":"b9b786cb-f8df-4fe4-8f2b-e0650c8180e5","amount":2.32,"date":"2026-05-25","createdOn":"2026-05-25T11:36:23Z","customerName":null,"account":"7302","chargeId":5302865,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f1582dfce0b2ec96b89ff5","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302865,"account":"7302","name":null,"pgpId":5501},"confirmed":true},{"ref":"4a1337a6-c385-4a8e-938d-47ec246ec11d","amount":154.75,"date":"2026-05-25","createdOn":"2026-05-25T11:36:23Z","customerName":null,"account":"7302","chargeId":5302866,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f1582dfd2c2b0a96d81718","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302866,"account":"7302","name":null,"pgpId":5501},"confirmed":true},{"ref":"46a367f2-0f50-44fa-9a89-a1411e575c71","amount":154.75,"date":"2026-05-25","createdOn":"2026-05-25T11:36:23Z","customerName":null,"account":"7302","chargeId":5302867,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f1582dfa2d556eb94e1f63","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302867,"account":"7302","name":null,"pgpId":5501},"confirmed":true},{"ref":"e4aae3bf-0979-45db-988a-b3841d567cb8","amount":154.75,"date":"2026-05-25","createdOn":"2026-05-25T11:36:23Z","customerName":null,"account":"7302","chargeId":5302868,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f1582df7e401ccb552cdbe","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302868,"account":"7302","name":null,"pgpId":5501},"confirmed":true},{"ref":"94d2d3f3-cc43-47a5-a2c3-a7730d3ca2b2","amount":2.32,"date":"2026-05-25","createdOn":"2026-05-25T12:37:59Z","customerName":null,"account":"7301","chargeId":5302882,"pgpId":5501,"remoteStatus":null,"gatewayTxnId":"31f1583699e5580684477735","gatewayBatchId":"11f14a4fca8791308b281590","batchNum":23,"raw":{"chargeId":5302882,"account":"7301","name":null,"pgpId":5501},"confirmed":true}]}],"transactions":[{"id":5302828,"amount":154.75,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T10:42:26Z","batchNum":23,"customerName":null,"customerRef":"3086300d-70fc-4af6-8a39-fcdcb2c57ada","contactId":"7301","description":" — acct 7301","confirmed":true},{"id":5302829,"amount":2.32,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T10:42:27Z","batchNum":23,"customerName":null,"customerRef":"e44ffdbc-c370-47d6-81b0-f5703cd5cab1","contactId":"7301","description":" — acct 7301","confirmed":true},{"id":5302839,"amount":154.75,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T11:05:11Z","batchNum":23,"customerName":null,"customerRef":"ee04fc36-931e-4794-b41f-57154071809e","contactId":"7301","description":" — acct 7301","confirmed":true},{"id":5302843,"amount":154.75,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T11:05:12Z","batchNum":23,"customerName":null,"customerRef":"3844dba0-6fc5-4972-bfe9-9c1742e56155","contactId":"7301","description":" — acct 7301","confirmed":true},{"id":5302844,"amount":2.32,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T11:05:12Z","batchNum":23,"customerName":null,"customerRef":"b59d626a-9a50-4376-8a69-5affddff6d55","contactId":"7301","description":" — acct 7301","confirmed":true},{"id":5302859,"amount":2.32,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T11:18:47Z","batchNum":23,"customerName":null,"customerRef":"b97bda97-035c-4f25-9b9b-b95afafbf495","contactId":"7302","description":" — acct 7302","confirmed":true},{"id":5302864,"amount":154.75,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T11:36:23Z","batchNum":23,"customerName":null,"customerRef":"af71ed4f-486f-4e4f-8de0-39b1a893b55f","contactId":"7302","description":" — acct 7302","confirmed":true},{"id":5302865,"amount":2.32,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T11:36:23Z","batchNum":23,"customerName":null,"customerRef":"b9b786cb-f8df-4fe4-8f2b-e0650c8180e5","contactId":"7302","description":" — acct 7302","confirmed":true},{"id":5302866,"amount":154.75,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T11:36:23Z","batchNum":23,"customerName":null,"customerRef":"4a1337a6-c385-4a8e-938d-47ec246ec11d","contactId":"7302","description":" — acct 7302","confirmed":true},{"id":5302867,"amount":154.75,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T11:36:23Z","batchNum":23,"customerName":null,"customerRef":"46a367f2-0f50-44fa-9a89-a1411e575c71","contactId":"7302","description":" — acct 7302","confirmed":true},{"id":5302868,"amount":154.75,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T11:36:23Z","batchNum":23,"customerName":null,"customerRef":"e4aae3bf-0979-45db-988a-b3841d567cb8","contactId":"7302","description":" — acct 7302","confirmed":true},{"id":5302882,"amount":2.32,"fee":0,"tax":0,"type":"sale","status":"Approved","isSettled":true,"settleDate":null,"paymentMethod":"cc","createdOn":"2026-05-25T12:37:59Z","batchNum":23,"customerName":null,"customerRef":"94d2d3f3-cc43-47a5-a2c3-a7730d3ca2b2","contactId":"7301","description":" — acct 7301","confirmed":true}],"exceptions":[{"type":"unattributed","severity":"info","ref":"Batch 23","amount":514894.34,"message":"Batch 23: 81 sales / $514,894.34 are NOT originated by MetroBill (gateway 93 vs attributed 12) — measured, not reconciled (demarcation line)."}],"trend":[{"date":"2026-05-24","captured":25.8,"settledNet":25.8},{"date":"2026-05-25","captured":1094.85,"settledNet":1094.85}],"status":"OK","statusMessage":"12 charges reconciled to 1 batch","errors":[]};</script>
+<script>
+(function(){
+  var R = window.__RECON__ || {};
+  var K = R.kpis || {};
+  var money = function(n){ return '$' + Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+  var DARK = { textStyle:{ color:'#8b98a9' } };
+
+  function donut(){
+    var el = document.getElementById('fundingChart'); if(!el||!window.echarts) return;
+    var c = echarts.init(el);
+    var d = [
+      { value:+K.bankDeposited||0, name:'Funded', itemStyle:{color:'#34d399'} },
+      { value:+K.pendingDeposits||0, name:'Pending', itemStyle:{color:'#fbbf24'} },
+      { value:+K.overdueDeposits||0, name:'Overdue', itemStyle:{color:'#f87171'} },
+      { value:+K.inFlight||0, name:'In-flight', itemStyle:{color:'#60a5fa'} }
+    ].filter(function(x){return x.value>0;});
+    c.setOption({
+      tooltip:{ trigger:'item', formatter:function(p){ return p.name+': '+money(p.value)+' ('+p.percent+'%)'; } },
+      series:[{ type:'pie', radius:['62%','86%'], avoidLabelOverlap:false, label:{show:false},
+        data: d.length?d:[{value:1,name:'No data',itemStyle:{color:'#1f2937'}}] }]
+    });
+  }
+  function statusBar(){
+    var el = document.getElementById('statusChart'); if(!el||!window.echarts) return;
+    var c = echarts.init(el);
+    var cats=['Funded','Pending','Overdue','In-flight'];
+    var vals=[+K.bankDeposited||0,+K.pendingDeposits||0,+K.overdueDeposits||0,+K.inFlight||0];
+    var cols=['#34d399','#fbbf24','#f87171','#60a5fa'];
+    c.setOption({
+      grid:{left:8,right:18,top:14,bottom:6,containLabel:true},
+      tooltip:{trigger:'axis',valueFormatter:money},
+      xAxis:{type:'value',axisLabel:{color:'#8b98a9',formatter:function(v){return '$'+(v/1000)+'k';}},splitLine:{lineStyle:{color:'#1f2937'}}},
+      yAxis:{type:'category',data:cats,axisLabel:{color:'#c7d0db'},axisLine:{lineStyle:{color:'#1f2937'}}},
+      series:[{type:'bar',data:vals.map(function(v,i){return {value:v,itemStyle:{color:cols[i],borderRadius:[0,6,6,0]}};}),barWidth:'52%'}]
+    });
+  }
+  function trend(){
+    var el = document.getElementById('trendChart'); if(!el||!window.echarts) return;
+    var c = echarts.init(el);
+    var t = R.trend||[];
+    var GREEN='#41d6c3', PURPLE='#7c93ff';
+    // When Captured and Settled coincide at every point, merge them into ONE line whose stroke
+    // gradients green->purple (captured carried all the way through to settled). When they
+    // diverge, keep two distinct lines so the gap stays visible.
+    var coincide = t.length>0 && t.every(function(d){ return Math.abs((d.captured||0)-(d.settledNet||0)) < 0.01; });
+    var legendData, series;
+    if (coincide) {
+      legendData = ['Captured → Settled'];
+      series = [{
+        name:'Captured → Settled', type:'line', smooth:true, symbol:'circle', symbolSize:6,
+        data: t.map(function(d){return d.captured;}),
+        lineStyle:{ width:3, color:new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:GREEN},{offset:1,color:PURPLE}]) },
+        itemStyle:{ color:PURPLE },
+        areaStyle:{ color:new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'rgba(65,214,195,.28)'},{offset:1,color:'rgba(124,147,255,.05)'}]) }
+      }];
+    } else {
+      legendData = ['Captured','Settled (net)'];
+      series = [
+        {name:'Captured',type:'line',smooth:true,symbol:'circle',symbolSize:6,data:t.map(function(d){return d.captured;}),
+          lineStyle:{color:GREEN,width:3},itemStyle:{color:GREEN},
+          areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(65,214,195,.35)'},{offset:1,color:'rgba(65,214,195,0)'}])}},
+        {name:'Settled (net)',type:'line',smooth:true,symbol:'circle',symbolSize:6,data:t.map(function(d){return d.settledNet;}),
+          lineStyle:{color:PURPLE,width:3},itemStyle:{color:PURPLE},
+          areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(124,147,255,.30)'},{offset:1,color:'rgba(124,147,255,0)'}])}}
+      ];
+    }
+    c.setOption({
+      grid:{left:8,right:16,top:30,bottom:6,containLabel:true},
+      legend:{data:legendData,textStyle:{color:'#8b98a9'},right:8,top:0},
+      tooltip:{trigger:'axis',valueFormatter:money},
+      xAxis:{type:'category',data:t.map(function(d){return d.date;}),axisLabel:{color:'#8b98a9'},axisLine:{lineStyle:{color:'#1f2937'}}},
+      yAxis:{type:'value',axisLabel:{color:'#8b98a9',formatter:function(v){return '$'+(v/1000)+'k';}},splitLine:{lineStyle:{color:'#1f2937'}}},
+      series: series
+    });
+  }
+
+  // ---- single-payments table (render + filter) ----
+  var tbody = document.querySelector('#txTable tbody');
+  var txns = R.transactions || [];
+  function tag(m){ return '<span class="tag '+(m==='ach'?'ach':'cc')+'">'+(m==='ach'?'ACH':'CARD')+'</span>'; }
+  function rowHtml(t){
+    var settled = t.isSettled ? '<span class="ok">✓ '+( (t.settleDate||'').slice(0,10) )+'</span>' : '<span class="warn">pending</span>';
+    var amtColor = t.type==='refund' ? 'style="color:#f87171"' : (t.type==='void'?'style="color:#8b98a9"':'');
+    return '<tr>'
+      + '<td>'+ (t.createdOn||'').slice(0,16).replace('T',' ') +'</td>'
+      + '<td>'+ (t.customerName||'') +'</td>'
+      + '<td>'+ (t.customerRef||'') +'</td>'
+      + '<td>'+ tag(t.paymentMethod) +'</td>'
+      + '<td class="num" '+amtColor+'>'+ (t.type==='refund'?'-':'') + money(t.amount) +'</td>'
+      + '<td class="num muted">'+ money(t.fee) +'</td>'
+      + '<td>'+ (t.status||'') +'</td>'
+      + '<td>'+ settled +'</td>'
+      + '<td class="num">#'+ (t.batchNum!=null?t.batchNum:'—') +'</td>'
+      + '</tr>';
+  }
+  function render(){
+    var q = (document.getElementById('q').value||'').toLowerCase();
+    var fm = document.getElementById('fMethod').value;
+    var fs = document.getElementById('fSettled').value;
+    var ft = document.getElementById('fType').value;
+    var rows = txns.filter(function(t){
+      if(fm && t.paymentMethod!==fm) return false;
+      if(fs==='yes' && !t.isSettled) return false;
+      if(fs==='no' && t.isSettled) return false;
+      if(ft && t.type!==ft) return false;
+      if(q){ var hay=((t.customerName||'')+' '+(t.customerRef||'')).toLowerCase(); if(hay.indexOf(q)<0) return false; }
+      return true;
+    });
+    tbody.innerHTML = rows.length ? rows.map(rowHtml).join('') : '<tr><td colspan="9" class="empty">No payments match these filters.</td></tr>';
+  }
+  ['q','fMethod','fSettled','fType'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.addEventListener('input',render);
+  });
+
+  if(window.echarts){ donut(); statusBar(); trend(); window.addEventListener('resize',function(){
+    [['fundingChart'],['statusChart'],['trendChart']].forEach(function(p){ var e=document.getElementById(p[0]); if(e){var i=echarts.getInstanceByDom(e); if(i)i.resize();} });
+  }); }
+  render();
+})();
+</script>
+</body>
+</html>
