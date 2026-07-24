@@ -1,5 +1,7 @@
 # AI Ops Case Studies
 
+[![Tools: 13](https://img.shields.io/badge/tools-13-0b7285)](docs/ai-operating-environment.md) [![Skills: 26](https://img.shields.io/badge/skills-26-0b7285)](docs/ai-operating-environment.md) [![Built with Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-d97757)](https://claude.com/claude-code)
+
 > How one Product Owner runs like a team — the manual analyst processes I've codified into AI-driven tools, the environment they run in, and the artifacts they produce.
 
 I'm a Product Owner / technical business analyst. Across ~20 years in government and payments software, I've come to see most slow, manual work as **un-codified process** — so I codify it into tools that lift my throughput, accuracy, and consistency, while keeping a human on the judgment calls. This repo collects that practice in three layers: the deep-dive **case studies**, the **operating environment** they run in, and the interactive **showcase** artifacts they produce.
