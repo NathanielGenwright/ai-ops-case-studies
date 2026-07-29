@@ -1,6 +1,6 @@
 # About
 
-I'm Nathaniel Genwright — a Product Owner / technical business analyst with ~20 years across government software, payments, and software QA. Day to day, I'm the subject-matter expert that developers and clients route their hardest problems through.
+I'm Nathaniel Genwright — a Product Owner / technical business analyst with 10+ years across government software, payments, and software QA. Day to day, I'm the subject-matter expert that developers and clients route their hardest problems through.
 
 What I've come to realize is that repetitive manual work is mostly un-codified process — and codifying it into a tool improves my throughput, accuracy, and consistency at the same time, while freeing my attention for the judgment calls that actually need a human. I build these tools with [Claude Code](https://claude.com/claude-code) and the Model Context Protocol; this repo collects a couple of them as sanitized case studies.
 
